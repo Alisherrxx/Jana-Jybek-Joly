@@ -54,7 +54,18 @@ service cloud.firestore {
       allow read: if canSee();
       allow create: if canManage() && logged(id);
       allow update: if logged(id) && (canManage() ||
-        (canRead() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hk', 'lastLog', 'updatedBy', 'updatedAt'])));
+        (canBook() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hk', 'hkTask', 'hkMaid', 'hkMaidName', 'hkAt', 'lastLog', 'updatedBy', 'updatedAt'])));
+      allow delete: if isOwner();
+    }
+
+    // housekeeping: maids list and cleaning tasks (only staff who can book)
+    match /maids/{id} {
+      allow read, create, update: if canBook();
+      allow delete: if isOwner();
+    }
+
+    match /cleanings/{id} {
+      allow read, create, update: if canBook();
       allow delete: if isOwner();
     }
 
