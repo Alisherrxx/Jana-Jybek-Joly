@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d5a48"><meta name="robots" content="noindex">
+<title>Jana Jybek Joly Hotel — шахматка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky top bar with tabs; working area below — room×date grid is the home screen, scrolls sideways inside its own frame */
+:root{
+  --bg:#eef1ed; --surface:#ffffff; --surface-2:#f6f8f5; --ink:#18221e; --muted:#5f6b65; --line:#d9dfd9;
+  --accent:#1d5a48; --accent-ink:#ffffff; --accent-soft:#dcebe4; --brass:#a87a26;
+  --booked:#2f68ad; --booked-bg:#dbe7f6; --in:#24855a; --in-bg:#d5efe2; --out:#77817c; --out-bg:#e6e9e7;
+  --warn:#b4610f; --warn-bg:#fbead4; --bad:#b33a3a; --bad-bg:#f7dede; --weekend:#f3eee2; --today:#fff4d6;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111816; --surface:#18211e; --surface-2:#1e2925; --ink:#e7ece9; --muted:#9aa6a0; --line:#2c3833;
+  --accent:#5fbf9b; --accent-ink:#0d1714; --accent-soft:#1f3b31; --brass:#d8ab55;
+  --booked:#7fb0ec; --booked-bg:#1f3350; --in:#6fd3a2; --in-bg:#1b3b2c; --out:#9aa6a0; --out-bg:#262f2b;
+  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111816; --surface:#18211e; --surface-2:#1e2925; --ink:#e7ece9; --muted:#9aa6a0; --line:#2c3833;
+  --accent:#5fbf9b; --accent-ink:#0d1714; --accent-soft:#1f3b31; --brass:#d8ab55;
+  --booked:#7fb0ec; --booked-bg:#1f3350; --in:#6fd3a2; --in-bg:#1b3b2c; --out:#9aa6a0; --out-bg:#262f2b;
+  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}body{margin:0}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:0 48px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:12px 0;display:flex;flex-direction:column;gap:10px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:18px;margin:0;letter-spacing:.01em}
+.brand h1 span{color:var(--brass)}
+.who{font-size:13px;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs button{border:0;background:none;padding:9px 14px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;white-space:nowrap;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:focus-visible,.btn:focus-visible,.cell-empty:focus-visible,.bar:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.small{padding:5px 10px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-block:16px}
+.toolbar .grow{flex:1}
+.toolbar input[type=date],.toolbar input[type=month],.toolbar input[type=search],.toolbar select{border:1px solid var(--line);background:var(--surface);padding:7px 10px;border-radius:8px}
+.notice{padding:12px 14px;border-radius:10px;background:var(--warn-bg);color:var(--warn);font-weight:500;margin-top:16px}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+
+/* grid */
+.grid-frame{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;font-variant-numeric:tabular-nums}
+.grid th,.grid td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);height:44px;padding:0}
+.grid thead th{position:sticky;top:0;background:var(--surface-2);font-weight:500;font-size:12px;color:var(--muted);width:64px;min-width:64px;text-align:center;line-height:1.15;padding:6px 2px}
+.grid thead th b{display:block;font-size:15px;color:var(--ink);font-family:var(--f-mono)}
+.grid .rm{position:sticky;left:0;z-index:2;background:var(--surface);min-width:96px;width:96px;padding:4px 10px;text-align:left}
+.grid thead .rm{z-index:3;background:var(--surface-2)}
+.rm .no{font-family:var(--f-mono);font-weight:500;font-size:15px;display:flex;align-items:center;gap:6px}
+.rm .ty{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
+.hk{width:8px;height:8px;border-radius:50%;display:inline-block}
+.hk.clean{background:var(--in)} .hk.dirty{background:var(--warn)} .hk.repair{background:var(--bad)}
+.grid tr.floor td{height:26px;background:var(--surface-2);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 10px;font-weight:600}
+.grid tr.floor td.rm{background:var(--surface-2)}
+.grid .we{background:var(--weekend)}
+.grid .td{background:var(--today)}
+.cell-empty{cursor:pointer}
+.cell-empty:hover{background:var(--accent-soft)}
+.cell-empty.ro{cursor:default}.cell-empty.ro:hover{background:inherit}
+.bar{display:flex;align-items:center;gap:4px;margin:5px 3px;height:34px;padding:0 8px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;overflow:hidden;white-space:nowrap;border:0;width:calc(100% - 6px);text-align:left}
+.bar span{overflow:hidden;text-overflow:ellipsis}
+.bar.booked{background:var(--booked-bg);color:var(--booked);box-shadow:inset 3px 0 0 var(--booked)}
+.bar.in{background:var(--in-bg);color:var(--in);box-shadow:inset 3px 0 0 var(--in)}
+.bar.out{background:var(--out-bg);color:var(--out);box-shadow:inset 3px 0 0 var(--out)}
+.bar.cl{border-top-left-radius:0;border-bottom-left-radius:0;margin-left:0;box-shadow:none}
+.bar .debt{flex:none;width:7px;height:7px;border-radius:50%;background:var(--bad)}
+
+/* cards & lists */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.panel h2{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600;display:flex;justify-content:space-between}
+.panel h2 b{font-family:var(--f-mono);color:var(--ink);letter-spacing:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stat .v{font-family:var(--f-display);font-size:24px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
+.stat .s{font-size:12px;color:var(--muted)}
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.row:first-child{border-top:0}
+.row .main{flex:1;min-width:160px;cursor:pointer}
+.row .main b{display:block}
+.row .sub{font-size:13px;color:var(--muted)}
+.room-tag{font-family:var(--f-mono);font-weight:500;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:14px}
+.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill.booked{background:var(--booked-bg);color:var(--booked)} .pill.in{background:var(--in-bg);color:var(--in)}
+.pill.out{background:var(--out-bg);color:var(--out)} .pill.cancelled{background:var(--bad-bg);color:var(--bad)}
+.pill.debt{background:var(--bad-bg);color:var(--bad)} .pill.paid{background:var(--in-bg);color:var(--in)}
+.muted{color:var(--muted)}
+.money{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.data{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.data th,.data td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);font-size:14px}
+.data th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.data td.r,.data th.r{text-align:right}
+.data tr.click{cursor:pointer}.data tr.click:hover td{background:var(--surface-2)}
+.tbl{overflow-x:auto}
+.hk-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(10,16,14,.5);z-index:50;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px}
+.modal{background:var(--surface);border-radius:14px;width:100%;max-width:620px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal h3{font-family:var(--f-display);font-weight:500;font-size:18px;margin:0 0 4px}
+.modal .ref{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.form .full{grid-column:1/-1}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+.form input,.form select,.form textarea{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 10px;font-size:15px;font-weight:400;color:var(--ink);width:100%}
+.form textarea{min-height:64px;resize:vertical}
+.sum{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:16px;background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:14px}
+.sum b{font-family:var(--f-mono)}
+.err{grid-column:1/-1;background:var(--bad-bg);color:var(--bad);padding:10px 12px;border-radius:8px;font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;justify-content:space-between}
+.actions .l,.actions .r{display:flex;gap:8px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:60}
+@media (max-width:560px){.form{grid-template-columns:1fr}.stat .v{font-size:20px}}
+@media (prefers-reduced-motion:no-preference){.modal{animation:pop .16s ease-out}@keyframes pop{from{transform:translateY(8px);opacity:.6}}}
+</style>
+<style>
+.login{max-width:400px;margin:40px auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.login h2{font-family:var(--f-display);font-weight:500;font-size:20px;margin:0}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.login input{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:11px 12px;font-size:16px;width:100%}
+.login .btn{justify-content:center;padding:11px 14px;font-size:15px}
+.login .or{text-align:center;color:var(--muted);font-size:13px}
+.login .links{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.who{display:flex;align-items:center;gap:10px}
+.who b{color:var(--ink);font-weight:600}
+.role{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.log-row{display:grid;grid-template-columns:110px 1fr;gap:4px 14px;padding:10px 0;border-top:1px solid var(--line)}
+.log-row:first-child{border-top:0}
+.log-row .t{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.log-row .w{font-weight:600}
+.log-row ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
+.log-row ul b{color:var(--ink);font-weight:500}
+.meta{font-size:12px;color:var(--muted);margin-top:10px}
+@media (max-width:560px){.log-row{grid-template-columns:1fr}}
+</style>
+
+</head><body>
+<header class="top"><div class="top-in">
+  <div class="brand"><h1>Гостиница · <span>шахматка</span></h1><div class="who" id="who"></div></div>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+</div></header>
+<main class="wrap" id="app"><div class="empty" style="margin-top:16px">Загрузка…</div></main>
+<div id="modal-root"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBaWBsynY5lGRgaqkzOI9rNCPvMOvHJxBs",
+  authDomain: "jana-jybek-joly-hotel.firebaseapp.com",
+  projectId: "jana-jybek-joly-hotel",
+  storageBucket: "jana-jybek-joly-hotel.firebasestorage.app",
+  messagingSenderId: "935933626812",
+  appId: "1:935933626812:web:fa8fe2a9d13d04611143b9"
+};
+</script>
+<script>
+(function(){
+const OWNER='alisherr404@gmail.com';
+const ROLES={owner:'Владелец',manager:'Управляющий',admin:'Администратор',viewer:'Просмотр',novice:'Новичок'};
+const STATUS={booked:'Бронь',in:'Заселён',out:'Выехал',cancelled:'Отменена'};
+const HK={clean:'Чистый',dirty:'Уборка',repair:'Ремонт'};
+const PAY=['Наличные','Kaspi','Карта','Перевод','Безнал (юрлицо)'];
+const SRC=['Звонок / WhatsApp','С улицы','Booking.com','Instagram / 2ГИС','Юрлицо','Другое'];
+const WD=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const MON=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const TABS=[['grid','Шахматка','see'],['today','Сегодня','read'],['list','Брони','read'],['rooms','Номера','read'],['report','Отчёт','manage'],['log','Журнал','owner'],['staff','Сотрудники','owner']];
+
+let occ=[],creds={},pendingReg=null;let auth=null,fdb=null,me=null,rooms=[],bookings=[],hist=null,histLoading=false,staffList=[],logs=null,logLoading=false,subs=[],loaded={r:false,b:false};
+const can={see:()=>!!me,read:()=>!!me&&me.role!=='novice',book:()=>!!me&&['owner','manager','admin'].includes(me.role),manage:()=>!!me&&['owner','manager'].includes(me.role),owner:()=>!!me&&me.role==='owner'};
+
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const P=s=>{const[y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)};
+const F=t=>new Date(t).toISOString().slice(0,10);
+const add=(s,n)=>F(P(s)+n*864e5);
+const diffD=(a,b)=>Math.round((P(b)-P(a))/864e5);
+const wd=s=>new Date(P(s)).getUTCDay();
+const human=s=>{if(!s)return'';const[y,m,d]=String(s).split('-');return +d+' '+MON[+m-1]};
+const dmy=s=>{if(!s)return'';const[y,m,d]=String(s).split('-');return d+'.'+m+'.'+y};
+const tg=n=>(Math.round(+n||0)).toLocaleString('ru-RU')+' ₸';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ref=id=>String(id).slice(0,6).toUpperCase();
+const toDate=t=>!t?null:(t.toDate?t.toDate():new Date(t));
+const stamp=t=>{const d=toDate(t);if(!d||isNaN(d))return'';return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const liveFrom=()=>add(today(),-45);
+
+let st={tab:'grid',start:add(today(),-1),span:14,month:today().slice(0,7),q:'',filter:'active',exFrom:today().slice(0,7)+'-01',exTo:today(),lgFrom:add(today(),-7),lgTo:today(),lgWho:'',lgType:'',lgRoom:'',authMode:'login'};
+try{const s=JSON.parse(localStorage.getItem('hotel-ui')||'{}');if(s.span)st.span=s.span;if(s.tab)st.tab=s.tab}catch(e){}
+const saveUi=()=>{try{localStorage.setItem('hotel-ui',JSON.stringify({span:st.span,tab:st.tab}))}catch(e){}};
+
+const app=document.getElementById('app'),mroot=document.getElementById('modal-root'),tabsEl=document.getElementById('tabs'),whoEl=document.getElementById('who');
+const roomById=id=>rooms.find(r=>r.id===id);
+const roomNo=id=>(roomById(id)||{}).number||'?';
+const sortedRooms=(all)=>rooms.filter(r=>all||r.active!==false).sort((a,b)=>String(a.number).localeCompare(String(b.number),'ru',{numeric:true}));
+const live=b=>b.status!=='cancelled';
+const nights=b=>Math.max(0,diffD(b.checkIn,b.checkOut));
+const total=b=>nights(b)*(+b.price||0);
+const debt=b=>Math.max(0,total(b)-(+b.paid||0));
+function allB(){if(!hist)return bookings;const m=new Map(hist.map(b=>[b.id,b]));bookings.forEach(b=>m.set(b.id,b));return[...m.values()]}
+const onDay=(list,roomId,d)=>list.find(b=>live(b)&&b.roomId===roomId&&b.checkIn<=d&&d<b.checkOut);
+const LOGIN_DOMAIN='login.invalid',LOGIN_RE=/^[a-z0-9._-]{3,30}$/;
+const toEmail=x=>{x=String(x||'').trim().toLowerCase();return x.includes('@')?x:x+'@'+LOGIN_DOMAIN};
+const isInternal=em=>String(em||'').endsWith('@'+LOGIN_DOMAIN);
+const showId=em=>isInternal(em)?String(em).split('@')[0]:String(em||'');
+const staffName=em=>{if(!em)return'';const s=staffList.find(x=>x.id===em);return(s&&s.name)||(em===OWNER?'Владелец':showId(em))};
+
+function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),2600)}
+async function loadHist(force){if(histLoading||(hist&&!force))return;histLoading=true;try{const s=await fdb.collection('bookings').get();hist=s.docs.map(d=>({id:d.id,...d.data()}))}catch(e){toast('Не удалось загрузить архив броней: '+(e.message||e.code))}histLoading=false;render()}
+
+/* ---------- log & writes ---------- */
+const BF={roomId:'Номер',status:'Статус',checkIn:'Заезд',checkOut:'Выезд',guest:'Гость',phone:'Телефон',guests:'Гостей',doc:'Документ',source:'Источник',price:'Цена/ночь',paid:'Оплачено',payMethod:'Способ оплаты',company:'Компания',note:'Комментарий'};
+const RF={number:'Номер',floor:'Этаж',type:'Тип',capacity:'Мест',price:'Цена/ночь',active:'Продаётся',note:'Заметка',hk:'Состояние'};
+const SF={name:'Имя',role:'Роль',active:'Активен'};
+function fmtB(k,v){if(k==='roomId')return roomNo(v);if(k==='status')return STATUS[v]||v;if(k==='checkIn'||k==='checkOut')return human(v);if(k==='price'||k==='paid')return tg(v);return v??''}
+function fmtR(k,v){if(k==='price')return tg(v);if(k==='active')return v===false?'Нет':'Да';if(k==='hk')return HK[v||'clean'];return v??''}
+function fmtS(k,v){if(k==='role')return ROLES[v]||v;if(k==='active')return v===false?'Нет':'Да';return v??''}
+function changes(prev,next,FL,fmt){if(!prev)return[];const out=[];for(const k in FL){const a=prev[k]??'',b=next[k]??'';if(String(a)!==String(b))out.push({f:FL[k],from:String(fmt(k,a)),to:String(fmt(k,b))})}return out}
+const pick=(o,FL)=>{const r={};for(const k in FL)if(o[k]!==undefined)r[k]=o[k];return r};
+const TS=()=>firebase.firestore.FieldValue.serverTimestamp();
+const VERB={create:'Создал(а) бронь',update:'Изменил(а) бронь',cancel:'Отменил(а) бронь',checkin:'Заселил(а)',checkout:'Выселил(а)',delete:'Удалил(а) бронь',restore:'Восстановил(а) бронь'};
+
+async function writeBooking(prev,data,action){
+  const bref=prev?fdb.collection('bookings').doc(prev.id):fdb.collection('bookings').doc();
+  const lref=fdb.collection('log').doc();
+  const body=Object.assign({},data,{lastLog:lref.id,updatedBy:me.email,updatedByName:me.name,updatedAt:TS(),
+    createdBy:prev?(prev.createdBy||null):me.email,createdByName:prev?(prev.createdByName||null):me.name,createdAt:prev?(prev.createdAt||null):TS()});
+  const ch=changes(prev,data,BF,fmtB);
+  const entry={at:TS(),by:me.email,byName:me.name,kind:'booking',action,target:bref.id,room:roomNo(data.roomId),guest:data.guest||'',
+    text:`${VERB[action]}: №${roomNo(data.roomId)}, ${data.guest||'без имени'}, ${human(data.checkIn)}–${human(data.checkOut)}, ${tg(nights(data)*(+data.price||0))}`,changes:ch,payment:ch.some(c=>c.f==='Оплачено')};
+  const b=fdb.batch();b.set(lref,entry);b.set(bref,body);b.set(fdb.collection('occ').doc(bref.id),{roomId:data.roomId,checkIn:data.checkIn,checkOut:data.checkOut,status:data.status});await b.commit();
+}
+async function deleteBooking(bk){
+  const lref=fdb.collection('log').doc();
+  const entry={at:TS(),by:me.email,byName:me.name,kind:'booking',action:'delete',target:bk.id,room:roomNo(bk.roomId),guest:bk.guest||'',
+    text:`${VERB.delete}: №${roomNo(bk.roomId)}, ${bk.guest||'без имени'}, ${human(bk.checkIn)}–${human(bk.checkOut)}, ${tg(total(bk))}, оплачено ${tg(bk.paid)}`,changes:[],payment:false,snapshot:pick(bk,BF)};
+  const b=fdb.batch();b.set(lref,entry);b.delete(fdb.collection('bookings').doc(bk.id));b.delete(fdb.collection('occ').doc(bk.id));await b.commit();
+  if(hist)hist=hist.filter(x=>x.id!==bk.id);
+}
+async function writeRoom(prev,data,action,id){
+  const rc=fdb.collection('rooms');const rref=prev?rc.doc(prev.id):(id?rc.doc(id):rc.doc());
+  const lref=fdb.collection('log').doc();
+  const body=Object.assign({},data,{lastLog:lref.id,updatedBy:me.email,updatedAt:TS()});
+  const ch=changes(prev,data,RF,fmtR);
+  const verb={create:'Добавил(а) номер',update:'Изменил(а) номер',hk:'Сменил(а) состояние номера'}[action];
+  const entry={at:TS(),by:me.email,byName:me.name,kind:'room',action,target:rref.id,room:data.number,guest:'',text:`${verb} ${data.number}${action==='hk'?': '+HK[data.hk]:''}`,changes:ch,payment:false};
+  const b=fdb.batch();b.set(lref,entry);b.set(rref,body);await b.commit();
+}
+async function deleteRoom(r){
+  const lref=fdb.collection('log').doc();
+  const b=fdb.batch();b.set(lref,{at:TS(),by:me.email,byName:me.name,kind:'room',action:'delete',target:r.id,room:r.number,guest:'',text:`Удалил(а) номер ${r.number}`,changes:[],payment:false,snapshot:pick(r,RF)});
+  b.delete(fdb.collection('rooms').doc(r.id));await b.commit();
+}
+async function writeStaff(prev,email,data,action,cred){
+  const sref=fdb.collection('staff').doc(email);const lref=fdb.collection('log').doc();
+  const body=Object.assign({},data,{updatedAt:TS(),updatedBy:me.email});if(!prev){body.addedAt=TS();body.addedBy=me.email}
+  const verb={create:'Добавил(а) сотрудника',update:'Изменил(а) сотрудника',delete:'Удалил(а) доступ сотрудника'}[action];
+  const b=fdb.batch();if(cred)b.set(fdb.collection('creds').doc(email),cred);b.set(lref,{at:TS(),by:me.email,byName:me.name,kind:'staff',action,target:email,room:'',guest:'',text:`${verb} ${data.name||''} (${showId(email)})${action==='delete'?'':' — '+ROLES[data.role]}`,changes:changes(prev,data,SF,fmtS),payment:false});
+  b.set(sref,body,{merge:true});await b.commit();
+}
+const newRegs=()=>staffList.filter(s=>s.self&&!s.ack&&!s.deleted);
+const errText=e=>e&&e.code==='permission-denied'?'Нет прав на это действие.':(e&&(e.message||e.code))||'неизвестная ошибка';
+
+/* ---------- render ---------- */
+function renderTabs(){
+  if(!me){tabsEl.innerHTML='';return}
+  const vis=TABS.filter(t=>can[t[2]]());
+  if(!vis.some(t=>t[0]===st.tab))st.tab='grid';
+  tabsEl.innerHTML=vis.map(([k,l])=>`<button data-tab="${k}" aria-selected="${k===st.tab}">${l}${k==='staff'&&newRegs().length?` <span class="pill debt">${newRegs().length}</span>`:''}</button>`).join('');
+}
+function render(){
+  renderTabs();
+  if(!me)return;
+  if(!loaded.r||(!loaded.b&&me.role!=='novice')){app.innerHTML='<div class="empty" style="margin-top:16px">Загружаем номера и брони…</div>';return}
+  app.innerHTML=({grid:vGrid,today:vToday,list:vList,rooms:vRooms,report:vReport,log:vLog,staff:vStaff}[st.tab]||vGrid)();
+}
+
+function vGrid(){
+  const rs=sortedRooms(),N_=me.role==='novice';
+  if(!rs.length)return `<div class="empty" style="margin-top:16px"><p>Номера ещё не добавлены.</p>${can.manage()?'<button class="btn primary" data-act="seed">Создать 25 номеров (201–212, 301–313)</button>':''}</div>`;
+  if(!N_&&st.start<liveFrom()&&!hist)loadHist();
+  const N=me.role==='novice',list=N?occ.map(o=>Object.assign({},o,{guest:'Занято'})):allB(),days=[...Array(st.span)].map((_,i)=>add(st.start,i)),t=today(),B=can.book();
+  let h=`<div class="toolbar">
+    <button class="btn small" data-act="shift" data-n="-7">← 7 дн</button>
+    <button class="btn small" data-act="gotoday">Сегодня</button>
+    <button class="btn small" data-act="shift" data-n="7">7 дн →</button>
+    <input type="date" id="g-start" value="${st.start}" aria-label="С даты">
+    <select id="g-span" aria-label="Период">${[7,14,21,31].map(n=>`<option value="${n}"${n==st.span?' selected':''}>${n} дней</option>`).join('')}</select>
+    <span class="grow"></span>${B?'<button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>
+  <div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i style="background:var(--warn);border-radius:50%"></i>Нужна уборка</span></div>
+  <div class="grid-frame"><table class="grid"><thead><tr><th class="rm">Номер</th>`;
+  days.forEach(d=>{const w=wd(d);h+=`<th class="${d===t?'td':(w===0||w===6?'we':'')}">${WD[w]}<b>${+d.slice(8)}</b>${MON[+d.slice(5,7)-1]}</th>`});
+  h+='</tr></thead><tbody>';let floor=null;
+  rs.forEach(r=>{
+    if(String(r.floor)!==floor){floor=String(r.floor);h+=`<tr class="floor"><td class="rm">${esc(floor)} этаж</td><td colspan="${st.span}"></td></tr>`}
+    h+=`<tr><td class="rm"><div class="no"><span class="hk ${r.hk||'clean'}" title="${HK[r.hk||'clean']}"></span>${esc(r.number)}</div><div class="ty">${esc(r.type||'')}</div></td>`;
+    let i=0;
+    while(i<st.span){const d=days[i],b=onDay(list,r.id,d);
+      if(b){const end=Math.min(st.span,diffD(st.start,b.checkOut)),n=end-i,cont=b.checkIn<st.start&&i===0;
+        h+=`<td colspan="${n}"><button class="bar ${b.status}${cont?' cl':''}" data-act="${N?'':'openb'}" data-id="${b.id}" title="${esc(b.guest)} · ${human(b.checkIn)}–${human(b.checkOut)}">${debt(b)>0?'<i class="debt" title="Долг"></i>':''}<span>${esc(b.guest||'Без имени')}</span></button></td>`;i=end}
+      else{const w=wd(d);h+=`<td class="cell-empty${B?'':' ro'} ${d===t?'td':(w===0||w===6?'we':'')}" ${B?`tabindex="0" data-act="cell" data-room="${r.id}" data-date="${d}" aria-label="Забронировать ${esc(r.number)} на ${human(d)}"`:''}></td>`;i++}}
+    h+='</tr>';
+  });
+  return h+`</tbody></table></div>${N?'<p class="muted" style="font-size:13px">У вас доступ только к занятости номеров. Расширить доступ может владелец.</p>':''}${B?'<p class="muted" style="font-size:13px">Нажмите на пустую клетку, чтобы создать бронь с этой даты. Нажмите на бронь, чтобы открыть её.</p>':''}`;
+}
+
+function bRow(b,actions=''){const r=roomById(b.roomId)||{};
+  return `<div class="row"><span class="room-tag">${esc(r.number||'?')}</span><div class="main" data-act="openb" data-id="${b.id}"><b>${esc(b.guest||'Без имени')}</b><div class="sub">${human(b.checkIn)} → ${human(b.checkOut)} · ${nights(b)} н. ${b.phone?'· '+esc(b.phone):''}</div></div>${debt(b)>0?`<span class="pill debt">долг ${tg(debt(b))}</span>`:''}${actions}</div>`}
+function vToday(){
+  const t=today(),act=bookings.filter(live);
+  const arr=act.filter(b=>b.checkIn===t&&b.status==='booked'),dep=act.filter(b=>b.status==='in'&&b.checkOut<=t),stay=act.filter(b=>b.status==='in'&&b.checkOut>t),late=act.filter(b=>b.status==='booked'&&b.checkIn<t&&b.checkOut>t);
+  const rs=sortedRooms(),busy=new Set(rs.filter(r=>onDay(bookings,r.id,t)).map(r=>r.id)),free=rs.filter(r=>!busy.has(r.id)),dirty=rs.filter(r=>r.hk==='dirty'),rep=rs.filter(r=>r.hk==='repair');
+  const B=(id,a,l)=>can.book()?`<button class="btn small" data-act="${a}" data-id="${id}">${l}</button>`:'';
+  const occ=rs.length?Math.round(busy.size/rs.length*100):0;
+  let h=`<div class="stats">
+    <div class="stat"><div class="k">Загрузка сегодня</div><div class="v">${occ}%</div><div class="s">${busy.size} из ${rs.length} номеров</div></div>
+    <div class="stat"><div class="k">Свободно</div><div class="v">${free.length}</div><div class="s">${free.filter(r=>r.hk&&r.hk!=='clean').length} из них не готовы</div></div>
+    <div class="stat"><div class="k">Заезды</div><div class="v">${arr.length}</div><div class="s">ожидаются сегодня</div></div>
+    <div class="stat"><div class="k">Выезды</div><div class="v">${dep.length}</div><div class="s">до 12:00</div></div></div><div class="cols">`;
+  h+=`<section class="panel"><h2>Заезды сегодня <b>${arr.length}</b></h2><div class="list">${arr.map(b=>bRow(b,B(b.id,'checkin','Заселить'))).join('')||'<div class="muted">Заездов нет</div>'}</div></section>`;
+  h+=`<section class="panel"><h2>Выезды <b>${dep.length}</b></h2><div class="list">${dep.map(b=>bRow(b,B(b.id,'checkout','Выселить'))).join('')||'<div class="muted">Выездов нет</div>'}</div></section>`;
+  if(late.length)h+=`<section class="panel"><h2>Не заехали <b>${late.length}</b></h2><div class="list">${late.map(b=>bRow(b,B(b.id,'checkin','Заселить'))).join('')}</div></section>`;
+  h+=`<section class="panel"><h2>Сейчас проживают <b>${stay.length}</b></h2><div class="list">${stay.map(b=>bRow(b)).join('')||'<div class="muted">Никого</div>'}</div></section>`;
+  h+=`<section class="panel"><h2>Свободные номера <b>${free.length}</b></h2><div style="display:flex;flex-wrap:wrap;gap:6px">${free.map(r=>`<button class="hk-btn" data-act="${can.book()?'cell':''}" data-room="${r.id}" data-date="${t}"><span class="hk ${r.hk||'clean'}"></span>${esc(r.number)} · ${tg(r.price)}</button>`).join('')||'<span class="muted">Всё занято</span>'}</div></section>`;
+  h+=`<section class="panel"><h2>Горничным <b>${dirty.length+rep.length}</b></h2><div style="display:flex;flex-wrap:wrap;gap:6px">${[...dirty,...rep].map(r=>`<button class="hk-btn" data-act="hk" data-id="${r.id}"><span class="hk ${r.hk}"></span>${esc(r.number)} · ${HK[r.hk]}</button>`).join('')||'<span class="muted">Все номера чистые</span>'}</div>${dirty.length?'<p class="muted" style="font-size:13px;margin-bottom:0">Нажмите на номер, чтобы сменить статус.</p>':''}</section>`;
+  return h+'</div>';
+}
+
+function vList(){
+  const q=st.q.trim().toLowerCase();
+  const needAll=st.filter!=='active'||q;
+  if(needAll&&!hist)loadHist();
+  const src=needAll?allB():bookings;
+  let xs=src.filter(b=>{
+    if(st.filter==='active'&&!(live(b)&&b.status!=='out'))return false;
+    if(st.filter==='debt'&&!(live(b)&&debt(b)>0))return false;
+    if(st.filter==='cancelled'&&b.status!=='cancelled')return false;
+    if(!q)return true;const r=roomById(b.roomId)||{};
+    return[b.guest,b.phone,r.number,b.note,b.company,ref(b.id)].join(' ').toLowerCase().includes(q)});
+  xs.sort((a,b)=>st.filter==='active'?a.checkIn.localeCompare(b.checkIn):b.checkIn.localeCompare(a.checkIn));
+  let h=`<div class="toolbar"><input type="search" id="l-q" placeholder="Имя, телефон, номер, компания…" value="${esc(st.q)}" style="flex:1;min-width:180px">
+    <select id="l-f">${[['active','Текущие и будущие'],['all','Все'],['debt','С долгом'],['cancelled','Отменённые']].map(([k,l])=>`<option value="${k}"${st.filter===k?' selected':''}>${l}</option>`).join('')}</select>
+    ${can.book()?'<button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>`;
+  if(needAll&&histLoading&&!hist)return h+'<div class="empty">Загружаем архив броней…</div>';
+  if(!xs.length)return h+'<div class="empty">Броней не найдено.</div>';
+  h+=`<div class="panel tbl"><table class="data"><thead><tr><th>№</th><th>Гость</th><th>Заезд</th><th>Выезд</th><th class="r">Ночей</th><th class="r">Сумма</th><th class="r">Оплачено</th><th>Статус</th><th>Создал(а)</th></tr></thead><tbody>`;
+  xs.forEach(b=>{const r=roomById(b.roomId)||{};h+=`<tr class="click" data-act="openb" data-id="${b.id}"><td><span class="room-tag">${esc(r.number||'?')}</span></td><td><b>${esc(b.guest||'Без имени')}</b><div class="muted" style="font-size:12px">${esc(b.phone||'')}</div></td><td>${human(b.checkIn)}</td><td>${human(b.checkOut)}</td><td class="r">${nights(b)}</td><td class="r money">${tg(total(b))}</td><td class="r money">${tg(b.paid)}</td><td><span class="pill ${b.status}">${STATUS[b.status]}</span></td><td class="muted" style="font-size:13px">${esc(b.createdByName||staffName(b.createdBy)||'—')}</td></tr>`});
+  return h+'</tbody></table></div>';
+}
+
+function vRooms(){
+  const rs=sortedRooms(true),M=can.manage();
+  let h=`<div class="toolbar"><span class="muted grow">Точка — состояние номера. Нажмите, чтобы переключить: Чистый → Уборка → Ремонт.</span>${M?'<button class="btn primary" data-act="newroom">+ Номер</button>':''}</div>`;
+  if(!rs.length)return h+`<div class="empty"><p>Номеров пока нет.</p>${M?'<button class="btn primary" data-act="seed">Создать 25 номеров (201–212, 301–313)</button>':''}</div>`;
+  h+=`<div class="panel tbl"><table class="data"><thead><tr><th>Номер</th><th>Этаж</th><th>Тип</th><th class="r">Мест</th><th class="r">Цена за ночь</th><th>Состояние</th><th></th></tr></thead><tbody>`;
+  rs.forEach(r=>{h+=`<tr${r.active===false?' style="opacity:.5"':''}><td><span class="room-tag">${esc(r.number)}</span></td><td>${esc(r.floor)}</td><td>${esc(r.type||'')}${r.active===false?' <span class="muted">(не продаётся)</span>':''}</td><td class="r">${esc(r.capacity||'')}</td><td class="r money">${tg(r.price)}</td><td><button class="hk-btn" data-act="hk" data-id="${r.id}"><span class="hk ${r.hk||'clean'}"></span>${HK[r.hk||'clean']}</button></td><td class="r">${M?`<button class="btn small" data-act="editroom" data-id="${r.id}">Изменить</button>`:''}</td></tr>`});
+  return h+'</tbody></table></div>';
+}
+
+function periodStats(list,from,toEx){
+  let rev=0,nts=0;const bySrc={},byType={},byRoom={};
+  list.filter(b=>live(b)&&b.checkIn<toEx&&b.checkOut>from).forEach(b=>{
+    const a=b.checkIn>from?b.checkIn:from,e=b.checkOut<toEx?b.checkOut:toEx,n=Math.max(0,diffD(a,e)),v=n*(+b.price||0);rev+=v;nts+=n;
+    const s=b.source||'Другое';bySrc[s]=(bySrc[s]||0)+v;const r=roomById(b.roomId)||{};const t=r.type||'—';byType[t]=(byType[t]||0)+v;
+    byRoom[b.roomId]=byRoom[b.roomId]||{n:0,v:0};byRoom[b.roomId].n+=n;byRoom[b.roomId].v+=v});
+  const arrivals=list.filter(b=>live(b)&&b.checkIn>=from&&b.checkIn<toEx);let paid=0,owe=0;const byPay={};
+  arrivals.forEach(b=>{paid+=+b.paid||0;owe+=debt(b);const p=b.payMethod||'—';byPay[p]=(byPay[p]||0)+(+b.paid||0)});
+  const rs=sortedRooms(),days=diffD(from,toEx),occ=rs.length&&days?Math.round(nts/(rs.length*days)*100):0;
+  return{rev,nts,bySrc,byType,byRoom,byPay,paid,owe,occ,adr:nts?rev/nts:0,days,arrivals};
+}
+function vReport(){
+  const[y,m]=st.month.split('-').map(Number),ms=st.month+'-01',me_=F(Date.UTC(y,m,1));
+  if(ms<liveFrom()&&!hist)loadHist();
+  const S=periodStats(allB(),ms,me_),rs=sortedRooms();
+  const tbl=(o,title)=>{const e=Object.entries(o).sort((a,b)=>b[1]-a[1]);return `<section class="panel"><h2>${title}</h2>${e.length?`<table class="data"><tbody>${e.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="r money">${tg(v)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted">Нет данных</div>'}</section>`};
+  return `<div class="toolbar"><input type="month" id="r-m" value="${st.month}" aria-label="Месяц"><span class="muted">Выручка считается по ночам, прожитым в этом месяце.</span></div>
+  <div class="stats">
+    <div class="stat"><div class="k">Выручка за месяц</div><div class="v">${tg(S.rev)}</div><div class="s">${S.nts} проданных ночей</div></div>
+    <div class="stat"><div class="k">Загрузка</div><div class="v">${S.occ}%</div><div class="s">${rs.length} номеров × ${S.days} дней</div></div>
+    <div class="stat"><div class="k">Средняя цена ночи</div><div class="v">${tg(S.adr)}</div><div class="s">ADR</div></div>
+    <div class="stat"><div class="k">Оплачено / долг</div><div class="v">${tg(S.paid)}</div><div class="s" style="color:${S.owe>0?'var(--bad)':'inherit'}">долг ${tg(S.owe)} · по заездам месяца</div></div></div>
+  <div class="cols">${tbl(S.bySrc,'По источникам')}${tbl(S.byType,'По типам номеров')}${tbl(S.byPay,'Оплаты по способам')}</div>
+  <section class="panel" style="margin-top:16px"><h2>Выгрузка в Excel</h2>
+    <div class="toolbar" style="margin:0"><label class="muted">С <input type="date" id="ex-from" value="${st.exFrom}"></label><label class="muted">по <input type="date" id="ex-to" value="${st.exTo}"></label>
+    <button class="btn primary" data-act="export">Скачать отчёт .xlsx</button>${can.owner()?'<button class="btn" data-act="backup">Полная копия базы</button>':''}</div>
+    <p class="muted" style="font-size:13px;margin-bottom:0">Листы: Сводка, Брони, Оплаты, По номерам, Долги${can.owner()?', Журнал':''}. «Полная копия базы» — все номера, брони, сотрудники и журнал за всё время.</p></section>`;
+}
+
+const LT={'':'Все действия',booking:'Брони',payment:'Изменения оплат',cancel:'Отмены и удаления',room:'Номера',staff:'Сотрудники'};
+function vLog(){
+  if(logs===null&&!logLoading)loadLog();
+  const people=[...new Set([OWNER,...staffList.map(s=>s.id)])];
+  let h=`<div class="toolbar"><label class="muted">С <input type="date" id="lg-from" value="${st.lgFrom}"></label><label class="muted">по <input type="date" id="lg-to" value="${st.lgTo}"></label>
+   <select id="lg-who"><option value="">Все сотрудники</option>${people.map(p=>`<option value="${esc(p)}"${st.lgWho===p?' selected':''}>${esc(staffName(p))}</option>`).join('')}</select>
+   <select id="lg-type">${Object.entries(LT).map(([k,l])=>`<option value="${k}"${st.lgType===k?' selected':''}>${l}</option>`).join('')}</select>
+   <input type="search" id="lg-room" placeholder="№ комнаты или гость" value="${esc(st.lgRoom)}" style="width:170px">
+   <button class="btn small" data-act="reloadlog">Обновить</button></div>`;
+  if(logLoading&&!logs)return h+'<div class="empty">Загружаем журнал…</div>';
+  const q=st.lgRoom.trim().toLowerCase();
+  const xs=(logs||[]).filter(l=>(!st.lgWho||l.by===st.lgWho)&&
+    (!st.lgType||(st.lgType==='payment'?l.payment:st.lgType==='cancel'?(l.action==='cancel'||l.action==='delete'):l.kind===st.lgType))&&
+    (!q||String(l.room).toLowerCase().includes(q)||String(l.guest).toLowerCase().includes(q)));
+  if(!xs.length)return h+'<div class="empty">За выбранный период записей нет.</div>';
+  return h+`<section class="panel"><h2>Записей <b>${xs.length}</b></h2>${xs.map(l=>`<div class="log-row"><div class="t">${stamp(l.at)}</div><div><span class="w">${esc(l.byName||staffName(l.by))}</span> — ${esc(l.text)}${l.changes&&l.changes.length?`<ul>${l.changes.map(c=>`<li>${esc(c.f)}: ${esc(c.from||'—')} → <b>${esc(c.to||'—')}</b></li>`).join('')}</ul>`:''}</div></div>`).join('')}</section>`;
+}
+async function fetchLog(from,toEx){
+  const s=await fdb.collection('log').where('at','>=',new Date(P(from)-5*36e5)).where('at','<',new Date(P(toEx)-5*36e5)).orderBy('at','desc').limit(1000).get();
+  return s.docs.map(d=>({id:d.id,...d.data()}));
+}
+async function loadLog(){logLoading=true;render();try{logs=await fetchLog(st.lgFrom,add(st.lgTo,1))}catch(e){logs=[];toast('Не удалось загрузить журнал: '+errText(e))}logLoading=false;render()}
+
+const roleOpts=v=>['manager','admin','viewer','novice'].map(r=>`<option value="${r}"${v===r?' selected':''}>${ROLES[r]}</option>`).join('');
+function vStaff(){
+  const all=staffList.filter(s=>!s.deleted).sort((a,b)=>(a.name||a.id).localeCompare(b.name||b.id,'ru'));
+  const regs=newRegs();
+  let h='';
+  if(regs.length){
+    h+=`<section class="panel" style="margin-top:16px;border-color:var(--bad)"><h2>Новые регистрации <b>${regs.length}</b></h2><div class="list">${regs.map(r=>`<div class="row"><div class="main" style="cursor:default"><b>${esc(r.name||'Без имени')}</b><div class="sub">Логин: ${esc(showId(r.id))} · Пароль: <span class="money">${esc((creds[r.id]||{}).password||'—')}</span> · ${stamp(r.addedAt)}</div></div>
+      <select data-staff-role="${esc(r.id)}" aria-label="Роль">${roleOpts(r.role)}</select>
+      <button class="btn small" data-act="regack" data-id="${esc(r.id)}">Понятно</button><button class="btn small danger" data-act="staffdel" data-id="${esc(r.id)}">Удалить</button></div>`).join('')}</div>
+      <p class="muted" style="font-size:13px;margin-bottom:0">Новичок видит только занятость номеров. Выберите роль, чтобы расширить доступ.</p></section>`;
+  }
+  h+=`<div class="cols"><section class="panel"><h2>Создать сотрудника</h2>
+   <form id="sf" class="form" style="margin-top:0" autocomplete="off">
+    <label>Имя<input id="s-name" required placeholder="Айгерим"></label>
+    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Новичок</option></select></label>
+    <label>Логин<input id="s-login" required placeholder="aigerim" autocapitalize="off" autocomplete="off"></label>
+    <label>Пароль<input id="s-pass" placeholder="от 6 символов" autocomplete="off"></label>
+    <div class="err" id="s-err" hidden></div>
+    <div class="full" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn primary">Создать</button><span class="muted" style="font-size:12.5px">Вместо логина можно вписать Gmail — тогда пароль не нужен, вход через Google.</span></div></form></section>
+   <section class="panel"><h2>Роли</h2><div class="sub" style="font-size:14px;line-height:1.55">
+    <b>Управляющий</b> — всё, кроме журнала и сотрудников: брони, номера, цены, отчёты.<br>
+    <b>Администратор</b> — брони, заселение, оплаты, отмена броней, уборка.<br>
+    <b>Просмотр</b> — шахматка с гостями, состояние номеров (для горничных).<br>
+    <b>Новичок</b> — только занятость номеров, без данных гостей. Даётся автоматически при самостоятельной регистрации.<br>
+    Удалять брони и номера может только владелец.</div></section></div>
+  <section class="panel" style="margin-top:16px"><h2>Сотрудники <b>${all.length}</b></h2>`;
+  if(!all.length)return h+'<div class="muted">Пока никого.</div></section>';
+  h+=`<div class="tbl"><table class="data"><thead><tr><th>Имя</th><th>Логин</th><th>Пароль</th><th>Роль</th><th>Последний вход</th><th>Доступ</th><th></th></tr></thead><tbody>`;
+  all.forEach(s=>{const pw=(creds[s.id]||{}).password;h+=`<tr${s.active===false?' style="opacity:.55"':''}><td><b>${esc(s.name||'')}</b>${s.self?' <span class="muted" style="font-size:12px">(сам)</span>':''}</td><td>${esc(showId(s.id))}</td>
+    <td>${pw?`<button class="linkbtn" data-act="showpass" data-pw="${esc(pw)}">показать</button>`:'<span class="muted">—</span>'}</td>
+    <td><select data-staff-role="${esc(s.id)}" aria-label="Роль">${roleOpts(s.role)}</select></td>
+    <td class="muted" style="font-size:13px">${s.lastSeen?stamp(s.lastSeen):'ещё не входил(а)'}</td>
+    <td>${s.active===false?'<span class="pill cancelled">Отключён</span>':'<span class="pill paid">Активен</span>'}</td>
+    <td class="r" style="white-space:nowrap"><button class="btn small" data-act="staffactive" data-id="${esc(s.id)}">${s.active===false?'Включить':'Отключить'}</button> <button class="btn small danger" data-act="staffdel" data-id="${esc(s.id)}">Удалить</button></td></tr>`});
+  return h+'</tbody></table></div><p class="muted" style="font-size:13px;margin-bottom:0">«Удалить» навсегда закрывает доступ этому логину. Его действия в журнале сохраняются.</p></section>';
+}
+
+/* ---------- modals ---------- */
+function close(){mroot.innerHTML=''}
+function ask(text,yes,cb){
+  mroot.insertAdjacentHTML('beforeend',`<div class="scrim" id="ask"><div class="modal" style="max-width:420px"><h3>${text}</h3><div class="actions"><span></span><div class="r"><button class="btn" id="ask-no">Нет</button><button class="btn danger" id="ask-yes">${yes}</button></div></div></div></div>`);
+  document.getElementById('ask-no').onclick=()=>document.getElementById('ask').remove();
+  document.getElementById('ask-yes').onclick=()=>{document.getElementById('ask').remove();cb()};
+}
+function openBooking(b){
+  const isNew=!b.id,rs=sortedRooms(),W=can.book();
+  const r0=roomById(b.roomId)||rs[0]||{};
+  const prev=isNew?null:b;
+  b=Object.assign({status:'booked',guests:1,paid:0,price:r0.price||0,roomId:r0.id,source:SRC[0],payMethod:PAY[0]},b);
+  const opt=(arr,v)=>arr.map(x=>`<option${x===v?' selected':''}>${esc(x)}</option>`).join('');
+  const meta=isNew?'':`<div class="meta">Создал(а): ${esc(b.createdByName||staffName(b.createdBy)||'—')}${b.createdAt?', '+stamp(b.createdAt):''}${b.updatedBy?` · Последнее изменение: ${esc(b.updatedByName||staffName(b.updatedBy))}, ${stamp(b.updatedAt)}`:''}</div>`;
+  mroot.innerHTML=`<div class="scrim" id="scrim"><form class="modal" id="bf" autocomplete="off">
+    <h3>${isNew?'Новая бронь':esc(b.guest||'Бронь')}</h3><div class="ref">${isNew?'':'Бронь #'+ref(b.id)+' · '}<span class="pill ${b.status}">${STATUS[b.status]}</span></div>
+    <fieldset style="border:0;padding:0;margin:0"${W?'':' disabled'}><div class="form">
+      <label>Номер<select id="f-room">${rs.map(r=>`<option value="${r.id}"${r.id===b.roomId?' selected':''}>${esc(r.number)} — ${esc(r.type||'')} · ${tg(r.price)}</option>`).join('')}</select></label>
+      <label>Статус<select id="f-status">${Object.entries(STATUS).map(([k,l])=>`<option value="${k}"${k===b.status?' selected':''}>${l}</option>`).join('')}</select></label>
+      <label>Заезд<input type="date" id="f-in" value="${b.checkIn||''}" required></label>
+      <label>Выезд<input type="date" id="f-out" value="${b.checkOut||''}" required></label>
+      <label class="full">ФИО гостя<input id="f-guest" value="${esc(b.guest||'')}" placeholder="Иванов Иван" required></label>
+      <label>Телефон<input id="f-phone" type="tel" value="${esc(b.phone||'')}" placeholder="+7 7__ ___ __ __"></label>
+      <label>Гостей<input id="f-guests" type="number" min="1" max="10" value="${b.guests}"></label>
+      <label>Документ (№ уд. / паспорта)<input id="f-doc" value="${esc(b.doc||'')}"></label>
+      <label>Источник<select id="f-src">${opt(SRC,b.source)}</select></label>
+      <label>Цена за ночь, ₸<input id="f-price" type="number" min="0" step="500" value="${b.price}"></label>
+      <label>Оплачено, ₸<input id="f-paid" type="number" min="0" step="500" value="${b.paid}"></label>
+      <label>Способ оплаты<select id="f-pay">${opt(PAY,b.payMethod)}</select></label>
+      <label>Компания (для юрлиц)<input id="f-co" value="${esc(b.company||'')}"></label>
+      <div class="sum" id="f-sum"></div>
+      <label class="full">Комментарий<textarea id="f-note" placeholder="Поздний заезд, доп. кровать, завтрак…">${esc(b.note||'')}</textarea></label>
+      <div class="err" id="f-err" hidden></div>
+    </div></fieldset>${meta}
+    <div class="actions"><div class="l">${!isNew&&W?`${b.status==='booked'?'<button type="button" class="btn" data-q="in">Заселить</button>':''}${b.status==='in'?'<button type="button" class="btn" data-q="out">Выселить</button>':''}${b.status!=='cancelled'?'<button type="button" class="btn danger" data-q="cancel">Отменить бронь</button>':''}${can.owner()?'<button type="button" class="btn danger" data-q="del">Удалить</button>':''}`:''}</div>
+    <div class="r"><button type="button" class="btn" id="f-close">Закрыть</button>${W?'<button class="btn primary" type="submit">Сохранить</button>':''}</div></div>
+  </form></div>`;
+  const $=id=>document.getElementById(id);let priceTouched=!isNew;
+  const upd=()=>{const ci=$('f-in').value,co=$('f-out').value,n=ci&&co?diffD(ci,co):0,p=+$('f-price').value||0,t=Math.max(0,n)*p,pd=+$('f-paid').value||0;
+    $('f-sum').innerHTML=`<span>Ночей: <b>${Math.max(0,n)}</b></span><span>Итого: <b>${tg(t)}</b></span><span>${t-pd>0?`К оплате: <b style="color:var(--bad)">${tg(t-pd)}</b>`:'<b style="color:var(--in)">Оплачено полностью</b>'}</span>`};
+  ['f-in','f-out','f-price','f-paid'].forEach(id=>$(id).addEventListener('input',upd));
+  $('f-price').addEventListener('input',()=>priceTouched=true);
+  $('f-in').addEventListener('change',()=>{if($('f-out').value<=$('f-in').value)$('f-out').value=add($('f-in').value,1);upd()});
+  $('f-room').addEventListener('change',()=>{if(!priceTouched){$('f-price').value=(roomById($('f-room').value)||{}).price||0;upd()}});
+  upd();$('f-close').onclick=close;$('scrim').addEventListener('click',e=>{if(e.target.id==='scrim')close()});
+  if(!W)return;
+  const collect=()=>({roomId:$('f-room').value,status:$('f-status').value,checkIn:$('f-in').value,checkOut:$('f-out').value,guest:$('f-guest').value.trim(),phone:$('f-phone').value.trim(),guests:+$('f-guests').value||1,doc:$('f-doc').value.trim(),source:$('f-src').value,price:+$('f-price').value||0,paid:+$('f-paid').value||0,payMethod:$('f-pay').value,company:$('f-co').value.trim(),note:$('f-note').value.trim()});
+  const fail=t=>{$('f-err').textContent=t;$('f-err').hidden=false};
+  let busy=false;
+  const save=async(patch,action,msg)=>{if(busy)return;
+    const d=Object.assign(collect(),patch||{});
+    if(!d.guest)return fail('Укажите ФИО гостя.');
+    if(!d.checkIn||!d.checkOut||d.checkOut<=d.checkIn)return fail('Дата выезда должна быть позже даты заезда.');
+    if(d.status!=='cancelled'){const c=allB().find(x=>x.id!==b.id&&live(x)&&x.roomId===d.roomId&&x.checkIn<d.checkOut&&d.checkIn<x.checkOut);
+      if(c)return fail(`Номер ${roomNo(d.roomId)} уже занят: ${c.guest}, ${human(c.checkIn)} – ${human(c.checkOut)}. Выберите другой номер или даты.`)}
+    if(!action)action=isNew?'create':(prev.status!=='cancelled'&&d.status==='cancelled'?'cancel':prev.status==='cancelled'&&d.status!=='cancelled'?'restore':prev.status!=='in'&&d.status==='in'?'checkin':prev.status!=='out'&&d.status==='out'?'checkout':'update');
+    busy=true;try{await writeBooking(prev,d,action);close();toast(msg||'Сохранено')}catch(e){busy=false;fail('Не удалось сохранить: '+errText(e))}};
+  $('bf').addEventListener('submit',e=>{e.preventDefault();save()});
+  mroot.querySelectorAll('[data-q]').forEach(btn=>btn.onclick=()=>{const q=btn.dataset.q;
+    if(q==='in')save({status:'in'},'checkin','Гость заселён');
+    if(q==='out')save({status:'out'},'checkout','Гость выселен');
+    if(q==='cancel')ask('Отменить эту бронь? Она останется в истории со статусом «Отменена».','Отменить бронь',()=>save({status:'cancelled'},'cancel','Бронь отменена'));
+    if(q==='del')ask('Удалить бронь навсегда? Запись об удалении останется в журнале.','Удалить',async()=>{try{await deleteBooking(prev);close();toast('Бронь удалена')}catch(e){fail('Не удалось удалить: '+errText(e))}});
+  });
+}
+function openRoom(r){
+  const isNew=!r.id,prev=isNew?null:r;r=Object.assign({floor:2,type:'Стандарт',capacity:2,price:15000,hk:'clean',active:true},r);
+  mroot.innerHTML=`<div class="scrim" id="scrim"><form class="modal" id="rf" style="max-width:480px"><h3>${isNew?'Новый номер':'Номер '+esc(r.number)}</h3>
+  <div class="form">
+    <label>Номер комнаты<input id="r-no" value="${esc(r.number||'')}" required placeholder="201"></label>
+    <label>Этаж<input id="r-fl" type="number" value="${esc(r.floor)}"></label>
+    <label>Тип<input id="r-ty" list="r-types" value="${esc(r.type)}"><datalist id="r-types"><option>Стандарт</option><option>Двухместный</option><option>Семейный</option><option>Полулюкс</option><option>Люкс</option></datalist></label>
+    <label>Мест<input id="r-cap" type="number" min="1" value="${esc(r.capacity)}"></label>
+    <label>Цена за ночь, ₸<input id="r-pr" type="number" min="0" step="500" value="${esc(r.price)}"></label>
+    <label>Продаётся<select id="r-ac"><option value="1"${r.active!==false?' selected':''}>Да</option><option value="0"${r.active===false?' selected':''}>Нет (скрыт из шахматки)</option></select></label>
+    <label class="full">Заметка<input id="r-nt" value="${esc(r.note||'')}" placeholder="Вид во двор, ванна…"></label>
+    <div class="err" id="r-err" hidden></div>
+  </div><div class="actions"><div class="l">${!isNew&&can.owner()?'<button type="button" class="btn danger" id="r-del">Удалить</button>':''}</div><div class="r"><button type="button" class="btn" id="r-close">Закрыть</button><button class="btn primary">Сохранить</button></div></div></form></div>`;
+  const $=id=>document.getElementById(id);
+  $('r-close').onclick=close;$('scrim').addEventListener('click',e=>{if(e.target.id==='scrim')close()});
+  const fail=t=>{$('r-err').textContent=t;$('r-err').hidden=false};
+  $('rf').addEventListener('submit',async e=>{e.preventDefault();
+    const d={number:$('r-no').value.trim(),floor:+$('r-fl').value||0,type:$('r-ty').value.trim(),capacity:+$('r-cap').value||1,price:+$('r-pr').value||0,active:$('r-ac').value==='1',note:$('r-nt').value.trim(),hk:r.hk||'clean'};
+    if(!d.number)return fail('Укажите номер комнаты.');
+    if(rooms.some(x=>x.id!==r.id&&String(x.number)===d.number))return fail('Номер '+d.number+' уже есть.');
+    try{await writeRoom(prev,d,isNew?'create':'update');close();toast('Номер сохранён')}catch(err){fail('Не удалось сохранить: '+errText(err))}});
+  if($('r-del'))$('r-del').onclick=()=>{
+    if(allB().some(b=>b.roomId===r.id&&live(b)))return fail('По этому номеру есть брони. Сделайте его «Не продаётся» вместо удаления.');
+    ask('Удалить номер '+esc(r.number)+'?','Удалить',async()=>{try{await deleteRoom(prev);close();toast('Номер удалён')}catch(err){fail(errText(err))}})};
+}
+
+/* ---------- Excel ---------- */
+function autosize(rows){return rows[0].map((_,i)=>({wch:Math.min(45,Math.max(8,...rows.map(r=>String(r[i]??'').length+2)))}))}
+function saveXlsx(name,sheets){if(!window.XLSX){toast('Модуль Excel не загрузился. Проверьте интернет и обновите страницу.');return}
+  const wb=XLSX.utils.book_new();sheets.forEach(([n,rows])=>{const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=autosize(rows);XLSX.utils.book_append_sheet(wb,ws,n)});XLSX.writeFile(wb,name)}
+const BH=['Бронь','Номер','Тип','Гость','Телефон','Документ','Компания','Гостей','Заезд','Выезд','Ночей','Цена/ночь','Сумма','Оплачено','Долг','Способ оплаты','Источник','Статус','Комментарий','Создал(а)','Создано','Изменил(а)','Изменено'];
+const bRowX=b=>{const r=roomById(b.roomId)||{};return[ref(b.id),r.number||'?',r.type||'',b.guest||'',b.phone||'',b.doc||'',b.company||'',b.guests||'',dmy(b.checkIn),dmy(b.checkOut),nights(b),+b.price||0,total(b),+b.paid||0,live(b)?debt(b):0,b.payMethod||'',b.source||'',STATUS[b.status]||b.status,b.note||'',b.createdByName||staffName(b.createdBy)||'',stamp(b.createdAt),b.updatedByName||staffName(b.updatedBy)||'',stamp(b.updatedAt)]};
+const logRows=ls=>[['Время','Сотрудник','Действие','Изменения'],...ls.map(l=>[stamp(l.at),l.byName||staffName(l.by),l.text,(l.changes||[]).map(c=>`${c.f}: ${c.from||'—'} → ${c.to||'—'}`).join('; ')])];
+async function doExport(btn){
+  const from=st.exFrom,to=st.exTo;if(!from||!to||to<from){toast('Проверьте даты периода.');return}
+  btn.disabled=true;btn.textContent='Готовим файл…';
+  try{
+    await loadHist(true);const toEx=add(to,1),list=allB(),S=periodStats(list,from,toEx);
+    const inP=list.filter(b=>b.checkIn<toEx&&b.checkOut>from).sort((a,b)=>a.checkIn.localeCompare(b.checkIn));
+    const sum=[['Показатель','Значение'],['Период',dmy(from)+' – '+dmy(to)],['Номеров в продаже',sortedRooms().length],['Проданных ночей',S.nts],['Загрузка, %',S.occ],['Выручка (по прожитым ночам), ₸',S.rev],['Средняя цена ночи, ₸',Math.round(S.adr)],['Заездов',S.arrivals.length],['Оплачено по заездам периода, ₸',S.paid],['Долг по заездам периода, ₸',S.owe],['Отменено броней',inP.filter(b=>b.status==='cancelled').length],[],['Выгрузил(а)',me.name],['Дата выгрузки',stamp(new Date())]];
+    const pays=[['Способ оплаты','Оплачено, ₸'],...Object.entries(S.byPay)];
+    const byDay={};S.arrivals.forEach(b=>{byDay[b.checkIn]=byDay[b.checkIn]||{};const p=b.payMethod||'—';byDay[b.checkIn][p]=(byDay[b.checkIn][p]||0)+(+b.paid||0)});
+    const pm=[...new Set(S.arrivals.map(b=>b.payMethod||'—'))];
+    pays.push([],['По дням заезда',...pm,'Итого']);Object.keys(byDay).sort().forEach(d=>{const row=pm.map(p=>byDay[d][p]||0);pays.push([dmy(d),...row,row.reduce((a,b)=>a+b,0)])});
+    const rr=[['Номер','Тип','Этаж','Ночей продано','Загрузка, %','Выручка, ₸'],...sortedRooms().map(r=>{const x=S.byRoom[r.id]||{n:0,v:0};return[r.number,r.type||'',r.floor,x.n,S.days?Math.round(x.n/S.days*100):0,x.v]})];
+    const debts=[BH,...list.filter(b=>live(b)&&debt(b)>0).sort((a,b)=>a.checkIn.localeCompare(b.checkIn)).map(bRowX)];
+    const sheets=[['Сводка',sum],['Брони',[BH,...inP.map(bRowX)]],['Оплаты',pays],['По номерам',rr],['Долги',debts]];
+    if(can.owner())sheets.push(['Журнал',logRows(await fetchLog(from,toEx))]);
+    saveXlsx(`Отчёт ${dmy(from)}-${dmy(to)}.xlsx`,sheets);toast('Файл скачан');
+  }catch(e){toast('Не удалось выгрузить: '+errText(e))}
+  btn.disabled=false;btn.textContent='Скачать отчёт .xlsx';
+}
+async function doBackup(btn){
+  btn.disabled=true;btn.textContent='Готовим копию…';
+  try{await loadHist(true);const ls=(await fdb.collection('log').orderBy('at','desc').get()).docs.map(d=>({id:d.id,...d.data()}));
+    saveXlsx(`Копия базы ${dmy(today())}.xlsx`,[
+      ['Номера',[['Номер','Этаж','Тип','Мест','Цена/ночь','Продаётся','Состояние','Заметка'],...sortedRooms(true).map(r=>[r.number,r.floor,r.type||'',r.capacity||'',+r.price||0,r.active===false?'Нет':'Да',HK[r.hk||'clean'],r.note||''])]],
+      ['Брони',[BH,...allB().sort((a,b)=>a.checkIn.localeCompare(b.checkIn)).map(bRowX)]],
+      ['Сотрудники',[['Логин / email','Имя','Роль','Активен'],[OWNER,'Владелец','Владелец','Да'],...staffList.map(s=>[showId(s.id),s.name||'',ROLES[s.role]||s.role,s.active===false?'Нет':'Да'])]],
+      ['Журнал',logRows(ls)]]);toast('Копия скачана');
+  }catch(e){toast('Не удалось: '+errText(e))}
+  btn.disabled=false;btn.textContent='Полная копия базы';
+}
+
+/* ---------- events ---------- */
+tabsEl.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.tab=b.dataset.tab;saveUi();render()});
+app.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act]');if(!el||!me)return;const a=el.dataset.act;
+  if(a==='shift'){st.start=add(st.start,+el.dataset.n);render()}
+  if(a==='gotoday'){st.start=add(today(),-1);render()}
+  if(a==='newb'&&can.book()){const t=today();openBooking({checkIn:t,checkOut:add(t,1)})}
+  if(a==='cell'&&can.book()){const r=roomById(el.dataset.room);openBooking({roomId:r.id,price:r.price,checkIn:el.dataset.date,checkOut:add(el.dataset.date,1)})}
+  if(a==='openb'){const b=allB().find(x=>x.id===el.dataset.id);if(b)openBooking(Object.assign({},b))}
+  if(a==='newroom'&&can.manage())openRoom({});
+  if(a==='editroom'&&can.manage())openRoom(Object.assign({},roomById(el.dataset.id)));
+  if((a==='checkin'||a==='checkout')&&can.book()){const b=bookings.find(x=>x.id===el.dataset.id);if(!b)return;
+    const d=pick(b,BF);d.status=a==='checkin'?'in':'out';el.disabled=true;
+    try{await writeBooking(b,d,a);toast(a==='checkin'?'Гость заселён':'Гость выселен');
+      if(a==='checkout'){const r=roomById(b.roomId);if(r&&r.hk!=='dirty')await writeRoom(r,Object.assign(pick(r,RF),{hk:'dirty'}),'hk')}}catch(err){el.disabled=false;toast('Не удалось: '+errText(err))}}
+  if(a==='hk'){const r=roomById(el.dataset.id);if(!r)return;const order=['clean','dirty','repair'];const d=pick(r,RF);d.hk=order[(order.indexOf(r.hk||'clean')+1)%3];
+    try{await writeRoom(r,d,'hk')}catch(err){toast('Не удалось: '+errText(err))}}
+  if(a==='seed'&&can.manage()){el.disabled=true;const plan=[];[2,3].forEach(f=>{const n=f===2?12:13;for(let i=1;i<=n;i++){let type='Стандарт',price=15000,cap=2;if(i>=5&&i<=8){type='Двухместный';price=18000}else if(i===9||i===10){type='Семейный';price=25000;cap=4}else if(i===11){type='Полулюкс';price=28000}else if(i>=12){type='Люкс';price=35000}plan.push({id:'r'+(f*100+i),d:{number:String(f*100+i),floor:f,type,capacity:cap,price,hk:'clean',active:true,note:''}})}});
+    try{for(const p of plan)await writeRoom(null,p.d,'create',p.id);toast('Номера созданы')}catch(err){el.disabled=false;toast('Не удалось: '+errText(err))}}
+  if(a==='export')doExport(el);
+  if(a==='backup'&&can.owner())doBackup(el);
+  if(a==='reloadlog')loadLog();
+  if(a==='regack'&&can.owner()){el.disabled=true;try{await fdb.collection('staff').doc(el.dataset.id).set({ack:true},{merge:true})}catch(err){el.disabled=false;toast('Не удалось: '+errText(err))}}
+  if(a==='showpass'){el.outerHTML=`<span class="money">${esc(el.dataset.pw)}</span>`}
+  if(a==='staffdel'&&can.owner()){const s=staffList.find(x=>x.id===el.dataset.id);if(!s)return;
+    ask('Удалить доступ для «'+esc(s.name||showId(s.id))+'»? Войти под этим логином больше не получится.','Удалить',async()=>{try{await writeStaff(s,s.id,{name:s.name||'',role:s.role,active:false,deleted:true,ack:true},'delete');try{await fdb.collection('creds').doc(s.id).delete()}catch(e){}toast('Доступ удалён')}catch(err){toast('Не удалось: '+errText(err))}})}
+  if(a==='staffactive'&&can.owner()){const s=staffList.find(x=>x.id===el.dataset.id);if(!s)return;const d={name:s.name||'',role:s.role,active:s.active===false,ack:true};
+    try{await writeStaff(s,s.id,d,'update');toast(d.active?'Доступ включён':'Доступ отключён')}catch(err){toast('Не удалось: '+errText(err))}}
+});
+app.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.cell-empty[data-act]')){e.preventDefault();e.target.click()}});
+app.addEventListener('change',async e=>{const id=e.target.id;
+  if(id==='g-start'&&e.target.value){st.start=e.target.value;render()}
+  if(id==='g-span'){st.span=+e.target.value;saveUi();render()}
+  if(id==='l-f'){st.filter=e.target.value;render()}
+  if(id==='r-m'&&e.target.value){st.month=e.target.value;render()}
+  if(id==='ex-from')st.exFrom=e.target.value;
+  if(id==='ex-to')st.exTo=e.target.value;
+  if((id==='lg-from'||id==='lg-to')&&e.target.value){st[id==='lg-from'?'lgFrom':'lgTo']=e.target.value;loadLog()}
+  if(id==='lg-who'){st.lgWho=e.target.value;render()}
+  if(id==='lg-type'){st.lgType=e.target.value;render()}
+  if(e.target.dataset.staffRole&&can.owner()){const s=staffList.find(x=>x.id===e.target.dataset.staffRole);if(!s)return;
+    try{await writeStaff(s,s.id,{name:s.name||'',role:e.target.value,active:s.active!==false,ack:true},'update');toast('Роль изменена: '+ROLES[e.target.value])}catch(err){toast('Не удалось: '+errText(err))}}
+});
+let qt;app.addEventListener('input',e=>{const id=e.target.id;if(id==='l-q'||id==='lg-room'){clearTimeout(qt);qt=setTimeout(()=>{if(id==='l-q')st.q=e.target.value;else st.lgRoom=e.target.value;render();const i=document.getElementById(id);if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},300)}});
+app.addEventListener('submit',async e=>{
+  if(e.target.id==='sf'){e.preventDefault();const raw=document.getElementById('s-login').value.trim().toLowerCase(),name=document.getElementById('s-name').value.trim(),role=document.getElementById('s-role').value,pw=document.getElementById('s-pass').value,er=document.getElementById('s-err');
+    const fail=t=>{er.textContent=t;er.hidden=false};const btn=e.target.querySelector('button');
+    let em;
+    if(raw.includes('@')){if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw))return fail('Проверьте email.');em=raw}
+    else{if(!LOGIN_RE.test(raw))return fail('Логин: от 3 до 30 латинских букв или цифр, можно точку, дефис и _.');if(pw.length<6)return fail('Пароль — минимум 6 символов.');em=toEmail(raw)}
+    if(em===OWNER)return fail('Это email владельца.');
+    const prev=staffList.find(s=>s.id===em);
+    btn.disabled=true;
+    try{
+      if(!raw.includes('@')&&!prev){
+        const sec=firebase.apps.find(a=>a.name==='sec')||firebase.initializeApp(FIREBASE_CONFIG,'sec');
+        try{const c=await sec.auth().createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:name});await sec.auth().signOut()}
+        catch(err){if(err.code==='auth/email-already-in-use'){btn.disabled=false;return fail('Логин «'+raw+'» уже занят. Придумайте другой.')}throw err}
+      }
+      if(prev&&!prev.deleted){btn.disabled=false;return fail('Такой сотрудник уже есть.')}
+      await writeStaff(null,em,{name,role,active:true,deleted:false,ack:true,login:raw.includes('@')?'':raw},'create',raw.includes('@')?null:{login:raw,password:pw,name,at:TS()});
+      e.target.reset();toast(raw.includes('@')?'Сотрудник добавлен':'Создан логин «'+raw+'». Передайте сотруднику логин и пароль.');
+    }catch(err){fail('Не удалось: '+(err.code&&err.code.startsWith('auth/')?aerr(err):errText(err)))}
+    btn.disabled=false}
+  if(e.target.id==='login-form'){e.preventDefault();doAuth()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mroot.innerHTML)close()});
+
+/* ---------- auth ---------- */
+const AUTHERR={'auth/invalid-credential':'Неверный логин или пароль.','auth/wrong-password':'Неверный логин или пароль.','auth/user-not-found':'Неверный логин или пароль.','auth/invalid-email':'Проверьте логин.','auth/email-already-in-use':'Такой логин уже занят. Придумайте другой.','auth/weak-password':'Пароль слишком короткий — минимум 6 символов.','auth/too-many-requests':'Слишком много попыток. Подождите несколько минут.','auth/network-request-failed':'Нет интернета. Проверьте подключение.','auth/popup-closed-by-user':'Окно входа закрыто.','auth/unauthorized-domain':'Этот адрес сайта не разрешён для входа через Google. Сообщите владельцу.','auth/account-exists-with-different-credential':'Этот email уже зарегистрирован другим способом.'};
+const aerr=e=>AUTHERR[e&&e.code]||('Ошибка входа: '+((e&&e.message)||e));
+function showLogin(msg){
+  whoEl.innerHTML='';renderTabs();const m=st.authMode;
+  app.innerHTML=`<form class="login" id="login-form" autocomplete="on">
+    <h2>${m==='login'?'Вход для сотрудников':'Регистрация'}</h2>
+    <p>${m==='login'?'Введите логин и пароль, которые вам выдали.':'Придумайте логин и пароль. Сразу после регистрации откроется просмотр занятости номеров, остальной доступ выдаёт владелец.'}</p>
+    ${m==='reg'?'<input id="a-name" placeholder="Ваше имя" autocomplete="name" required>':''}
+    <input id="a-login" placeholder="${m==='login'?'Логин':'Придумайте логин (латиницей)'}" autocomplete="username" autocapitalize="off" spellcheck="false" required>
+    <input id="a-pass" type="password" placeholder="${m==='reg'?'Придумайте пароль (от 6 символов)':'Пароль'}" autocomplete="${m==='reg'?'new-password':'current-password'}" required minlength="6">
+    ${m==='reg'?'<input id="a-pass2" type="password" placeholder="Повторите пароль" autocomplete="new-password" required minlength="6">':''}
+    <button class="btn primary" type="submit">${m==='login'?'Войти':'Зарегистрироваться'}</button>
+    <div class="err" id="a-err" ${msg?'':'hidden'}>${esc(msg||'')}</div>
+    ${m==='login'?'<div class="or">или</div><button type="button" class="btn" data-auth="google">Войти через Google</button>':''}
+    <div class="links">${m==='login'?'<button type="button" class="linkbtn" data-auth="reg">Регистрация</button><span class="muted" style="font-size:13px">Забыли пароль — обратитесь к владельцу</span>':'<button type="button" class="linkbtn" data-auth="login">← Ко входу</button>'}</div>
+  </form>`;
+}
+app.addEventListener('click',async e=>{const b=e.target.closest('[data-auth]');if(!b)return;const a=b.dataset.auth;
+  if(a==='login'||a==='reg'){st.authMode=a;showLogin();return}
+  if(a==='google'){const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
+    try{await auth.signInWithPopup(p)}catch(err){if(err.code==='auth/popup-blocked'||err.code==='auth/operation-not-supported-in-this-environment'){await auth.signInWithRedirect(p)}else if(err.code!=='auth/cancelled-popup-request')showLogin(aerr(err))}}
+  if(a==='verified'){const u=auth.currentUser;if(!u)return;await u.reload();await auth.currentUser.getIdToken(true);handleUser(auth.currentUser)}
+  if(a==='resend'){try{await auth.currentUser.sendEmailVerification();toast('Письмо отправлено ещё раз')}catch(err){toast(aerr(err))}}
+  if(a==='logout')auth.signOut();
+});
+whoEl.addEventListener('click',e=>{if(e.target.closest('[data-auth="logout"]'))auth.signOut()});
+async function doAuth(){
+  const raw=(document.getElementById('a-login').value||'').trim().toLowerCase(),pw=document.getElementById('a-pass').value||'',er=document.getElementById('a-err');
+  const fail=t=>{er.textContent=t;er.hidden=false};
+  try{
+    if(st.authMode==='login'){await auth.signInWithEmailAndPassword(toEmail(raw),pw)}
+    else{
+      const name=document.getElementById('a-name').value.trim();
+      if(!name)return fail('Укажите имя.');
+      if(raw.includes('@')||!LOGIN_RE.test(raw))return fail('Логин: от 3 до 30 латинских букв или цифр, можно точку, дефис и _.');
+      if(pw!==document.getElementById('a-pass2').value)return fail('Пароли не совпадают.');
+      const em=toEmail(raw);pendingReg={em,name,login:raw,password:pw};
+      const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:name});
+    }
+  }catch(err){pendingReg=null;fail(aerr(err))}
+}
+function showVerify(u){whoEl.innerHTML=`<button class="linkbtn" data-auth="logout">Выйти</button>`;renderTabs();
+  app.innerHTML=`<div class="login"><h2>Подтвердите email</h2><p>Мы отправили письмо на <b>${esc(u.email)}</b>. Откройте его и перейдите по ссылке. Если письма нет — проверьте папку «Спам».</p>
+  <button class="btn primary" data-auth="verified">Я подтвердил(а)</button><button class="btn" data-auth="resend">Отправить письмо ещё раз</button><button class="btn" data-auth="logout">Выйти</button></div>`}
+function showNoAccess(em,kind){whoEl.innerHTML=`<button class="linkbtn" data-auth="logout">Выйти</button>`;renderTabs();
+  const id=esc(showId(em));
+  const txt=kind==='off'?`Доступ для <b>${id}</b> отключён владельцем.`:kind==='pending'?`Заявка от <b>${id}</b> отправлена владельцу. Когда он её одобрит, нажмите «Проверить снова».`:`Аккаунт <b>${id}</b> не добавлен в сотрудники. Обратитесь к владельцу.`;
+  app.innerHTML=`<div class="login"><h2>${kind==='pending'?'Заявка отправлена':'Нет доступа'}</h2><p>${txt}</p>
+  <button class="btn primary" data-auth="verified">Проверить снова</button><button class="btn" data-auth="logout">Выйти</button></div>`}
+function stopSubs(){subs.forEach(f=>{try{f()}catch(e){}});subs=[];rooms=[];bookings=[];hist=null;staffList=[];occ=[];creds={};logs=null;loaded={r:false,b:false}}
+async function handleUser(u){
+  stopSubs();me=null;close();
+  if(!u){showLogin();return}
+  const em=(u.email||'').toLowerCase();
+  if(!em){showNoAccess('—');return}
+  if(!isInternal(em)&&!u.emailVerified){showVerify(u);return}
+  let role=em===OWNER?'owner':null,name=em===OWNER?(u.displayName||'Владелец'):(u.displayName||showId(em));
+  if(role!=='owner'){
+    try{let s=await fdb.collection('staff').doc(em).get();
+      if(!s.exists&&isInternal(em)&&pendingReg&&pendingReg.em===em){
+        const p=pendingReg;pendingReg=null;const b=fdb.batch();
+        b.set(fdb.collection('staff').doc(em),{name:p.name,role:'novice',active:true,self:true,login:p.login,addedAt:TS(),lastSeen:TS()});
+        b.set(fdb.collection('creds').doc(em),{login:p.login,password:p.password,name:p.name,at:TS()});
+        b.set(fdb.collection('log').doc(),{at:TS(),by:em,byName:p.name,kind:'staff',action:'register',target:em,room:'',guest:'',text:`Зарегистрировался(ась) сам(а): ${p.name} (${p.login}) — Новичок`,changes:[],payment:false});
+        await b.commit();s=await fdb.collection('staff').doc(em).get()}
+      if(s.exists){const d=s.data();if(d.name)name=d.name;if(d.active===false||d.deleted){showNoAccess(em,'off');return}role=d.role;
+        fdb.collection('staff').doc(em).update({lastSeen:TS()}).catch(()=>{})}
+    }catch(e){console.error(e)}
+  }
+  if(!role){showNoAccess(em);return}
+  me={email:em,name,role};
+  whoEl.innerHTML=`<span><b>${esc(name)}</b></span><span class="role">${ROLES[role]}</span><button class="linkbtn" data-auth="logout">Выйти</button>`;
+  render();
+  const onErr=e=>{if(e.code==='permission-denied')app.innerHTML='<div class="notice">Нет доступа к данным. Попросите владельца проверить вашу роль.</div>';else toast('Связь с базой прервана — обновите страницу')};
+  subs.push(fdb.collection('rooms').onSnapshot(s=>{rooms=s.docs.map(x=>({id:x.id,...x.data()}));loaded.r=true;render()},onErr));
+  if(role==='novice'){subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(s=>{occ=s.docs.map(x=>({id:x.id,...x.data()}));render()},onErr));return}
+  subs.push(fdb.collection('bookings').where('checkOut','>=',liveFrom()).onSnapshot(s=>{bookings=s.docs.map(x=>({id:x.id,...x.data()}));if(hist){const ids=new Set(bookings.map(b=>b.id));s.docChanges().forEach(c=>{if(c.type==='removed'&&!ids.has(c.doc.id))hist=hist.filter(h=>h.id!==c.doc.id)})}loaded.b=true;render()},onErr));
+  if(can.manage())subs.push(fdb.collection('staff').onSnapshot(s=>{staffList=s.docs.map(x=>({id:x.id,...x.data()}));renderTabs();if(st.tab==='staff'||st.tab==='log')render()},()=>{}));
+  if(can.owner()){subs.push(fdb.collection('creds').onSnapshot(s=>{creds={};s.docs.forEach(x=>creds[x.id]=x.data());if(st.tab==='staff')render()},()=>{}));
+    let synced=false;subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(async s=>{if(synced||!loaded.b)return;synced=true;
+      const have=new Map(s.docs.map(x=>[x.id,x.data()]));const b=fdb.batch();let n=0;
+      bookings.forEach(bk=>{const o=have.get(bk.id);if(!o||o.status!==bk.status||o.checkIn!==bk.checkIn||o.checkOut!==bk.checkOut||o.roomId!==bk.roomId){b.set(fdb.collection('occ').doc(bk.id),{roomId:bk.roomId,checkIn:bk.checkIn,checkOut:bk.checkOut,status:bk.status});n++}});
+      if(n)try{await b.commit()}catch(e){console.error(e)}},()=>{}))}
+}
+
+/* ---------- boot ---------- */
+if(!window.firebase){app.innerHTML='<div class="notice">Не удалось загрузить систему. Проверьте интернет и обновите страницу.</div>';return}
+firebase.initializeApp(FIREBASE_CONFIG);
+auth=firebase.auth();auth.languageCode='ru';
+fdb=firebase.firestore();
+try{fdb.enablePersistence({synchronizeTabs:true}).catch(()=>{})}catch(e){}
+auth.getRedirectResult().catch(err=>showLogin(aerr(err)));
+auth.onAuthStateChanged(u=>handleUser(u));
+})();
+
+</script>
+</body></html>

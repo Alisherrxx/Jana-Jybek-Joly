@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function internalLogin() { return request.auth.token.email.matches('.*@login[.]invalid$'); }
+    function signedIn() { return request.auth != null && ('email' in request.auth.token) && (request.auth.token.email_verified == true || internalLogin()); }
+    function em() { return request.auth.token.email.lower(); }
+    function isBoss() { return signedIn() && em() == 'alisherr404@gmail.com'; }
+    function staffPath() { return /databases/$(database)/documents/staff/$(em()); }
+    function isStaff() { return signedIn() && exists(staffPath()) && get(staffPath()).data.get('active', true) == true; }
+    function role() { return isBoss() ? 'owner' : (isStaff() ? get(staffPath()).data.role : 'none'); }
+    function canSee() { return role() in ['owner', 'manager', 'admin', 'viewer', 'novice']; }
+    function canRead() { return role() in ['owner', 'manager', 'admin', 'viewer']; }
+    function canBook() { return role() in ['owner', 'manager', 'admin']; }
+    function canManage() { return role() in ['owner', 'manager']; }
+    function isOwner() { return isBoss(); }
+
+    // Every change to a booking or room must come with its own new journal entry written by the same person.
+    function logged(id) {
+      let lid = request.resource.data.lastLog;
+      let lp = /databases/$(database)/documents/log/$(lid);
+      return lid is string
+        && (resource == null || lid != resource.data.get('lastLog', ''))
+        && existsAfter(lp)
+        && getAfter(lp).data.by == em()
+        && getAfter(lp).data.target == id;
+    }
+
+    match /staff/{email} {
+      allow read: if signedIn() && (em() == email || canManage());
+      // self-registration: login accounts only, always as 'novice'
+      allow create: if isOwner() || (signedIn() && internalLogin() && email == em()
+        && request.resource.data.role == 'novice' && request.resource.data.active == true
+        && request.resource.data.keys().hasOnly(['name', 'role', 'active', 'self', 'login', 'addedAt', 'lastSeen']));
+      allow update: if isOwner() || (signedIn() && email == em()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeen']));
+      allow delete: if isOwner();
+    }
+
+    match /creds/{email} {
+      allow read: if isOwner();
+      allow create: if isOwner() || (signedIn() && internalLogin() && email == em()
+        && request.resource.data.keys().hasOnly(['login', 'password', 'name', 'at']));
+      allow update, delete: if isOwner();
+    }
+
+    match /occ/{id} {
+      allow read: if canSee();
+      allow create, update: if canBook();
+      allow delete: if isOwner();
+    }
+
+    match /rooms/{id} {
+      allow read: if canSee();
+      allow create: if canManage() && logged(id);
+      allow update: if logged(id) && (canManage() ||
+        (canRead() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hk', 'lastLog', 'updatedBy', 'updatedAt'])));
+      allow delete: if isOwner();
+    }
+
+    match /bookings/{id} {
+      allow read: if canRead();
+      allow create, update: if canBook() && logged(id) && request.resource.data.updatedBy == em();
+      allow delete: if isOwner();
+    }
+
+    match /log/{id} {
+      allow read: if isOwner();
+      allow create: if signedIn() && request.resource.data.by == em() && request.resource.data.at == request.time
+        && (canRead() || (internalLogin() && request.resource.data.action == 'register'));
+      allow update, delete: if false;
+    }
+  }
+}
