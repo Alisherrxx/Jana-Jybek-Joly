@@ -5,7 +5,11 @@ service cloud.firestore {
     function internalLogin() { return request.auth.token.email.matches('.*@login[.]invalid$'); }
     function signedIn() { return request.auth != null && ('email' in request.auth.token) && (request.auth.token.email_verified == true || internalLogin()); }
     function em() { return request.auth.token.email.lower(); }
-    function isBoss() { return signedIn() && em() == 'alisherr404@gmail.com'; }
+    function isGoogleOwner() { return signedIn() && em() == 'alisherr404@gmail.com'; }
+    // owner's own login account: its uid is registered by the Google owner in config/owners
+    function isBoss() { return isGoogleOwner() || (signedIn() && internalLogin()
+      && exists(/databases/$(database)/documents/config/owners)
+      && request.auth.uid in get(/databases/$(database)/documents/config/owners).data.uids); }
     function staffPath() { return /databases/$(database)/documents/staff/$(em()); }
     function isStaff() { return signedIn() && exists(staffPath()) && get(staffPath()).data.get('active', true) == true; }
     function role() { return isBoss() ? 'owner' : (isStaff() ? get(staffPath()).data.role : 'none'); }
@@ -25,6 +29,11 @@ service cloud.firestore {
         && existsAfter(lp)
         && getAfter(lp).data.by == em()
         && getAfter(lp).data.target == id;
+    }
+
+    match /config/owners {
+      allow read: if signedIn();
+      allow write: if isGoogleOwner();
     }
 
     match /staff/{email} {

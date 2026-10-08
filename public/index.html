@@ -358,7 +358,7 @@ const FIREBASE_CONFIG = {
 </script>
 <script>
 (function(){
-const OWNER='alisherr404@gmail.com';
+const OWNER='alisherr404@gmail.com',OWNER_LOGIN='alisher';
 const ROLES={owner:'Владелец',manager:'Управляющий',admin:'Администратор',viewer:'Просмотр',novice:'Гость'};
 const STATUS={booked:'Бронь',in:'Заселён',out:'Выехал',cancelled:'Отменена'};
 const HK={clean:'Чистый',dirty:'Нужна уборка',cleaning:'Убирается',inspect:'На проверке',repair:'Ремонт'};
@@ -368,7 +368,7 @@ const WD=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
 const MON=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
 const TABS=[['grid','Шахматка','see'],['today','Сегодня','read'],['list','Брони','read'],['rooms','Номера','read'],['hk','Уборка','book'],['report','Отчёт','manage'],['log','Журнал','owner'],['staff','Сотрудники','owner']];
 
-let occ=[],creds={},pendingReg=null;let auth=null,fdb=null,me=null,rooms=[],bookings=[],hist=null,histLoading=false,staffList=[],logs=null,logLoading=false,subs=[],loaded={r:false,b:false};
+let occ=[],creds={},pendingReg=null,ownerCfg=null;let auth=null,fdb=null,me=null,rooms=[],bookings=[],hist=null,histLoading=false,staffList=[],logs=null,logLoading=false,subs=[],loaded={r:false,b:false};
 const can={see:()=>!!me,read:()=>!!me&&me.role!=='novice',book:()=>!!me&&['owner','manager','admin'].includes(me.role),manage:()=>!!me&&['owner','manager'].includes(me.role),owner:()=>!!me&&me.role==='owner'};
 
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
@@ -640,6 +640,12 @@ function vStaff(){
       <button class="btn small" data-act="regack" data-id="${esc(r.id)}">Понятно</button><button class="btn small danger" data-act="staffdel" data-id="${esc(r.id)}">Удалить</button></div>`).join('')}</div>
       <p class="muted" style="font-size:13px;margin-bottom:0">Гость видит только занятость номеров. Выберите роль, чтобы расширить доступ.</p></section>`;
   }
+  if(me.email===OWNER){const has=ownerCfg&&(ownerCfg.uids||[]).length;
+    h+=`<section class="panel" style="margin-top:16px"><h2>Мой вход по логину</h2>${has?`<p style="margin:0">Готово: вы можете входить с логином <b>${OWNER_LOGIN}</b> и своим паролем — с полными правами владельца.</p>`:`
+    <p class="muted" style="margin:0 0 10px">Создайте себе вход без Google: логин <b style="color:var(--ink)">${OWNER_LOGIN}</b> и ваш пароль. После этого заходите с любого устройства по логину и паролю.</p>
+    <form id="own-form" class="form" style="margin-top:0" autocomplete="off"><label>Логин<input value="${OWNER_LOGIN}" disabled></label><label>Пароль<input id="own-p1" type="password" minlength="6" required autocomplete="new-password"></label>
+    <label>Повторите пароль<input id="own-p2" type="password" minlength="6" required autocomplete="new-password"></label><div class="err" id="own-err" hidden></div>
+    <div class="full"><button class="btn primary">Создать мой вход</button></div></form>`}</section>`}
   h+=`<div class="cols"><section class="panel"><h2>Создать сотрудника</h2>
    <form id="sf" class="form" style="margin-top:0" autocomplete="off">
     <label>Имя<input id="s-name" required placeholder="Айгерим"></label>
@@ -1077,6 +1083,16 @@ app.addEventListener('click',async e=>{
   if(a==='xls'&&can.manage()){hkXls();return}
 });
 app.addEventListener('change',e=>{if(e.target.id==='hk-rf')st.hkFrom=e.target.value;if(e.target.id==='hk-rt')st.hkTo=e.target.value});
+app.addEventListener('submit',async e=>{if(e.target.id!=='own-form'||me.email!==OWNER)return;e.preventDefault();
+  const p1=document.getElementById('own-p1').value,p2=document.getElementById('own-p2').value,er=document.getElementById('own-err'),btn=e.target.querySelector('button');
+  const fail=t=>{er.textContent=t;er.hidden=false};if(p1.length<6)return fail('Пароль — минимум 6 символов.');if(p1!==p2)return fail('Пароли не совпадают.');
+  btn.disabled=true;
+  try{const sec=firebase.apps.find(a=>a.name==='sec')||firebase.initializeApp(FIREBASE_CONFIG,'sec');
+    const c=await sec.auth().createUserWithEmailAndPassword(toEmail(OWNER_LOGIN),p1);await c.user.updateProfile({displayName:me.name});const uid=c.user.uid;await sec.auth().signOut();
+    const b=fdb.batch();b.set(fdb.collection('config').doc('owners'),{uids:firebase.firestore.FieldValue.arrayUnion(uid),login:OWNER_LOGIN,updatedAt:TS()},{merge:true});
+    b.set(fdb.collection('log').doc(),{at:TS(),by:me.email,byName:me.name,kind:'staff',action:'owner-login',target:uid,room:'',guest:'',text:'Создал(а) вход владельца по логину '+OWNER_LOGIN,changes:[],payment:false});await b.commit();
+    toast('Готово! Теперь можно входить: логин '+OWNER_LOGIN+' и ваш пароль')}
+  catch(err){btn.disabled=false;fail(err.code==='auth/email-already-in-use'?'Логин '+OWNER_LOGIN+' уже кем-то занят. Напишите Claude — подберём другой.':(err.code&&err.code.startsWith('auth/')?aerr(err):errText(err)))}});
 app.addEventListener('submit',async e=>{if(e.target.id!=='maid-form')return;e.preventDefault();
   const first=document.getElementById('m-first').value.trim(),last=document.getElementById('m-last').value.trim();if(!first)return;
   try{await fdb.collection('maids').add({first,last,active:true,addedAt:TS(),addedBy:me.email,addedByName:me.name});e.target.reset();toast('Горничная добавлена: '+first+' '+last)}catch(err){toast('Не удалось: '+errText(err))}});
@@ -1118,6 +1134,7 @@ async function doAuth(){
       const name=document.getElementById('a-name').value.trim();
       if(!name)return fail('Укажите имя.');
       if(raw.includes('@')||!LOGIN_RE.test(raw))return fail('Логин: от 3 до 30 латинских букв или цифр, можно точку, дефис и _.');
+      if(raw===OWNER_LOGIN)return fail('Такой логин уже занят. Придумайте другой.');
       if(pw!==document.getElementById('a-pass2').value)return fail('Пароли не совпадают.');
       const em=toEmail(raw);pendingReg={em,name,login:raw,password:pw};
       const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:name});
@@ -1140,8 +1157,10 @@ async function handleUser(u){
   const em=(u.email||'').toLowerCase();
   if(!em){showNoAccess('—');return}
   if(!isInternal(em)&&!u.emailVerified){showVerify(u);return}
-  let role=em===OWNER?'owner':null,name=em===OWNER?(u.displayName||'Главный владелец'):(u.displayName||showId(em));
-  if(role!=='owner'){
+  let isMain=em===OWNER;
+  if(!isMain&&isInternal(em)){try{const o=await fdb.collection('config').doc('owners').get();if(o.exists&&(o.data().uids||[]).includes(u.uid))isMain=true}catch(e){}}
+  let role=isMain?'owner':null,name=isMain?(u.displayName||'Главный владелец'):(u.displayName||showId(em));
+  if(!isMain){
     try{let s=await fdb.collection('staff').doc(em).get();
       if(!s.exists&&isInternal(em)&&pendingReg&&pendingReg.em===em){
         const p=pendingReg;pendingReg=null;const b=fdb.batch();
@@ -1166,6 +1185,7 @@ async function handleUser(u){
   subs.push(fdb.collection('bookings').where('checkOut','>=',liveFrom()).onSnapshot(s=>{bookings=s.docs.map(x=>({id:x.id,...x.data()}));if(hist){const ids=new Set(bookings.map(b=>b.id));s.docChanges().forEach(c=>{if(c.type==='removed'&&!ids.has(c.doc.id))hist=hist.filter(h=>h.id!==c.doc.id)})}loaded.b=true;render()},onErr));
   if(can.manage())subs.push(fdb.collection('staff').onSnapshot(s=>{staffList=s.docs.map(x=>({id:x.id,...x.data()}));renderTabs();if(st.tab==='staff'||st.tab==='log')render()},()=>{}));
   clearInterval(refreshTimer);if(can.owner())refreshTimer=setInterval(()=>{if(st.tab==='staff'&&!mroot.innerHTML&&!document.activeElement.closest('form'))render()},30000);
+  if(em===OWNER)subs.push(fdb.collection('config').doc('owners').onSnapshot(d=>{ownerCfg=d.exists?d.data():null;if(st.tab==='staff')render()},()=>{}));
   if(can.owner()){subs.push(fdb.collection('creds').onSnapshot(s=>{creds={};s.docs.forEach(x=>creds[x.id]=x.data());if(st.tab==='staff')render()},()=>{}));
     let synced=false;subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(async s=>{if(synced||!loaded.b)return;synced=true;
       const have=new Map(s.docs.map(x=>[x.id,x.data()]));const b=fdb.batch();let n=0;
