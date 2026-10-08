@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-08.3">
+<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-08.4">
 <title>Jana Jybek Joly</title>
 <link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -372,6 +372,29 @@ body.auth .cn-side{display:block;position:fixed;right:56px;top:130px;z-index:1;w
       conic-gradient(from 210deg,#8a6526,#e9cf8f,#fff3cf,#c9a14f,#7d5a1f,#d9b56c,#fbe7b5,#a07a35,#8a6526) border-box;
     box-shadow:0 0 0 5px #fffdf9,0 0 0 6.5px #c9a65e,0 0 0 8px rgba(201,166,94,.25),0 20px 36px -16px rgba(120,85,30,.5)}
 }
+/* ===== grid: clear structure ===== */
+.grid-frame{border:1px solid rgba(38,34,28,.22)}
+.grid th,.grid td{border-right:1px solid rgba(38,34,28,.13);border-bottom:1px solid rgba(38,34,28,.13)}
+.grid thead th{background:#ebe5da;color:#5f574a;border-bottom:2px solid rgba(38,34,28,.35);border-right:1px solid rgba(38,34,28,.16)}
+.grid thead th b{color:var(--ink)}
+.grid thead th.we{background:#e4ddcf}
+.grid thead th.td{background:var(--ink);color:rgba(251,248,242,.75)}
+.grid .rm,.grid thead .rm{background:#f3efe7;border-right:2px solid rgba(38,34,28,.28)}
+.grid tbody tr:not(.floor):nth-child(even) td:not(.rm){background-color:#faf8f3}
+.grid tbody tr:not(.floor):nth-child(odd) td:not(.rm){background-color:#fffefb}
+.grid tbody td.we{background-color:#f3eee4!important}
+.grid tbody td.td{background-color:#f6ecd8!important;box-shadow:inset 1px 0 0 rgba(38,34,28,.45),inset -1px 0 0 rgba(38,34,28,.45)}
+.grid tbody tr:not(.floor):hover td:not(.rm){background-color:#efe9dd!important}
+.grid tbody tr:not(.floor):hover td.rm{background:#e9e2d4}
+.grid td.cell-empty{position:relative;cursor:pointer}
+.grid td.cell-empty:hover{background-color:#e3dac8!important;box-shadow:inset 0 0 0 2px var(--ink)}
+.grid td.cell-empty:hover::after{content:"+";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:300;color:var(--ink)}
+.grid thead th.colhl{background:#d9cfbd;color:var(--ink)}
+.grid tbody td.colhl:not(.rm){background-color:#efe9dd!important}
+.grid tr.floor td,.grid tr.floor td.rm{background:#ddd5c6;border-top:2px solid rgba(38,34,28,.4);border-bottom:1px solid rgba(38,34,28,.25)}
+.grid td.navpad{background:#f3efe7!important}
+.grid thead th.nav{background:#e4ddcf}
+.grid tbody tr:not(.floor) td.cell-empty:hover,.grid tbody tr:not(.floor) td.cell-empty.colhl:hover{background-color:#ddd2bd!important}
 </style>
 
 </head><body>
@@ -531,7 +554,7 @@ function vGrid(){
     <span class="grow"></span>${B?'<button class="btn" data-act="finder">Подобрать номер</button><button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>
   ${N?'<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--in-bg);border:1px solid var(--in)"></i>Свободно</span></div>':`<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i class="hk dirty"></i>Нужна уборка</span><span><i class="hk cleaning"></i>Убирается</span><span><i class="hk inspect"></i>На проверке</span></div>`}
   <div class="grid-frame"><table class="grid"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
-  days.forEach(d=>{const w=wd(d);h+=`<th class="${d===t?'td':(w===0||w===6?'we':'')}">${WD[w]}<b>${+d.slice(8)}</b>${MON[+d.slice(5,7)-1]}</th>`});
+  days.forEach(d=>{const w=wd(d);h+=`<th data-d="${d}" class="${d===t?'td':(w===0||w===6?'we':'')}">${WD[w]}<b>${+d.slice(8)}</b>${MON[+d.slice(5,7)-1]}</th>`});
   h+='<th class="nav"><button data-act="shift" data-n="1" aria-label="На день вперёд" title="На день вперёд">›</button></th></tr></thead><tbody>';let floor=null;
   rs.forEach(r=>{
     if(String(r.floor)!==floor){floor=String(r.floor);h+=`<tr class="floor"><td class="rm">${esc(floor)} этаж</td><td colspan="${st.span+2}"></td></tr>`}
@@ -890,6 +913,10 @@ app.addEventListener('click',async e=>{
   if(a==='staffactive'&&can.owner()){const s=staffList.find(x=>x.id===el.dataset.id);if(!s)return;const d={name:s.name||'',role:s.role,active:s.active===false,ack:true};
     try{await writeStaff(s,s.id,d,'update');toast(d.active?'Доступ включён':'Доступ отключён')}catch(err){toast('Не удалось: '+errText(err))}}
 });
+app.addEventListener('mouseover',e=>{const td=e.target.closest('.grid td.cell-empty[data-date]');const old=app.querySelectorAll('.colhl');
+  if(!td){old.forEach(x=>x.classList.remove('colhl'));return}
+  const d=td.dataset.date;if(td.dataset.hl===d&&old.length)return;old.forEach(x=>x.classList.remove('colhl'));
+  app.querySelectorAll(`.grid [data-date="${d}"],.grid th[data-d="${d}"]`).forEach(x=>{x.classList.add('colhl');x.dataset.hl=d})});
 app.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.cell-empty[data-act]')){e.preventDefault();e.target.click()}});
 app.addEventListener('change',async e=>{const id=e.target.id;
   if(id==='g-start'&&e.target.value){st.start=e.target.value;render()}
