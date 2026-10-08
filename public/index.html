@@ -354,6 +354,12 @@ body.auth main::after{content:"© Jana Jybek Joly · Semey";display:block;positi
 body.auth .cn-side{display:block;position:fixed;right:56px;top:130px;z-index:1;writing-mode:vertical-rl;text-orientation:upright;
   font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun","Noto Serif CJK SC",serif;font-size:30px;font-weight:500;letter-spacing:.55em;color:rgba(38,34,28,.55);pointer-events:none}
 @media (max-width:760px){body.auth .cn-side{right:14px;top:22px;font-size:15px;letter-spacing:.35em}}
+@media (max-width:760px){
+  body.auth{background:radial-gradient(160px 160px at 78% 86%,#fff6e4 0%,rgba(250,234,206,.8) 45%,rgba(250,234,206,0) 75%),linear-gradient(180deg,#f8f2e8 0%,#f5eadb 70%,#f1e2cd 100%)}
+  body.auth::after{height:18vh;min-height:130px;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20400%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%2060%20C90%2030%20170%2040%20240%2062%20C310%2084%20360%2058%20400%2052%20V200%20H0Z%22%20fill%3D%22%23f1e2cd%22/%3E%3Cpath%20d%3D%22M0%20120%20C100%2096%20190%20110%20270%20128%20C330%20141%20370%20126%20400%20120%20V200%20H0Z%22%20fill%3D%22%23ebd7bd%22/%3E%3Cpath%20d%3D%22M0%20170%20C120%20150%20230%20162%20310%20172%20C350%20177%20380%20170%20400%20166%20V200%20H0Z%22%20fill%3D%22%23e4ccad%22/%3E%3C/svg%3E")}
+  body.auth main::after{color:#8a7560}
+}
+.login .emb{margin-bottom:18px}
 </style>
 
 </head><body>
@@ -1126,8 +1132,8 @@ const aerr=e=>AUTHERR[e&&e.code]||('Ошибка входа: '+((e&&e.message)||
 function showLogin(msg){
   document.body.classList.add('auth');whoEl.innerHTML='';renderTabs();const m=st.authMode;
   app.innerHTML=`<form class="login" id="login-form" autocomplete="on"><div class="emb" aria-hidden="true">${EMBLEM}</div>
-    <h2>${m==='login'?'Вход для сотрудников':'Регистрация'}</h2>
-    <p>${m==='login'?'Введите логин и пароль, которые вам выдали.':'Придумайте логин и пароль. Сразу после регистрации откроется просмотр занятости номеров, остальной доступ выдаёт владелец.'}</p>
+    ${m==='login'?'':`<h2>Регистрация</h2>
+    <p>Придумайте логин и пароль. Сразу после регистрации откроется просмотр занятости номеров, остальной доступ выдаёт владелец.</p>`}
     ${m==='reg'?'<input id="a-name" placeholder="Ваше имя" autocomplete="name" required>':''}
     <input id="a-login" placeholder="${m==='login'?'Логин':'Придумайте логин (латиницей)'}" autocomplete="username" autocapitalize="off" spellcheck="false" required>
     <input id="a-pass" type="password" placeholder="${m==='reg'?'Придумайте пароль (от 6 символов)':'Пароль'}" autocomplete="${m==='reg'?'new-password':'current-password'}" required minlength="6">
