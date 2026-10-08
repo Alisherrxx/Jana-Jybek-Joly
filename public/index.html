@@ -10,7 +10,7 @@
   --bg:#eef1ed; --surface:#ffffff; --surface-2:#f6f8f5; --ink:#18221e; --muted:#5f6b65; --line:#d9dfd9;
   --accent:#1d5a48; --accent-ink:#ffffff; --accent-soft:#dcebe4; --brass:#a87a26;
   --booked:#2f68ad; --booked-bg:#dbe7f6; --in:#24855a; --in-bg:#d5efe2; --out:#77817c; --out-bg:#e6e9e7;
-  --warn:#b4610f; --warn-bg:#fbead4; --bad:#b33a3a; --bad-bg:#f7dede; --weekend:#f3eee2; --today:#fff4d6;
+  --warn:#b4610f; --warn-bg:#fbead4; --bad:#b33a3a; --bad-bg:#f7dede; --weekend:#f3eee2; --today:#fff4d6; --floor-bg:#ffe2bf; --floor-ink:#b4530a;
   --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
   --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -19,12 +19,12 @@
   --bg:#111816; --surface:#18211e; --surface-2:#1e2925; --ink:#e7ece9; --muted:#9aa6a0; --line:#2c3833;
   --accent:#5fbf9b; --accent-ink:#0d1714; --accent-soft:#1f3b31; --brass:#d8ab55;
   --booked:#7fb0ec; --booked-bg:#1f3350; --in:#6fd3a2; --in-bg:#1b3b2c; --out:#9aa6a0; --out-bg:#262f2b;
-  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; color-scheme:dark}}
+  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; --floor-bg:#4a2c10; --floor-ink:#ffb366; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111816; --surface:#18211e; --surface-2:#1e2925; --ink:#e7ece9; --muted:#9aa6a0; --line:#2c3833;
   --accent:#5fbf9b; --accent-ink:#0d1714; --accent-soft:#1f3b31; --brass:#d8ab55;
   --booked:#7fb0ec; --booked-bg:#1f3350; --in:#6fd3a2; --in-bg:#1b3b2c; --out:#9aa6a0; --out-bg:#262f2b;
-  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; color-scheme:dark}
+  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; --floor-bg:#4a2c10; --floor-ink:#ffb366; color-scheme:dark}
 *{box-sizing:border-box}
 html{color-scheme:light}body{margin:0}[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
@@ -66,8 +66,12 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .rm .ty{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
 .hk{width:8px;height:8px;border-radius:50%;display:inline-block}
 .hk.clean{background:var(--in)} .hk.dirty{background:var(--warn)} .hk.repair{background:var(--bad)}
-.grid tr.floor td{height:26px;background:var(--surface-2);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 10px;font-weight:600}
-.grid tr.floor td.rm{background:var(--surface-2)}
+.grid tr.floor td{height:34px;background:var(--floor-bg);color:var(--floor-ink);font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:0 12px;font-weight:700;border-top:2px solid var(--floor-ink);border-bottom:2px solid var(--floor-ink)}
+.grid tr.floor td.rm{background:var(--floor-bg);font-family:var(--f-display);font-weight:700;white-space:nowrap}
+.grid thead th.nav{width:34px;min-width:34px;padding:0}
+.grid thead th.nav button{width:100%;height:100%;min-height:52px;border:0;background:var(--accent-soft);color:var(--accent);font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.grid thead th.nav button:hover{background:var(--accent);color:var(--accent-ink)}
+.grid td.navpad{width:34px;min-width:34px;background:var(--surface-2)}
 .grid .we{background:var(--weekend)}
 .grid .td{background:var(--today)}
 .cell-empty{cursor:pointer}
@@ -307,18 +311,18 @@ function vGrid(){
     <select id="g-span" aria-label="Период">${[7,14,21,31].map(n=>`<option value="${n}"${n==st.span?' selected':''}>${n} дней</option>`).join('')}</select>
     <span class="grow"></span>${B?'<button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>
   <div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i style="background:var(--warn);border-radius:50%"></i>Нужна уборка</span></div>
-  <div class="grid-frame"><table class="grid"><thead><tr><th class="rm">Номер</th>`;
+  <div class="grid-frame"><table class="grid"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
   days.forEach(d=>{const w=wd(d);h+=`<th class="${d===t?'td':(w===0||w===6?'we':'')}">${WD[w]}<b>${+d.slice(8)}</b>${MON[+d.slice(5,7)-1]}</th>`});
-  h+='</tr></thead><tbody>';let floor=null;
+  h+='<th class="nav"><button data-act="shift" data-n="1" aria-label="На день вперёд" title="На день вперёд">›</button></th></tr></thead><tbody>';let floor=null;
   rs.forEach(r=>{
-    if(String(r.floor)!==floor){floor=String(r.floor);h+=`<tr class="floor"><td class="rm">${esc(floor)} этаж</td><td colspan="${st.span}"></td></tr>`}
-    h+=`<tr><td class="rm"><div class="no"><span class="hk ${r.hk||'clean'}" title="${HK[r.hk||'clean']}"></span>${esc(r.number)}</div><div class="ty">${esc(r.type||'')}</div></td>`;
+    if(String(r.floor)!==floor){floor=String(r.floor);h+=`<tr class="floor"><td class="rm">${esc(floor)} этаж</td><td colspan="${st.span+2}"></td></tr>`}
+    h+=`<tr><td class="rm"><div class="no"><span class="hk ${r.hk||'clean'}" title="${HK[r.hk||'clean']}"></span>${esc(r.number)}</div><div class="ty">${esc(r.type||'')}</div></td><td class="navpad"></td>`;
     let i=0;
     while(i<st.span){const d=days[i],b=onDay(list,r.id,d);
       if(b){const end=Math.min(st.span,diffD(st.start,b.checkOut)),n=end-i,cont=b.checkIn<st.start&&i===0;
         h+=`<td colspan="${n}"><button class="bar ${b.status}${cont?' cl':''}" data-act="${N?'':'openb'}" data-id="${b.id}" title="${esc(b.guest)} · ${human(b.checkIn)}–${human(b.checkOut)}">${debt(b)>0?'<i class="debt" title="Долг"></i>':''}<span>${esc(b.guest||'Без имени')}</span></button></td>`;i=end}
       else{const w=wd(d);h+=`<td class="cell-empty${B?'':' ro'} ${d===t?'td':(w===0||w===6?'we':'')}" ${B?`tabindex="0" data-act="cell" data-room="${r.id}" data-date="${d}" aria-label="Забронировать ${esc(r.number)} на ${human(d)}"`:''}></td>`;i++}}
-    h+='</tr>';
+    h+='<td class="navpad"></td></tr>';
   });
   return h+`</tbody></table></div>${N?'<p class="muted" style="font-size:13px">У вас доступ только к занятости номеров. Расширить доступ может владелец.</p>':''}${B?'<p class="muted" style="font-size:13px">Нажмите на пустую клетку, чтобы создать бронь с этой даты. Нажмите на бронь, чтобы открыть её.</p>':''}`;
 }
