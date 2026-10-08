@@ -457,7 +457,7 @@ async function fetchLog(from,toEx){
 }
 async function loadLog(){logLoading=true;render();try{logs=await fetchLog(st.lgFrom,add(st.lgTo,1))}catch(e){logs=[];toast('Не удалось загрузить журнал: '+errText(e))}logLoading=false;render()}
 
-const roleOpts=v=>['manager','admin','viewer','novice'].map(r=>`<option value="${r}"${v===r?' selected':''}>${ROLES[r]}</option>`).join('');
+const roleOpts=v=>['owner','manager','admin','viewer','novice'].map(r=>`<option value="${r}"${v===r?' selected':''}>${ROLES[r]}</option>`).join('');
 function vStaff(){
   const all=staffList.filter(s=>!s.deleted).sort((a,b)=>(a.name||a.id).localeCompare(b.name||b.id,'ru'));
   const regs=newRegs();
@@ -471,7 +471,7 @@ function vStaff(){
   h+=`<div class="cols"><section class="panel"><h2>Создать сотрудника</h2>
    <form id="sf" class="form" style="margin-top:0" autocomplete="off">
     <label>Имя<input id="s-name" required placeholder="Айгерим"></label>
-    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Новичок</option></select></label>
+    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Новичок</option><option value="owner">Владелец</option></select></label>
     <label>Логин<input id="s-login" required placeholder="aigerim" autocapitalize="off" autocomplete="off"></label>
     <label>Пароль<input id="s-pass" placeholder="от 6 символов" autocomplete="off"></label>
     <div class="err" id="s-err" hidden></div>
@@ -481,6 +481,7 @@ function vStaff(){
     <b>Администратор</b> — брони, заселение, оплаты, отмена броней, уборка.<br>
     <b>Просмотр</b> — шахматка с гостями, состояние номеров (для горничных).<br>
     <b>Новичок</b> — только занятость номеров, без данных гостей. Даётся автоматически при самостоятельной регистрации.<br>
+    <b>Владелец</b> — всё то же, что у вас: журнал, сотрудники, пароли, удаление.<br>
     Удалять брони и номера может только владелец.</div></section></div>
   <section class="panel" style="margin-top:16px"><h2>Сотрудники <b>${all.length}</b></h2>`;
   if(!all.length)return h+'<div class="muted">Пока никого.</div></section>';
@@ -681,7 +682,8 @@ app.addEventListener('change',async e=>{const id=e.target.id;
   if(id==='lg-who'){st.lgWho=e.target.value;render()}
   if(id==='lg-type'){st.lgType=e.target.value;render()}
   if(e.target.dataset.staffRole&&can.owner()){const s=staffList.find(x=>x.id===e.target.dataset.staffRole);if(!s)return;
-    try{await writeStaff(s,s.id,{name:s.name||'',role:e.target.value,active:s.active!==false,ack:true},'update');toast('Роль изменена: '+ROLES[e.target.value])}catch(err){toast('Не удалось: '+errText(err))}}
+    const sel=e.target,nv=sel.value,go=async()=>{try{await writeStaff(s,s.id,{name:s.name||'',role:nv,active:s.active!==false,ack:true},'update');toast('Роль изменена: '+ROLES[nv])}catch(err){sel.value=s.role;toast('Не удалось: '+errText(err))}};
+    if(nv==='owner'){sel.value=s.role;ask('Сделать «'+esc(s.name||showId(s.id))+'» владельцем? Он(а) получит все права: журнал, сотрудники, пароли, удаление.','Сделать владельцем',()=>{sel.value='owner';go()})}else go()}
 });
 let qt;app.addEventListener('input',e=>{const id=e.target.id;if(id==='l-q'||id==='lg-room'){clearTimeout(qt);qt=setTimeout(()=>{if(id==='l-q')st.q=e.target.value;else st.lgRoom=e.target.value;render();const i=document.getElementById(id);if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},300)}});
 app.addEventListener('submit',async e=>{
@@ -700,6 +702,8 @@ app.addEventListener('submit',async e=>{
         catch(err){if(err.code==='auth/email-already-in-use'){btn.disabled=false;return fail('Логин «'+raw+'» уже занят. Придумайте другой.')}throw err}
       }
       if(prev&&!prev.deleted){btn.disabled=false;return fail('Такой сотрудник уже есть.')}
+      if(role==='owner'&&!e.target.dataset.ok){btn.disabled=false;ask('Создать сотрудника с ролью «Владелец»? Он(а) получит все права.','Создать владельца',()=>{e.target.dataset.ok='1';e.target.requestSubmit()});return}
+      delete e.target.dataset.ok;
       await writeStaff(null,em,{name,role,active:true,deleted:false,ack:true,login:raw.includes('@')?'':raw},'create',raw.includes('@')?null:{login:raw,password:pw,name,at:TS()});
       e.target.reset();toast(raw.includes('@')?'Сотрудник добавлен':'Создан логин «'+raw+'». Передайте сотруднику логин и пароль.');
     }catch(err){fail('Не удалось: '+(err.code&&err.code.startsWith('auth/')?aerr(err):errText(err)))}

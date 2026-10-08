@@ -13,7 +13,8 @@ service cloud.firestore {
     function canRead() { return role() in ['owner', 'manager', 'admin', 'viewer']; }
     function canBook() { return role() in ['owner', 'manager', 'admin']; }
     function canManage() { return role() in ['owner', 'manager']; }
-    function isOwner() { return isBoss(); }
+    // main owner (fixed) or a co-owner appointed on the Staff tab
+    function isOwner() { return isBoss() || (isStaff() && get(staffPath()).data.role == 'owner'); }
 
     // Every change to a booking or room must come with its own new journal entry written by the same person.
     function logged(id) {
