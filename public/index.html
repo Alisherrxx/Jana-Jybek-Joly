@@ -96,6 +96,7 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .grid thead th.nav{width:34px;min-width:34px;padding:0}
 .grid thead th.nav button{width:100%;height:100%;min-height:52px;border:0;background:var(--accent-soft);color:var(--accent);font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .grid thead th.nav button:hover{background:var(--accent);color:var(--accent-ink)}
+.grid td.g-free{background:var(--in-bg);color:var(--in);font-size:11px;font-weight:600;text-align:center} .grid td.g-x{background:var(--surface-2)}
 .grid td.navpad{width:34px;min-width:34px;background:var(--surface-2)}
 .grid .we{background:var(--weekend)}
 .grid .td{background:var(--today)}
@@ -178,6 +179,7 @@ table.data{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums
 .log-row .w{font-weight:600}
 .log-row ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
 .log-row ul b{color:var(--ink);font-weight:500}
+.online{display:inline-flex;align-items:center;gap:6px;color:var(--in);font-weight:600}.online i{width:9px;height:9px;border-radius:50%;background:var(--in);box-shadow:0 0 0 3px var(--in-bg)}
 .meta{font-size:12px;color:var(--muted);margin-top:10px}
 @media (max-width:560px){.log-row{grid-template-columns:1fr}}
 </style>
@@ -206,7 +208,7 @@ const FIREBASE_CONFIG = {
 <script>
 (function(){
 const OWNER='alisherr404@gmail.com';
-const ROLES={owner:'Админ',manager:'Управляющий',admin:'Администратор',viewer:'Просмотр',novice:'Гость'};
+const ROLES={owner:'Владелец',manager:'Управляющий',admin:'Администратор',viewer:'Просмотр',novice:'Гость'};
 const STATUS={booked:'Бронь',in:'Заселён',out:'Выехал',cancelled:'Отменена'};
 const HK={clean:'Чистый',dirty:'Нужна уборка',cleaning:'Убирается',inspect:'На проверке',repair:'Ремонт'};
 const PAY=['Наличные','Kaspi','Карта','Перевод','Безнал (юрлицо)'];
@@ -251,7 +253,7 @@ const LOGIN_DOMAIN='login.invalid',LOGIN_RE=/^[a-z0-9._-]{3,30}$/;
 const toEmail=x=>{x=String(x||'').trim().toLowerCase();return x.includes('@')?x:x+'@'+LOGIN_DOMAIN};
 const isInternal=em=>String(em||'').endsWith('@'+LOGIN_DOMAIN);
 const showId=em=>isInternal(em)?String(em).split('@')[0]:String(em||'');
-const staffName=em=>{if(!em)return'';const s=staffList.find(x=>x.id===em);return(s&&s.name)||(em===OWNER?'Главный админ':showId(em))};
+const staffName=em=>{if(!em)return'';const s=staffList.find(x=>x.id===em);return(s&&s.name)||(em===OWNER?'Главный владелец':showId(em))};
 
 function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),2600)}
 async function loadHist(force){if(histLoading||(hist&&!force))return;histLoading=true;try{const s=await fdb.collection('bookings').get();hist=s.docs.map(d=>({id:d.id,...d.data()}))}catch(e){toast('Не удалось загрузить архив броней: '+(e.message||e.code))}histLoading=false;render()}
@@ -335,21 +337,22 @@ function vGrid(){
     <input type="date" id="g-start" value="${st.start}" aria-label="С даты">
     <select id="g-span" aria-label="Период">${[7,14,21,31].map(n=>`<option value="${n}"${n==st.span?' selected':''}>${n} дней</option>`).join('')}</select>
     <span class="grow"></span>${B?'<button class="btn" data-act="finder">Подобрать номер</button><button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>
-  <div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i class="hk dirty"></i>Нужна уборка</span><span><i class="hk cleaning"></i>Убирается</span><span><i class="hk inspect"></i>На проверке</span></div>
+  ${N?'<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--in-bg);border:1px solid var(--in)"></i>Свободно</span></div>':`<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i class="hk dirty"></i>Нужна уборка</span><span><i class="hk cleaning"></i>Убирается</span><span><i class="hk inspect"></i>На проверке</span></div>`}
   <div class="grid-frame"><table class="grid"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
   days.forEach(d=>{const w=wd(d);h+=`<th class="${d===t?'td':(w===0||w===6?'we':'')}">${WD[w]}<b>${+d.slice(8)}</b>${MON[+d.slice(5,7)-1]}</th>`});
   h+='<th class="nav"><button data-act="shift" data-n="1" aria-label="На день вперёд" title="На день вперёд">›</button></th></tr></thead><tbody>';let floor=null;
   rs.forEach(r=>{
     if(String(r.floor)!==floor){floor=String(r.floor);h+=`<tr class="floor"><td class="rm">${esc(floor)} этаж</td><td colspan="${st.span+2}"></td></tr>`}
-    h+=`<tr><td class="rm"><div class="no"><span class="hk ${r.hk||'clean'}" title="${HK[r.hk||'clean']}"></span>${esc(r.number)}</div><div class="ty">${esc(r.type||'')}</div></td><td class="navpad"></td>`;
+    h+=`<tr><td class="rm"><div class="no">${N?'':`<span class="hk ${r.hk||'clean'}" title="${HK[r.hk||'clean']}"></span>`}${esc(r.number)}</div><div class="ty">${esc(r.type||'')}</div></td><td class="navpad"></td>`;
     let i=0;
+    if(N){days.forEach(d=>{const busy=list.some(o=>o.status!=='cancelled'&&o.status!=='out'&&o.roomId===r.id&&o.checkIn<=d&&d<o.checkOut);h+=busy?'<td class="g-x"></td>':`<td class="g-free${d===t?' td':''}" title="Свободно ${human(d)}">свободно</td>`});h+='<td class="navpad"></td></tr>';return}
     while(i<st.span){const d=days[i],b=onDay(list,r.id,d);
       if(b){const end=Math.min(st.span,diffD(st.start,b.checkOut)),n=end-i,cont=b.checkIn<st.start&&i===0;
         h+=`<td colspan="${n}"><button class="bar ${b.status}${cont?' cl':''}" data-act="${N?'':'openb'}" data-id="${b.id}" title="${esc(b.guest)} · ${human(b.checkIn)}–${human(b.checkOut)}">${debt(b)>0?'<i class="debt" title="Долг"></i>':''}<span>${esc(b.guest||'Без имени')}</span></button></td>`;i=end}
       else{const w=wd(d);h+=`<td class="cell-empty${B?'':' ro'} ${d===t?'td':(w===0||w===6?'we':'')}" ${B?`tabindex="0" data-act="cell" data-room="${r.id}" data-date="${d}" aria-label="Забронировать ${esc(r.number)} на ${human(d)}"`:''}></td>`;i++}}
     h+='<td class="navpad"></td></tr>';
   });
-  return h+`</tbody></table></div>${N?'<p class="muted" style="font-size:13px">У вас доступ только к занятости номеров. Расширить доступ может владелец.</p>':''}${B?'<p class="muted" style="font-size:13px">Нажмите на пустую клетку, чтобы создать бронь с этой даты. Нажмите на бронь, чтобы открыть её.</p>':''}`;
+  return h+`</tbody></table></div>${N?'<p class="muted" style="font-size:13px">Зелёным отмечены свободные даты. Расширить доступ может владелец.</p>':''}${B?'<p class="muted" style="font-size:13px">Нажмите на пустую клетку, чтобы создать бронь с этой даты. Нажмите на бронь, чтобы открыть её.</p>':''}`;
 }
 
 function bRow(b,actions=''){const r=roomById(b.roomId)||{};
@@ -457,9 +460,10 @@ async function fetchLog(from,toEx){
 }
 async function loadLog(){logLoading=true;render();try{logs=await fetchLog(st.lgFrom,add(st.lgTo,1))}catch(e){logs=[];toast('Не удалось загрузить журнал: '+errText(e))}logLoading=false;render()}
 
+const ONLINE_MS=3*60*1000,isOnline=s=>{const d=toDate(s.lastSeen);return !!d&&Date.now()-d.getTime()<ONLINE_MS&&s.active!==false};
 const roleOpts=v=>['owner','manager','admin','viewer','novice'].map(r=>`<option value="${r}"${v===r?' selected':''}>${ROLES[r]}</option>`).join('');
 function vStaff(){
-  const all=staffList.filter(s=>!s.deleted).sort((a,b)=>(a.name||a.id).localeCompare(b.name||b.id,'ru'));
+  const all=staffList.filter(s=>!s.deleted).sort((a,b)=>(isOnline(b)-isOnline(a))||(a.name||a.id).localeCompare(b.name||b.id,'ru'));
   const regs=newRegs();
   let h='';
   if(regs.length){
@@ -471,7 +475,7 @@ function vStaff(){
   h+=`<div class="cols"><section class="panel"><h2>Создать сотрудника</h2>
    <form id="sf" class="form" style="margin-top:0" autocomplete="off">
     <label>Имя<input id="s-name" required placeholder="Айгерим"></label>
-    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Гость</option><option value="owner">Админ</option></select></label>
+    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Гость</option><option value="owner">Владелец</option></select></label>
     <label>Логин<input id="s-login" required placeholder="aigerim" autocapitalize="off" autocomplete="off"></label>
     <label>Пароль<input id="s-pass" placeholder="от 6 символов" autocomplete="off"></label>
     <div class="err" id="s-err" hidden></div>
@@ -481,15 +485,15 @@ function vStaff(){
     <b>Администратор</b> — брони, заселение, оплаты, отмена броней, уборка.<br>
     <b>Просмотр</b> — шахматка с гостями, состояние номеров (для горничных).<br>
     <b>Гость</b> — только занятость номеров, без данных гостей. Даётся автоматически при самостоятельной регистрации.<br>
-    <b>Админ</b> — всё то же, что у вас: журнал, сотрудники, пароли, удаление.<br>
+    <b>Владелец</b> — всё то же, что у вас: журнал, сотрудники, пароли, удаление.<br>
     Удалять брони и номера может только владелец.</div></section></div>
-  <section class="panel" style="margin-top:16px"><h2>Сотрудники <b>${all.length}</b></h2>`;
+  <section class="panel" style="margin-top:16px"><h2>Сотрудники <b>${all.length}</b></h2><p style="margin:0 0 10px"><span class="online"><i></i>Сейчас на сайте: ${all.filter(isOnline).length} из ${all.length}</span></p>`;
   if(!all.length)return h+'<div class="muted">Пока никого.</div></section>';
-  h+=`<div class="tbl"><table class="data"><thead><tr><th>Имя</th><th>Логин</th><th>Пароль</th><th>Роль</th><th>Последний вход</th><th>Доступ</th><th></th></tr></thead><tbody>`;
+  h+=`<div class="tbl"><table class="data"><thead><tr><th>Имя</th><th>Логин</th><th>Пароль</th><th>Роль</th><th>В сети</th><th>Доступ</th><th></th></tr></thead><tbody>`;
   all.forEach(s=>{const pw=(creds[s.id]||{}).password;h+=`<tr${s.active===false?' style="opacity:.55"':''}><td><b>${esc(s.name||'')}</b>${s.self?' <span class="muted" style="font-size:12px">(сам)</span>':''}</td><td>${esc(showId(s.id))}</td>
     <td>${pw?`<button class="linkbtn" data-act="showpass" data-pw="${esc(pw)}">показать</button>`:'<span class="muted">—</span>'}</td>
     <td><select data-staff-role="${esc(s.id)}" aria-label="Роль">${roleOpts(s.role)}</select></td>
-    <td class="muted" style="font-size:13px">${s.lastSeen?stamp(s.lastSeen):'ещё не входил(а)'}</td>
+    <td style="font-size:13px">${isOnline(s)?'<span class="online"><i></i>онлайн</span>':`<span class="muted">${s.lastSeen?'был(а) '+stamp(s.lastSeen):'ещё не входил(а)'}</span>`}</td>
     <td>${s.active===false?'<span class="pill cancelled">Отключён</span>':'<span class="pill paid">Активен</span>'}</td>
     <td class="r" style="white-space:nowrap"><button class="btn small" data-act="staffactive" data-id="${esc(s.id)}">${s.active===false?'Включить':'Отключить'}</button> <button class="btn small danger" data-act="staffdel" data-id="${esc(s.id)}">Удалить</button></td></tr>`});
   return h+'</tbody></table></div><p class="muted" style="font-size:13px;margin-bottom:0">«Удалить» навсегда закрывает доступ этому логину. Его действия в журнале сохраняются.</p></section>';
@@ -635,7 +639,7 @@ async function doBackup(btn){
     saveXlsx(`Копия базы ${dmy(today())}.xlsx`,[
       ['Номера',[['Номер','Этаж','Тип','Мест','Цена/ночь','Продаётся','Состояние','Заметка'],...sortedRooms(true).map(r=>[r.number,r.floor,r.type||'',r.capacity||'',+r.price||0,r.active===false?'Нет':'Да',HK[r.hk||'clean'],r.note||''])]],
       ['Брони',[BH,...allB().sort((a,b)=>a.checkIn.localeCompare(b.checkIn)).map(bRowX)]],
-      ['Сотрудники',[['Логин / email','Имя','Роль','Активен'],[OWNER,'Главный админ','Админ','Да'],...staffList.map(s=>[showId(s.id),s.name||'',ROLES[s.role]||s.role,s.active===false?'Нет':'Да'])]],
+      ['Сотрудники',[['Логин / email','Имя','Роль','Активен'],[OWNER,'Главный владелец','Владелец','Да'],...staffList.map(s=>[showId(s.id),s.name||'',ROLES[s.role]||s.role,s.active===false?'Нет':'Да'])]],
       ['Журнал',logRows(ls)]]);toast('Копия скачана');
   }catch(e){toast('Не удалось: '+errText(e))}
   btn.disabled=false;btn.textContent='Полная копия базы';
@@ -683,7 +687,7 @@ app.addEventListener('change',async e=>{const id=e.target.id;
   if(id==='lg-type'){st.lgType=e.target.value;render()}
   if(e.target.dataset.staffRole&&can.owner()){const s=staffList.find(x=>x.id===e.target.dataset.staffRole);if(!s)return;
     const sel=e.target,nv=sel.value,go=async()=>{try{await writeStaff(s,s.id,{name:s.name||'',role:nv,active:s.active!==false,ack:true},'update');toast('Роль изменена: '+ROLES[nv])}catch(err){sel.value=s.role;toast('Не удалось: '+errText(err))}};
-    if(nv==='owner'){sel.value=s.role;ask('Сделать «'+esc(s.name||showId(s.id))+'» админом? Он(а) получит все права: журнал, сотрудники, пароли, удаление.','Сделать админом',()=>{sel.value='owner';go()})}else go()}
+    if(nv==='owner'){sel.value=s.role;ask('Сделать «'+esc(s.name||showId(s.id))+'» владельцем? Он(а) получит все права: журнал, сотрудники, пароли, удаление.','Сделать владельцем',()=>{sel.value='owner';go()})}else go()}
 });
 let qt;app.addEventListener('input',e=>{const id=e.target.id;if(id==='l-q'||id==='lg-room'){clearTimeout(qt);qt=setTimeout(()=>{if(id==='l-q')st.q=e.target.value;else st.lgRoom=e.target.value;render();const i=document.getElementById(id);if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},300)}});
 app.addEventListener('submit',async e=>{
@@ -702,7 +706,7 @@ app.addEventListener('submit',async e=>{
         catch(err){if(err.code==='auth/email-already-in-use'){btn.disabled=false;return fail('Логин «'+raw+'» уже занят. Придумайте другой.')}throw err}
       }
       if(prev&&!prev.deleted){btn.disabled=false;return fail('Такой сотрудник уже есть.')}
-      if(role==='owner'&&!e.target.dataset.ok){btn.disabled=false;ask('Создать сотрудника с ролью «Админ»? Он(а) получит все права.','Создать админа',()=>{e.target.dataset.ok='1';e.target.requestSubmit()});return}
+      if(role==='owner'&&!e.target.dataset.ok){btn.disabled=false;ask('Создать сотрудника с ролью «Владелец»? Он(а) получит все права.','Создать владельца',()=>{e.target.dataset.ok='1';e.target.requestSubmit()});return}
       delete e.target.dataset.ok;
       await writeStaff(null,em,{name,role,active:true,deleted:false,ack:true,login:raw.includes('@')?'':raw},'create',raw.includes('@')?null:{login:raw,password:pw,name,at:TS()});
       e.target.reset();toast(raw.includes('@')?'Сотрудник добавлен':'Создан логин «'+raw+'». Передайте сотруднику логин и пароль.');
@@ -957,14 +961,15 @@ function showNoAccess(em,kind){whoEl.innerHTML=`<button class="linkbtn" data-aut
   const txt=kind==='off'?`Доступ для <b>${id}</b> отключён владельцем.`:kind==='pending'?`Заявка от <b>${id}</b> отправлена владельцу. Когда он её одобрит, нажмите «Проверить снова».`:`Аккаунт <b>${id}</b> не добавлен в сотрудники. Обратитесь к владельцу.`;
   app.innerHTML=`<div class="login"><h2>${kind==='pending'?'Заявка отправлена':'Нет доступа'}</h2><p>${txt}</p>
   <button class="btn primary" data-auth="verified">Проверить снова</button><button class="btn" data-auth="logout">Выйти</button></div>`}
-function stopSubs(){subs.forEach(f=>{try{f()}catch(e){}});subs=[];rooms=[];bookings=[];hist=null;staffList=[];occ=[];creds={};maids=[];openTasks=[];hkSel=new Set();hkRep=null;logs=null;loaded={r:false,b:false}}
+let hbTimer=null,refreshTimer=null;
+function stopSubs(){clearInterval(hbTimer);hbTimer=null;subs.forEach(f=>{try{f()}catch(e){}});subs=[];rooms=[];bookings=[];hist=null;staffList=[];occ=[];creds={};maids=[];openTasks=[];hkSel=new Set();hkRep=null;logs=null;loaded={r:false,b:false}}
 async function handleUser(u){
   stopSubs();me=null;close();
   if(!u){showLogin();return}
   const em=(u.email||'').toLowerCase();
   if(!em){showNoAccess('—');return}
   if(!isInternal(em)&&!u.emailVerified){showVerify(u);return}
-  let role=em===OWNER?'owner':null,name=em===OWNER?(u.displayName||'Главный админ'):(u.displayName||showId(em));
+  let role=em===OWNER?'owner':null,name=em===OWNER?(u.displayName||'Главный владелец'):(u.displayName||showId(em));
   if(role!=='owner'){
     try{let s=await fdb.collection('staff').doc(em).get();
       if(!s.exists&&isInternal(em)&&pendingReg&&pendingReg.em===em){
@@ -974,7 +979,8 @@ async function handleUser(u){
         b.set(fdb.collection('log').doc(),{at:TS(),by:em,byName:p.name,kind:'staff',action:'register',target:em,room:'',guest:'',text:`Зарегистрировался(ась) сам(а): ${p.name} (${p.login}) — Гость`,changes:[],payment:false});
         await b.commit();s=await fdb.collection('staff').doc(em).get()}
       if(s.exists){const d=s.data();if(d.name)name=d.name;if(d.active===false||d.deleted){showNoAccess(em,'off');return}role=d.role;
-        fdb.collection('staff').doc(em).update({lastSeen:TS()}).catch(()=>{})}
+        const beat=()=>{if(document.visibilityState==='visible')fdb.collection('staff').doc(em).update({lastSeen:TS()}).catch(()=>{})};beat();
+        hbTimer=setInterval(beat,90*1000);document.addEventListener('visibilitychange',beat)}
     }catch(e){console.error(e)}
   }
   if(!role){showNoAccess(em);return}
@@ -988,6 +994,7 @@ async function handleUser(u){
   if(role==='novice'){subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(s=>{occ=s.docs.map(x=>({id:x.id,...x.data()}));render()},onErr));return}
   subs.push(fdb.collection('bookings').where('checkOut','>=',liveFrom()).onSnapshot(s=>{bookings=s.docs.map(x=>({id:x.id,...x.data()}));if(hist){const ids=new Set(bookings.map(b=>b.id));s.docChanges().forEach(c=>{if(c.type==='removed'&&!ids.has(c.doc.id))hist=hist.filter(h=>h.id!==c.doc.id)})}loaded.b=true;render()},onErr));
   if(can.manage())subs.push(fdb.collection('staff').onSnapshot(s=>{staffList=s.docs.map(x=>({id:x.id,...x.data()}));renderTabs();if(st.tab==='staff'||st.tab==='log')render()},()=>{}));
+  clearInterval(refreshTimer);if(can.owner())refreshTimer=setInterval(()=>{if(st.tab==='staff'&&!mroot.innerHTML&&!document.activeElement.closest('form'))render()},30000);
   if(can.owner()){subs.push(fdb.collection('creds').onSnapshot(s=>{creds={};s.docs.forEach(x=>creds[x.id]=x.data());if(st.tab==='staff')render()},()=>{}));
     let synced=false;subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(async s=>{if(synced||!loaded.b)return;synced=true;
       const have=new Map(s.docs.map(x=>[x.id,x.data()]));const b=fdb.batch();let n=0;
