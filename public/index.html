@@ -10,7 +10,7 @@
   --bg:#eef1ed; --surface:#ffffff; --surface-2:#f6f8f5; --ink:#18221e; --muted:#5f6b65; --line:#d9dfd9;
   --accent:#1d5a48; --accent-ink:#ffffff; --accent-soft:#dcebe4; --brass:#a87a26;
   --booked:#2f68ad; --booked-bg:#dbe7f6; --in:#24855a; --in-bg:#d5efe2; --out:#77817c; --out-bg:#e6e9e7;
-  --warn:#b4610f; --warn-bg:#fbead4; --bad:#b33a3a; --bad-bg:#f7dede; --weekend:#f3eee2; --today:#fff4d6; --floor-bg:#ffe2bf; --floor-ink:#b4530a; --insp:#7b4fc4; --insp-bg:#ece3fa;
+  --warn:#b4610f; --warn-bg:#fbead4; --bad:#b33a3a; --bad-bg:#f7dede; --weekend:#f3eee2; --today:#fff4d6; --floor-bg:#ffe2bf; --floor-ink:#b4530a; --insp:#7b4fc4; --insp-bg:#ece3fa; --t-grid:#1d7a5f; --t-today:#2563b8; --t-list:#5b45c2; --t-rooms:#c2560e; --t-hk:#a8326e; --t-report:#0f7c8a; --t-log:#4a5560; --t-staff:#a87a1a;
   --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
   --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -19,12 +19,12 @@
   --bg:#111816; --surface:#18211e; --surface-2:#1e2925; --ink:#e7ece9; --muted:#9aa6a0; --line:#2c3833;
   --accent:#5fbf9b; --accent-ink:#0d1714; --accent-soft:#1f3b31; --brass:#d8ab55;
   --booked:#7fb0ec; --booked-bg:#1f3350; --in:#6fd3a2; --in-bg:#1b3b2c; --out:#9aa6a0; --out-bg:#262f2b;
-  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; --floor-bg:#4a2c10; --floor-ink:#ffb366; --insp:#c3a3f5; --insp-bg:#33264a; color-scheme:dark}}
+  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; --floor-bg:#4a2c10; --floor-ink:#ffb366; --insp:#c3a3f5; --insp-bg:#33264a; --t-grid:#4cc79c; --t-today:#6aa6f2; --t-list:#a493f0; --t-rooms:#f39a55; --t-hk:#ee7ab3; --t-report:#4fc4d2; --t-log:#a3afba; --t-staff:#e0b357; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111816; --surface:#18211e; --surface-2:#1e2925; --ink:#e7ece9; --muted:#9aa6a0; --line:#2c3833;
   --accent:#5fbf9b; --accent-ink:#0d1714; --accent-soft:#1f3b31; --brass:#d8ab55;
   --booked:#7fb0ec; --booked-bg:#1f3350; --in:#6fd3a2; --in-bg:#1b3b2c; --out:#9aa6a0; --out-bg:#262f2b;
-  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; --floor-bg:#4a2c10; --floor-ink:#ffb366; --insp:#c3a3f5; --insp-bg:#33264a; color-scheme:dark}
+  --warn:#f0a65a; --warn-bg:#3d2c18; --bad:#ef8585; --bad-bg:#3f2222; --weekend:#1c2420; --today:#33301d; --floor-bg:#4a2c10; --floor-ink:#ffb366; --insp:#c3a3f5; --insp-bg:#33264a; --t-grid:#4cc79c; --t-today:#6aa6f2; --t-list:#a493f0; --t-rooms:#f39a55; --t-hk:#ee7ab3; --t-report:#4fc4d2; --t-log:#a3afba; --t-staff:#e0b357; color-scheme:dark}
 *{box-sizing:border-box}
 html{color-scheme:light}body{margin:0}[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
@@ -39,9 +39,18 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
   background:linear-gradient(100deg,#8a6216 0%,#d9a93c 35%,#f3d27a 50%,#c8922b 65%,#8a6216 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 @media (max-width:560px){.brand h1.logo{font-size:21px}}
 .who{font-size:13px;color:var(--muted)}
-nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-nav.tabs button{border:0;background:none;padding:9px 14px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;white-space:nowrap;cursor:pointer}
-nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-block:4px 12px}
+nav.tabs button{--tc:var(--accent);border:2px solid color-mix(in srgb,var(--tc) 35%,transparent);background:color-mix(in srgb,var(--tc) 10%,var(--surface));color:var(--tc);
+  padding:8px 16px;border-radius:999px;font-family:var(--f-display);font-weight:500;font-size:13.5px;letter-spacing:.02em;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .15s,color .15s}
+nav.tabs button::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--tc)}
+nav.tabs button:hover{background:color-mix(in srgb,var(--tc) 20%,var(--surface))}
+nav.tabs button[aria-selected="true"]{background:var(--tc);color:#fff;border-color:var(--tc);box-shadow:0 4px 12px color-mix(in srgb,var(--tc) 35%,transparent)}
+nav.tabs button[aria-selected="true"]::before{background:#fff}
+nav.tabs button[data-tab="grid"]{--tc:var(--t-grid)} nav.tabs button[data-tab="today"]{--tc:var(--t-today)} nav.tabs button[data-tab="list"]{--tc:var(--t-list)}
+nav.tabs button[data-tab="rooms"]{--tc:var(--t-rooms)} nav.tabs button[data-tab="hk"]{--tc:var(--t-hk)} nav.tabs button[data-tab="report"]{--tc:var(--t-report)}
+nav.tabs button[data-tab="log"]{--tc:var(--t-log)} nav.tabs button[data-tab="staff"]{--tc:var(--t-staff)}
+#app{--tc:var(--accent)} #app[data-tab="grid"]{--tc:var(--t-grid)} #app[data-tab="today"]{--tc:var(--t-today)} #app[data-tab="list"]{--tc:var(--t-list)} #app[data-tab="rooms"]{--tc:var(--t-rooms)}
+#app[data-tab="hk"]{--tc:var(--t-hk)} #app[data-tab="report"]{--tc:var(--t-report)} #app[data-tab="log"]{--tc:var(--t-log)} #app[data-tab="staff"]{--tc:var(--t-staff)}
 nav.tabs button:focus-visible,.btn:focus-visible,.cell-empty:focus-visible,.bar:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .btn{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{border-color:var(--muted)}
@@ -114,7 +123,8 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 /* cards & lists */
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
-.panel h2{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600;display:flex;justify-content:space-between}
+.panel h2{font-family:var(--f-display);font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--tc,var(--accent));margin:0 0 12px;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:8px;padding-left:10px;border-left:4px solid var(--tc,var(--accent))}
+.panel{border-top:3px solid color-mix(in srgb,var(--tc,var(--accent)) 55%,transparent)}
 .panel h2 b{font-family:var(--f-mono);color:var(--ink);letter-spacing:0}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
@@ -136,7 +146,16 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .money{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 table.data{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .data th,.data td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);font-size:14px}
-.data th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.data th{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tc,var(--accent));background:color-mix(in srgb,var(--tc,var(--accent)) 12%,var(--surface));border-bottom:2px solid color-mix(in srgb,var(--tc,var(--accent)) 45%,transparent)}
+.data thead th:first-child{border-top-left-radius:8px}.data thead th:last-child{border-top-right-radius:8px}
+.data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--tc,var(--accent)) 4%,var(--surface))}
+.data td:first-child{font-weight:600}
+.room-tag.big{font-size:15px;font-weight:700;color:var(--tc);border-color:color-mix(in srgb,var(--tc) 40%,transparent);background:color-mix(in srgb,var(--tc) 8%,var(--surface))}
+.floor-tag{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--floor-bg);color:var(--floor-ink);font-weight:700;font-size:12.5px}
+.type-tag{display:inline-block;padding:2px 9px;border-radius:6px;font-size:12.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line)}
+.type-tag.t0{background:#e3effc;color:#1e5aa8;border-color:#bcd6f5}.type-tag.t1{background:#e6f5ec;color:#1f7a45;border-color:#bfe4cc}.type-tag.t2{background:#fdf0dc;color:#9a5a08;border-color:#f3d6a6}.type-tag.t3{background:#f3e8fb;color:#7a3fb0;border-color:#dcc4f0}.type-tag.t4{background:#fde6ea;color:#a8263e;border-color:#f4c0ca}
+.price{font-family:var(--f-mono);font-weight:600;color:var(--ink)}
+.stat{border-top:3px solid color-mix(in srgb,var(--tc,var(--accent)) 60%,transparent)} .stat .k{color:var(--tc,var(--muted));font-weight:600}
 .data td.r,.data th.r{text-align:right}
 .data tr.click{cursor:pointer}.data tr.click:hover td{background:var(--surface-2)}
 .tbl{overflow-x:auto}
@@ -176,7 +195,7 @@ table.data{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums
 .log-row{display:grid;grid-template-columns:110px 1fr;gap:4px 14px;padding:10px 0;border-top:1px solid var(--line)}
 .log-row:first-child{border-top:0}
 .log-row .t{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.log-row .w{font-weight:600}
+.log-row .w{font-weight:700;color:var(--tc)}
 .log-row ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
 .log-row ul b{color:var(--ink);font-weight:500}
 .online{display:inline-flex;align-items:center;gap:6px;color:var(--in);font-weight:600}.online i{width:9px;height:9px;border-radius:50%;background:var(--in);box-shadow:0 0 0 3px var(--in-bg)}
@@ -323,6 +342,7 @@ function render(){
   renderTabs();
   if(!me)return;
   if(!loaded.r||(!loaded.b&&me.role!=='novice')){app.innerHTML='<div class="empty" style="margin-top:16px">Загружаем номера и брони…</div>';return}
+  app.dataset.tab=st.tab;
   app.innerHTML=({grid:vGrid,today:vToday,list:vList,rooms:vRooms,hk:vHk,report:vReport,log:vLog,staff:vStaff}[st.tab]||vGrid)();
 }
 
@@ -405,7 +425,8 @@ function vRooms(){
   let h=`<div class="toolbar"><span class="muted grow">Точка — состояние номера. Уборкой управляют во вкладке «Уборка».</span>${M?'<button class="btn primary" data-act="newroom">+ Номер</button>':''}</div>`;
   if(!rs.length)return h+`<div class="empty"><p>Номеров пока нет.</p>${M?'<button class="btn primary" data-act="seed">Создать 25 номеров (201–212, 301–313)</button>':''}</div>`;
   h+=`<div class="panel tbl"><table class="data"><thead><tr><th>Номер</th><th>Этаж</th><th>Тип</th><th class="r">Мест</th><th class="r">Цена за ночь</th><th>Состояние</th><th></th></tr></thead><tbody>`;
-  rs.forEach(r=>{h+=`<tr${r.active===false?' style="opacity:.5"':''}><td><span class="room-tag">${esc(r.number)}</span></td><td>${esc(r.floor)}</td><td>${esc(r.type||'')}${r.active===false?' <span class="muted">(не продаётся)</span>':''}</td><td class="r">${esc(r.capacity||'')}</td><td class="r money">${tg(r.price)}</td><td><button class="hk-btn" data-act="hk" data-id="${r.id}"><span class="hk ${r.hk||'clean'}"></span>${HK[r.hk||'clean']}</button></td><td class="r">${M?`<button class="btn small" data-act="editroom" data-id="${r.id}">Изменить</button>`:''}</td></tr>`});
+  const TT=['Стандарт','Двухместный','Семейный','Полулюкс','Люкс'];
+  rs.forEach(r=>{const ti=TT.indexOf(r.type);h+=`<tr${r.active===false?' style="opacity:.5"':''}><td><span class="room-tag big">${esc(r.number)}</span></td><td><span class="floor-tag">${esc(r.floor)} этаж</span></td><td><span class="type-tag${ti>=0?' t'+ti:''}">${esc(r.type||'—')}</span>${r.active===false?' <span class="muted">(не продаётся)</span>':''}</td><td class="r">${esc(r.capacity||'')}</td><td class="r money price">${tg(r.price)}</td><td><button class="hk-btn" data-act="hk" data-id="${r.id}"><span class="hk ${r.hk||'clean'}"></span>${HK[r.hk||'clean']}</button></td><td class="r">${M?`<button class="btn small" data-act="editroom" data-id="${r.id}">Изменить</button>`:''}</td></tr>`});
   return h+'</tbody></table></div>';
 }
 
@@ -438,7 +459,7 @@ function vReport(){
   if(!one&&S.days<=62){const rows=[];for(let d=from;d<toEx;d=add(d,1)){const D=periodStats(list,d,add(d,1));rows.push(`<tr${d===st.dayPick?' class="hl"':''}><td><button class="linkbtn" data-act="pickday" data-v="${d}">${WD[wd(d)]}, ${human(d)}</button></td><td class="r">${D.nts}</td><td class="r">${D.occ}%</td><td class="r money">${tg(D.rev)}</td><td class="r">${list.filter(b=>live(b)&&b.checkIn===d).length}</td><td class="r">${list.filter(b=>live(b)&&b.checkOut===d).length}</td><td class="r money">${tg(D.paid)}</td></tr>`)}
     days=`<section class="panel" style="margin-top:16px"><h2>По дням</h2><div class="tbl"><table class="data"><thead><tr><th>День</th><th class="r">Занято номеров</th><th class="r">Загрузка</th><th class="r">Выручка</th><th class="r">Заездов</th><th class="r">Выездов</th><th class="r">Оплачено*</th></tr></thead><tbody>${rows.join('')}</tbody></table></div><p class="muted" style="font-size:12.5px;margin-bottom:0">Нажмите на день, чтобы открыть отчёт только за него. *Оплачено — по броням с заездом в этот день.</p></section>`}
   return `<div class="toolbar">${reportBar()}</div>
-  <p class="muted" style="margin:0 0 4px">Период: <b style="color:var(--ink)">${per}</b> · ${S.days} ${S.days===1?'день':'дн.'}. Выручка считается по ночам, прожитым в этом периоде.</p>
+  <p class="muted" style="margin:0 0 4px">Период: <b style="color:var(--ink)">${per}</b> · ${S.days} ${S.days===1?'день':'дн.'} Выручка считается по ночам, прожитым в этом периоде.</p>
   <div class="stats">
     <div class="stat"><div class="k">Выручка</div><div class="v">${tg(S.rev)}</div><div class="s">${S.nts} проданных ночей</div></div>
     <div class="stat"><div class="k">Загрузка</div><div class="v">${S.occ}%</div><div class="s">${rs.length} номеров × ${S.days} дн.</div></div>
