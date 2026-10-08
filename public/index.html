@@ -180,6 +180,7 @@ table.data{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums
 .log-row ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
 .log-row ul b{color:var(--ink);font-weight:500}
 .online{display:inline-flex;align-items:center;gap:6px;color:var(--in);font-weight:600}.online i{width:9px;height:9px;border-radius:50%;background:var(--in);box-shadow:0 0 0 3px var(--in-bg)}
+.data tr.hl td{background:var(--accent-soft)}
 .meta{font-size:12px;color:var(--muted);margin-top:10px}
 @media (max-width:560px){.log-row{grid-template-columns:1fr}}
 </style>
@@ -235,7 +236,7 @@ const toDate=t=>!t?null:(t.toDate?t.toDate():new Date(t));
 const stamp=t=>{const d=toDate(t);if(!d||isNaN(d))return'';return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const liveFrom=()=>add(today(),-45);
 
-let st={tab:'grid',start:add(today(),-1),span:14,month:today().slice(0,7),q:'',filter:'active',exFrom:today().slice(0,7)+'-01',exTo:today(),lgFrom:add(today(),-7),lgTo:today(),lgWho:'',lgType:'',lgRoom:'',authMode:'login'};
+let st={tab:'grid',start:add(today(),-1),span:14,month:today().slice(0,7),q:'',filter:'active',exFrom:today().slice(0,7)+'-01',exTo:today(),rp:'m',dayPick:'',lgFrom:add(today(),-7),lgTo:today(),lgWho:'',lgType:'',lgRoom:'',authMode:'login'};
 try{const s=JSON.parse(localStorage.getItem('hotel-ui')||'{}');if(s.span)st.span=s.span;if(s.tab)st.tab=s.tab}catch(e){}
 const saveUi=()=>{try{localStorage.setItem('hotel-ui',JSON.stringify({span:st.span,tab:st.tab}))}catch(e){}};
 
@@ -419,23 +420,38 @@ function periodStats(list,from,toEx){
   const rs=sortedRooms(),days=diffD(from,toEx),occ=rs.length&&days?Math.round(nts/(rs.length*days)*100):0;
   return{rev,nts,bySrc,byType,byRoom,byPay,paid,owe,occ,adr:nts?rev/nts:0,days,arrivals};
 }
+const PRESETS=[['today','Сегодня'],['yest','Вчера'],['y2','Позавчера'],['w','7 дней'],['w10','10 дней'],['m','Этот месяц'],['pm','Прошлый месяц']];
+function presetRange(k){const t=today(),ym=t.slice(0,7);
+  if(k==='today')return[t,t];if(k==='yest')return[add(t,-1),add(t,-1)];if(k==='y2')return[add(t,-2),add(t,-2)];
+  if(k==='w')return[add(t,-6),t];if(k==='w10')return[add(t,-9),t];if(k==='m')return[ym+'-01',t];
+  if(k==='pm'){const[y,m]=ym.split('-').map(Number),f=F(Date.UTC(y,m-2,1));return[f,add(ym+'-01',-1)]}return[st.exFrom,st.exTo]}
 function vReport(){
-  const[y,m]=st.month.split('-').map(Number),ms=st.month+'-01',me_=F(Date.UTC(y,m,1));
-  if(ms<liveFrom()&&!hist)loadHist();
-  const S=periodStats(allB(),ms,me_),rs=sortedRooms();
+  const from=st.exFrom,to=st.exTo;
+  if(!from||!to||to<from)return `<div class="toolbar">${reportBar()}</div><div class="notice">Дата «по» должна быть не раньше даты «с».</div>`;
+  const toEx=add(to,1);
+  if(from<liveFrom()&&!hist)loadHist();
+  const list=allB(),S=periodStats(list,from,toEx),rs=sortedRooms(),one=from===to;
   const tbl=(o,title)=>{const e=Object.entries(o).sort((a,b)=>b[1]-a[1]);return `<section class="panel"><h2>${title}</h2>${e.length?`<table class="data"><tbody>${e.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="r money">${tg(v)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted">Нет данных</div>'}</section>`};
-  return `<div class="toolbar"><input type="month" id="r-m" value="${st.month}" aria-label="Месяц"><span class="muted">Выручка считается по ночам, прожитым в этом месяце.</span></div>
+  const per=one?(dmy(from)):(dmy(from)+' – '+dmy(to));
+  const arrN=list.filter(b=>live(b)&&b.checkIn>=from&&b.checkIn<toEx).length,depN=list.filter(b=>live(b)&&b.checkOut>=from&&b.checkOut<toEx).length;
+  let days='';
+  if(!one&&S.days<=62){const rows=[];for(let d=from;d<toEx;d=add(d,1)){const D=periodStats(list,d,add(d,1));rows.push(`<tr${d===st.dayPick?' class="hl"':''}><td><button class="linkbtn" data-act="pickday" data-v="${d}">${WD[wd(d)]}, ${human(d)}</button></td><td class="r">${D.nts}</td><td class="r">${D.occ}%</td><td class="r money">${tg(D.rev)}</td><td class="r">${list.filter(b=>live(b)&&b.checkIn===d).length}</td><td class="r">${list.filter(b=>live(b)&&b.checkOut===d).length}</td><td class="r money">${tg(D.paid)}</td></tr>`)}
+    days=`<section class="panel" style="margin-top:16px"><h2>По дням</h2><div class="tbl"><table class="data"><thead><tr><th>День</th><th class="r">Занято номеров</th><th class="r">Загрузка</th><th class="r">Выручка</th><th class="r">Заездов</th><th class="r">Выездов</th><th class="r">Оплачено*</th></tr></thead><tbody>${rows.join('')}</tbody></table></div><p class="muted" style="font-size:12.5px;margin-bottom:0">Нажмите на день, чтобы открыть отчёт только за него. *Оплачено — по броням с заездом в этот день.</p></section>`}
+  return `<div class="toolbar">${reportBar()}</div>
+  <p class="muted" style="margin:0 0 4px">Период: <b style="color:var(--ink)">${per}</b> · ${S.days} ${S.days===1?'день':'дн.'}. Выручка считается по ночам, прожитым в этом периоде.</p>
   <div class="stats">
-    <div class="stat"><div class="k">Выручка за месяц</div><div class="v">${tg(S.rev)}</div><div class="s">${S.nts} проданных ночей</div></div>
-    <div class="stat"><div class="k">Загрузка</div><div class="v">${S.occ}%</div><div class="s">${rs.length} номеров × ${S.days} дней</div></div>
+    <div class="stat"><div class="k">Выручка</div><div class="v">${tg(S.rev)}</div><div class="s">${S.nts} проданных ночей</div></div>
+    <div class="stat"><div class="k">Загрузка</div><div class="v">${S.occ}%</div><div class="s">${rs.length} номеров × ${S.days} дн.</div></div>
     <div class="stat"><div class="k">Средняя цена ночи</div><div class="v">${tg(S.adr)}</div><div class="s">ADR</div></div>
-    <div class="stat"><div class="k">Оплачено / долг</div><div class="v">${tg(S.paid)}</div><div class="s" style="color:${S.owe>0?'var(--bad)':'inherit'}">долг ${tg(S.owe)} · по заездам месяца</div></div></div>
-  <div class="cols">${tbl(S.bySrc,'По источникам')}${tbl(S.byType,'По типам номеров')}${tbl(S.byPay,'Оплаты по способам')}</div>
+    <div class="stat"><div class="k">Заезды / выезды</div><div class="v">${arrN} / ${depN}</div><div class="s">за период</div></div>
+    <div class="stat"><div class="k">Оплачено / долг</div><div class="v">${tg(S.paid)}</div><div class="s" style="color:${S.owe>0?'var(--bad)':'inherit'}">долг ${tg(S.owe)} · по заездам периода</div></div></div>
+  <div class="cols">${tbl(S.bySrc,'По источникам')}${tbl(S.byType,'По типам номеров')}${tbl(S.byPay,'Оплаты по способам')}</div>${days}
   <section class="panel" style="margin-top:16px"><h2>Выгрузка в Excel</h2>
-    <div class="toolbar" style="margin:0"><label class="muted">С <input type="date" id="ex-from" value="${st.exFrom}"></label><label class="muted">по <input type="date" id="ex-to" value="${st.exTo}"></label>
-    <button class="btn primary" data-act="export">Скачать отчёт .xlsx</button>${can.owner()?'<button class="btn" data-act="backup">Полная копия базы</button>':''}</div>
+    <div class="toolbar" style="margin:0"><button class="btn primary" data-act="export">Скачать отчёт за ${per} .xlsx</button>${can.owner()?'<button class="btn" data-act="backup">Полная копия базы</button>':''}</div>
     <p class="muted" style="font-size:13px;margin-bottom:0">Листы: Сводка, Брони, Оплаты, По номерам, Долги${can.owner()?', Журнал':''}. «Полная копия базы» — все номера, брони, сотрудники и журнал за всё время.</p></section>`;
 }
+function reportBar(){return `<div class="chips">${PRESETS.map(([k,l])=>`<button class="chip${st.rp===k?' on':''}" data-act="preset" data-v="${k}">${l}</button>`).join('')}</div>
+  <span class="range"><label class="muted">С <input type="date" id="ex-from" value="${st.exFrom}"></label> <label class="muted">по <input type="date" id="ex-to" value="${st.exTo}"></label></span>`}
 
 const LT={'':'Все действия',booking:'Брони',payment:'Изменения оплат',cancel:'Отмены и удаления',hk:'Уборка',room:'Номера',staff:'Сотрудники'};
 function vLog(){
@@ -631,7 +647,7 @@ async function doExport(btn){
     if(can.owner())sheets.push(['Журнал',logRows(await fetchLog(from,toEx))]);
     saveXlsx(`Отчёт ${dmy(from)}-${dmy(to)}.xlsx`,sheets);toast('Файл скачан');
   }catch(e){toast('Не удалось выгрузить: '+errText(e))}
-  btn.disabled=false;btn.textContent='Скачать отчёт .xlsx';
+  btn.disabled=false;render();
 }
 async function doBackup(btn){
   btn.disabled=true;btn.textContent='Готовим копию…';
@@ -651,6 +667,8 @@ app.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');if(!el||!me)return;const a=el.dataset.act;
   if(a==='shift'){st.start=add(st.start,+el.dataset.n);render()}
   if(a==='gotoday'){st.start=add(today(),-1);render()}
+  if(a==='preset'){const[f,t]=presetRange(el.dataset.v);st.exFrom=f;st.exTo=t;st.rp=el.dataset.v;render()}
+  if(a==='pickday'){st.exFrom=st.exTo=el.dataset.v;st.rp='';render();window.scrollTo(0,0)}
   if(a==='finder'&&can.book()){openFinder({},v=>openBooking(v))}
   if(a==='newb'&&can.book()){const t=today();openBooking({checkIn:t,checkOut:add(t,1)})}
   if(a==='cell'&&can.book()){const r=roomById(el.dataset.room);openBooking({roomId:r.id,price:r.price,checkIn:el.dataset.date,checkOut:add(el.dataset.date,1)})}
@@ -680,8 +698,8 @@ app.addEventListener('change',async e=>{const id=e.target.id;
   if(id==='g-span'){st.span=+e.target.value;saveUi();render()}
   if(id==='l-f'){st.filter=e.target.value;render()}
   if(id==='r-m'&&e.target.value){st.month=e.target.value;render()}
-  if(id==='ex-from')st.exFrom=e.target.value;
-  if(id==='ex-to')st.exTo=e.target.value;
+  if(id==='ex-from'&&e.target.value){st.exFrom=e.target.value;st.rp='';st.dayPick='';if(st.exTo<st.exFrom)st.exTo=st.exFrom;render()}
+  if(id==='ex-to'&&e.target.value){st.exTo=e.target.value;st.rp='';st.dayPick='';render()}
   if((id==='lg-from'||id==='lg-to')&&e.target.value){st[id==='lg-from'?'lgFrom':'lgTo']=e.target.value;loadLog()}
   if(id==='lg-who'){st.lgWho=e.target.value;render()}
   if(id==='lg-type'){st.lgType=e.target.value;render()}
