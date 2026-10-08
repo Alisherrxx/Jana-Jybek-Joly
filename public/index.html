@@ -360,6 +360,12 @@ body.auth .cn-side{display:block;position:fixed;right:56px;top:130px;z-index:1;w
   body.auth main::after{color:#8a7560}
 }
 .login .emb{margin-bottom:18px}
+@media (max-width:760px){
+  .login .emb{width:176px;height:176px;border-radius:50%;margin:4px auto 22px;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 38%,#fffdf8 0%,#f7efe2 100%);
+    box-shadow:0 0 0 1px rgba(138,109,59,.45),0 0 0 7px #fffdf9,0 0 0 8px rgba(138,109,59,.28),0 18px 34px -16px rgba(90,60,30,.45)}
+  .login .emb img{width:205px;max-width:none;height:auto}
+}
 </style>
 
 </head><body>
@@ -1141,7 +1147,7 @@ function showLogin(msg){
     <button class="btn primary" type="submit">${m==='login'?'Войти':'Зарегистрироваться'}</button>
     <div class="err" id="a-err" ${msg?'':'hidden'}>${esc(msg||'')}</div>
     ${m==='login'?'<div class="or">или</div><button type="button" class="btn" data-auth="google">Войти через Google</button>':''}
-    <div class="links">${m==='login'?'<button type="button" class="linkbtn" data-auth="reg">Регистрация</button><span class="muted" style="font-size:13px">Забыли пароль — обратитесь к владельцу</span>':'<button type="button" class="linkbtn" data-auth="login">← Ко входу</button>'}</div>
+    <div class="links">${m==='login'?'<button type="button" class="linkbtn" data-auth="reg">Регистрация</button>':'<button type="button" class="linkbtn" data-auth="login">← Ко входу</button>'}</div>
   </form>`;
 }
 app.addEventListener('click',async e=>{const b=e.target.closest('[data-auth]');if(!b)return;const a=b.dataset.auth;
