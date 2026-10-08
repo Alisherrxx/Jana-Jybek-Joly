@@ -206,7 +206,7 @@ const FIREBASE_CONFIG = {
 <script>
 (function(){
 const OWNER='alisherr404@gmail.com';
-const ROLES={owner:'Владелец',manager:'Управляющий',admin:'Администратор',viewer:'Просмотр',novice:'Новичок'};
+const ROLES={owner:'Админ',manager:'Управляющий',admin:'Администратор',viewer:'Просмотр',novice:'Гость'};
 const STATUS={booked:'Бронь',in:'Заселён',out:'Выехал',cancelled:'Отменена'};
 const HK={clean:'Чистый',dirty:'Нужна уборка',cleaning:'Убирается',inspect:'На проверке',repair:'Ремонт'};
 const PAY=['Наличные','Kaspi','Карта','Перевод','Безнал (юрлицо)'];
@@ -251,7 +251,7 @@ const LOGIN_DOMAIN='login.invalid',LOGIN_RE=/^[a-z0-9._-]{3,30}$/;
 const toEmail=x=>{x=String(x||'').trim().toLowerCase();return x.includes('@')?x:x+'@'+LOGIN_DOMAIN};
 const isInternal=em=>String(em||'').endsWith('@'+LOGIN_DOMAIN);
 const showId=em=>isInternal(em)?String(em).split('@')[0]:String(em||'');
-const staffName=em=>{if(!em)return'';const s=staffList.find(x=>x.id===em);return(s&&s.name)||(em===OWNER?'Владелец':showId(em))};
+const staffName=em=>{if(!em)return'';const s=staffList.find(x=>x.id===em);return(s&&s.name)||(em===OWNER?'Главный админ':showId(em))};
 
 function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),2600)}
 async function loadHist(force){if(histLoading||(hist&&!force))return;histLoading=true;try{const s=await fdb.collection('bookings').get();hist=s.docs.map(d=>({id:d.id,...d.data()}))}catch(e){toast('Не удалось загрузить архив броней: '+(e.message||e.code))}histLoading=false;render()}
@@ -466,12 +466,12 @@ function vStaff(){
     h+=`<section class="panel" style="margin-top:16px;border-color:var(--bad)"><h2>Новые регистрации <b>${regs.length}</b></h2><div class="list">${regs.map(r=>`<div class="row"><div class="main" style="cursor:default"><b>${esc(r.name||'Без имени')}</b><div class="sub">Логин: ${esc(showId(r.id))} · Пароль: <span class="money">${esc((creds[r.id]||{}).password||'—')}</span> · ${stamp(r.addedAt)}</div></div>
       <select data-staff-role="${esc(r.id)}" aria-label="Роль">${roleOpts(r.role)}</select>
       <button class="btn small" data-act="regack" data-id="${esc(r.id)}">Понятно</button><button class="btn small danger" data-act="staffdel" data-id="${esc(r.id)}">Удалить</button></div>`).join('')}</div>
-      <p class="muted" style="font-size:13px;margin-bottom:0">Новичок видит только занятость номеров. Выберите роль, чтобы расширить доступ.</p></section>`;
+      <p class="muted" style="font-size:13px;margin-bottom:0">Гость видит только занятость номеров. Выберите роль, чтобы расширить доступ.</p></section>`;
   }
   h+=`<div class="cols"><section class="panel"><h2>Создать сотрудника</h2>
    <form id="sf" class="form" style="margin-top:0" autocomplete="off">
     <label>Имя<input id="s-name" required placeholder="Айгерим"></label>
-    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Новичок</option><option value="owner">Владелец</option></select></label>
+    <label>Роль<select id="s-role"><option value="admin">Администратор</option><option value="manager">Управляющий</option><option value="viewer">Просмотр</option><option value="novice">Гость</option><option value="owner">Админ</option></select></label>
     <label>Логин<input id="s-login" required placeholder="aigerim" autocapitalize="off" autocomplete="off"></label>
     <label>Пароль<input id="s-pass" placeholder="от 6 символов" autocomplete="off"></label>
     <div class="err" id="s-err" hidden></div>
@@ -480,8 +480,8 @@ function vStaff(){
     <b>Управляющий</b> — всё, кроме журнала и сотрудников: брони, номера, цены, отчёты.<br>
     <b>Администратор</b> — брони, заселение, оплаты, отмена броней, уборка.<br>
     <b>Просмотр</b> — шахматка с гостями, состояние номеров (для горничных).<br>
-    <b>Новичок</b> — только занятость номеров, без данных гостей. Даётся автоматически при самостоятельной регистрации.<br>
-    <b>Владелец</b> — всё то же, что у вас: журнал, сотрудники, пароли, удаление.<br>
+    <b>Гость</b> — только занятость номеров, без данных гостей. Даётся автоматически при самостоятельной регистрации.<br>
+    <b>Админ</b> — всё то же, что у вас: журнал, сотрудники, пароли, удаление.<br>
     Удалять брони и номера может только владелец.</div></section></div>
   <section class="panel" style="margin-top:16px"><h2>Сотрудники <b>${all.length}</b></h2>`;
   if(!all.length)return h+'<div class="muted">Пока никого.</div></section>';
@@ -635,7 +635,7 @@ async function doBackup(btn){
     saveXlsx(`Копия базы ${dmy(today())}.xlsx`,[
       ['Номера',[['Номер','Этаж','Тип','Мест','Цена/ночь','Продаётся','Состояние','Заметка'],...sortedRooms(true).map(r=>[r.number,r.floor,r.type||'',r.capacity||'',+r.price||0,r.active===false?'Нет':'Да',HK[r.hk||'clean'],r.note||''])]],
       ['Брони',[BH,...allB().sort((a,b)=>a.checkIn.localeCompare(b.checkIn)).map(bRowX)]],
-      ['Сотрудники',[['Логин / email','Имя','Роль','Активен'],[OWNER,'Владелец','Владелец','Да'],...staffList.map(s=>[showId(s.id),s.name||'',ROLES[s.role]||s.role,s.active===false?'Нет':'Да'])]],
+      ['Сотрудники',[['Логин / email','Имя','Роль','Активен'],[OWNER,'Главный админ','Админ','Да'],...staffList.map(s=>[showId(s.id),s.name||'',ROLES[s.role]||s.role,s.active===false?'Нет':'Да'])]],
       ['Журнал',logRows(ls)]]);toast('Копия скачана');
   }catch(e){toast('Не удалось: '+errText(e))}
   btn.disabled=false;btn.textContent='Полная копия базы';
@@ -683,7 +683,7 @@ app.addEventListener('change',async e=>{const id=e.target.id;
   if(id==='lg-type'){st.lgType=e.target.value;render()}
   if(e.target.dataset.staffRole&&can.owner()){const s=staffList.find(x=>x.id===e.target.dataset.staffRole);if(!s)return;
     const sel=e.target,nv=sel.value,go=async()=>{try{await writeStaff(s,s.id,{name:s.name||'',role:nv,active:s.active!==false,ack:true},'update');toast('Роль изменена: '+ROLES[nv])}catch(err){sel.value=s.role;toast('Не удалось: '+errText(err))}};
-    if(nv==='owner'){sel.value=s.role;ask('Сделать «'+esc(s.name||showId(s.id))+'» владельцем? Он(а) получит все права: журнал, сотрудники, пароли, удаление.','Сделать владельцем',()=>{sel.value='owner';go()})}else go()}
+    if(nv==='owner'){sel.value=s.role;ask('Сделать «'+esc(s.name||showId(s.id))+'» админом? Он(а) получит все права: журнал, сотрудники, пароли, удаление.','Сделать админом',()=>{sel.value='owner';go()})}else go()}
 });
 let qt;app.addEventListener('input',e=>{const id=e.target.id;if(id==='l-q'||id==='lg-room'){clearTimeout(qt);qt=setTimeout(()=>{if(id==='l-q')st.q=e.target.value;else st.lgRoom=e.target.value;render();const i=document.getElementById(id);if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},300)}});
 app.addEventListener('submit',async e=>{
@@ -702,7 +702,7 @@ app.addEventListener('submit',async e=>{
         catch(err){if(err.code==='auth/email-already-in-use'){btn.disabled=false;return fail('Логин «'+raw+'» уже занят. Придумайте другой.')}throw err}
       }
       if(prev&&!prev.deleted){btn.disabled=false;return fail('Такой сотрудник уже есть.')}
-      if(role==='owner'&&!e.target.dataset.ok){btn.disabled=false;ask('Создать сотрудника с ролью «Владелец»? Он(а) получит все права.','Создать владельца',()=>{e.target.dataset.ok='1';e.target.requestSubmit()});return}
+      if(role==='owner'&&!e.target.dataset.ok){btn.disabled=false;ask('Создать сотрудника с ролью «Админ»? Он(а) получит все права.','Создать админа',()=>{e.target.dataset.ok='1';e.target.requestSubmit()});return}
       delete e.target.dataset.ok;
       await writeStaff(null,em,{name,role,active:true,deleted:false,ack:true,login:raw.includes('@')?'':raw},'create',raw.includes('@')?null:{login:raw,password:pw,name,at:TS()});
       e.target.reset();toast(raw.includes('@')?'Сотрудник добавлен':'Создан логин «'+raw+'». Передайте сотруднику логин и пароль.');
@@ -964,14 +964,14 @@ async function handleUser(u){
   const em=(u.email||'').toLowerCase();
   if(!em){showNoAccess('—');return}
   if(!isInternal(em)&&!u.emailVerified){showVerify(u);return}
-  let role=em===OWNER?'owner':null,name=em===OWNER?(u.displayName||'Владелец'):(u.displayName||showId(em));
+  let role=em===OWNER?'owner':null,name=em===OWNER?(u.displayName||'Главный админ'):(u.displayName||showId(em));
   if(role!=='owner'){
     try{let s=await fdb.collection('staff').doc(em).get();
       if(!s.exists&&isInternal(em)&&pendingReg&&pendingReg.em===em){
         const p=pendingReg;pendingReg=null;const b=fdb.batch();
         b.set(fdb.collection('staff').doc(em),{name:p.name,role:'novice',active:true,self:true,login:p.login,addedAt:TS(),lastSeen:TS()});
         b.set(fdb.collection('creds').doc(em),{login:p.login,password:p.password,name:p.name,at:TS()});
-        b.set(fdb.collection('log').doc(),{at:TS(),by:em,byName:p.name,kind:'staff',action:'register',target:em,room:'',guest:'',text:`Зарегистрировался(ась) сам(а): ${p.name} (${p.login}) — Новичок`,changes:[],payment:false});
+        b.set(fdb.collection('log').doc(),{at:TS(),by:em,byName:p.name,kind:'staff',action:'register',target:em,room:'',guest:'',text:`Зарегистрировался(ась) сам(а): ${p.name} (${p.login}) — Гость`,changes:[],payment:false});
         await b.commit();s=await fdb.collection('staff').doc(em).get()}
       if(s.exists){const d=s.data();if(d.name)name=d.name;if(d.active===false||d.deleted){showNoAccess(em,'off');return}role=d.role;
         fdb.collection('staff').doc(em).update({lastSeen:TS()}).catch(()=>{})}
