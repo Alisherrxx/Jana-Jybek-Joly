@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-09.1">
+<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-09.2">
 <title>Jana Jybek Joly</title>
 <link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -79,12 +79,12 @@ nav.tabs button:focus-visible,.btn:focus-visible,.cell-empty:focus-visible,.bar:
 .grid-frame{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
 table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;font-variant-numeric:tabular-nums}
 .grid th,.grid td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);height:44px;padding:0}
-.grid thead th{position:sticky;top:0;background:var(--surface-2);font-weight:500;font-size:12px;color:var(--muted);width:64px;min-width:64px;text-align:center;line-height:1.15;padding:6px 2px}
+.grid thead th{position:sticky;top:0;background:var(--surface-2);font-weight:500;font-size:13px;color:var(--muted);width:64px;min-width:64px;text-align:center;line-height:1.15;padding:6px 2px}
 .grid thead th b{display:block;font-size:15px;color:var(--ink);font-family:var(--f-mono)}
 .grid .rm{position:sticky;left:0;z-index:2;background:var(--surface);min-width:96px;width:96px;padding:4px 10px;text-align:left}
 .grid thead .rm{z-index:3;background:var(--surface-2)}
 .rm .no{font-family:var(--f-mono);font-weight:500;font-size:15px;display:flex;align-items:center;gap:6px}
-.rm .ty{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
+.rm .ty{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
 .hk{width:8px;height:8px;border-radius:50%;display:inline-block}
 .hk.clean{background:var(--in)} .hk.dirty{background:var(--warn)} .hk.repair{background:var(--bad)} .hk.cleaning{background:var(--booked)} .hk.inspect{background:var(--insp)}
 .legend i.hk{width:12px;height:12px;border-radius:50%}
@@ -99,7 +99,7 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .hk-floor{margin:18px 0 8px;padding:8px 12px;border-radius:8px;background:var(--floor-bg);color:var(--floor-ink);font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-left:4px solid var(--floor-ink)}
 .hk-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
 .hk-card{display:flex;flex-direction:column;gap:2px;text-align:left;border:2px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface);cursor:pointer;min-width:0;border-left-width:6px}
-.hk-card .n{font-family:var(--f-mono);font-size:18px;font-weight:500;color:var(--ink)} .hk-card .s{font-size:12px;font-weight:700} .hk-card .w,.hk-card .t{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hk-card .n{font-family:var(--f-mono);font-size:18px;font-weight:500;color:var(--ink)} .hk-card .s{font-size:13px;font-weight:700} .hk-card .w,.hk-card .t{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hk-card.clean{border-left-color:var(--in)} .hk-card.clean .s{color:var(--in)}
 .hk-card.dirty{border-left-color:var(--warn);background:var(--warn-bg)} .hk-card.dirty .s{color:var(--warn)}
 .hk-card.cleaning{border-left-color:var(--booked);background:var(--booked-bg)} .hk-card.cleaning .s{color:var(--booked)}
@@ -114,14 +114,14 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .grid thead th.nav{width:34px;min-width:34px;padding:0}
 .grid thead th.nav button{width:100%;height:100%;min-height:52px;border:0;background:var(--accent-soft);color:var(--accent);font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .grid thead th.nav button:hover{background:var(--accent);color:var(--accent-ink)}
-.grid td.g-free{background:var(--in-bg);color:var(--in);font-size:11px;font-weight:600;text-align:center} .grid td.g-x{background:var(--surface-2)}
+.grid td.g-free{background:var(--in-bg);color:var(--in);font-size:12px;font-weight:600;text-align:center} .grid td.g-x{background:var(--surface-2)}
 .grid td.navpad{width:34px;min-width:34px;background:var(--surface-2)}
 .grid .we{background:var(--weekend)}
 .grid .td{background:var(--today)}
 .cell-empty{cursor:pointer}
 .cell-empty:hover{background:var(--accent-soft)}
 .cell-empty.ro{cursor:default}.cell-empty.ro:hover{background:inherit}
-.bar{display:flex;align-items:center;gap:4px;margin:5px 3px;height:34px;padding:0 8px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;overflow:hidden;white-space:nowrap;border:0;width:calc(100% - 6px);text-align:left}
+.bar{display:flex;align-items:center;gap:4px;margin:5px 3px;height:34px;padding:0 8px;border-radius:7px;font-size:13.5px;font-weight:600;cursor:pointer;overflow:hidden;white-space:nowrap;border:0;width:calc(100% - 6px);text-align:left}
 .bar span{overflow:hidden;text-overflow:ellipsis}
 .bar.booked{background:var(--booked-bg);color:var(--booked);box-shadow:inset 3px 0 0 var(--booked)}
 .bar.in{background:var(--in-bg);color:var(--in);box-shadow:inset 3px 0 0 var(--in)}
@@ -137,9 +137,9 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .panel h2 b{font-family:var(--f-mono);color:var(--ink);letter-spacing:0}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stat .k{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .stat .v{font-family:var(--f-display);font-size:24px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
-.stat .s{font-size:12px;color:var(--muted)}
+.stat .s{font-size:13px;color:var(--muted)}
 .list{display:flex;flex-direction:column}
 .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .row:first-child{border-top:0}
@@ -147,7 +147,7 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .row .main b{display:block}
 .row .sub{font-size:13px;color:var(--muted)}
 .room-tag{font-family:var(--f-mono);font-weight:500;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:14px}
-.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill{font-size:13px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .pill.booked{background:var(--booked-bg);color:var(--booked)} .pill.in{background:var(--in-bg);color:var(--in)}
 .pill.out{background:var(--out-bg);color:var(--out)} .pill.cancelled{background:var(--bad-bg);color:var(--bad)}
 .pill.debt{background:var(--bad-bg);color:var(--bad)} .pill.paid{background:var(--in-bg);color:var(--in)}
@@ -155,29 +155,29 @@ table.grid{border-collapse:separate;border-spacing:0;width:max-content;min-width
 .money{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 table.data{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .data th,.data td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);font-size:14px}
-.data th{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tc,var(--accent));background:color-mix(in srgb,var(--tc,var(--accent)) 12%,var(--surface));border-bottom:2px solid color-mix(in srgb,var(--tc,var(--accent)) 45%,transparent)}
+.data th{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tc,var(--accent));background:color-mix(in srgb,var(--tc,var(--accent)) 12%,var(--surface));border-bottom:2px solid color-mix(in srgb,var(--tc,var(--accent)) 45%,transparent)}
 .data thead th:first-child{border-top-left-radius:8px}.data thead th:last-child{border-top-right-radius:8px}
 .data tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--tc,var(--accent)) 4%,var(--surface))}
 .data td:first-child{font-weight:600}
 .room-tag.big{font-size:15px;font-weight:700;color:var(--tc);border-color:color-mix(in srgb,var(--tc) 40%,transparent);background:color-mix(in srgb,var(--tc) 8%,var(--surface))}
-.floor-tag{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--floor-bg);color:var(--floor-ink);font-weight:700;font-size:12.5px}
-.type-tag{display:inline-block;padding:2px 9px;border-radius:6px;font-size:12.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line)}
+.floor-tag{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--floor-bg);color:var(--floor-ink);font-weight:700;font-size:13.5px}
+.type-tag{display:inline-block;padding:2px 9px;border-radius:6px;font-size:13.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line)}
 .type-tag.t0{background:#e3effc;color:#1e5aa8;border-color:#bcd6f5}.type-tag.t1{background:#e6f5ec;color:#1f7a45;border-color:#bfe4cc}.type-tag.t2{background:#fdf0dc;color:#9a5a08;border-color:#f3d6a6}.type-tag.t3{background:#f3e8fb;color:#7a3fb0;border-color:#dcc4f0}.type-tag.t4{background:#fde6ea;color:#a8263e;border-color:#f4c0ca}
 .price{font-family:var(--f-mono);font-weight:600;color:var(--ink)}
 .stat{border-top:3px solid color-mix(in srgb,var(--tc,var(--accent)) 60%,transparent)} .stat .k{color:var(--tc,var(--muted));font-weight:600}
 .data td.r,.data th.r{text-align:right}
 .data tr.click{cursor:pointer}.data tr.click:hover td{background:var(--surface-2)}
 .tbl{overflow-x:auto}
-.hk-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.hk-btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 
 /* modal */
 .scrim{position:fixed;inset:0;background:rgba(10,16,14,.5);z-index:50;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px}
 .modal{background:var(--surface);border-radius:14px;width:100%;max-width:620px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .modal h3{font-family:var(--f-display);font-weight:500;font-size:18px;margin:0 0 4px}
-.modal .ref{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.modal .ref{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 .form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .form .full{grid-column:1/-1}
-.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted);min-width:0}
 .form input,.form select,.form textarea{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:9px 10px;font-size:15px;font-weight:400;color:var(--ink);width:100%}
 .form textarea{min-height:64px;resize:vertical}
 .sum{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:16px;background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:14px}
@@ -199,14 +199,14 @@ header.top{background:rgba(244,240,232,.86);backdrop-filter:blur(16px) saturate(
 .brandmark .mark{flex:none;padding:3px;border:1px solid rgba(138,109,59,.45);border-radius:12px;background:var(--surface);box-shadow:0 8px 18px -12px rgba(38,34,28,.45)}
 .brandmark .mark img{height:60px;width:auto;display:block;border-radius:9px}
 .brand h1.logo{font-family:var(--f-display);font-weight:500;font-size:30px;letter-spacing:.3em;text-transform:uppercase;line-height:1;color:var(--ink);background:none;-webkit-text-fill-color:currentColor;filter:none;margin:0}
-.brand h1.logo::after{content:"Hotel · Semey";display:block;font-family:var(--f-body);font-size:10.5px;letter-spacing:.5em;font-weight:400;text-transform:uppercase;color:var(--bronze);-webkit-text-fill-color:var(--bronze);margin-top:8px}
-@media (max-width:560px){.brand h1.logo{font-size:19px;letter-spacing:.2em}.brandmark .mark img{height:42px}.brandmark{gap:12px}.brand h1.logo::after{letter-spacing:.35em;font-size:9px}}
+.brand h1.logo::after{content:"Hotel · Semey";display:block;font-family:var(--f-body);font-size:12px;letter-spacing:.5em;font-weight:400;text-transform:uppercase;color:var(--bronze);-webkit-text-fill-color:var(--bronze);margin-top:8px}
+@media (max-width:560px){.brand h1.logo{font-size:19px;letter-spacing:.2em}.brandmark .mark img{height:42px}.brandmark{gap:12px}.brand h1.logo::after{letter-spacing:.35em;font-size:10.5px}}
 .who{color:var(--muted);font-size:14px} .who b{color:var(--ink);font-weight:500}
-.role{background:transparent;color:var(--bronze);border:1px solid rgba(138,109,59,.35);letter-spacing:.2em;font-weight:500;font-size:10px}
+.role{background:transparent;color:var(--bronze);border:1px solid rgba(138,109,59,.35);letter-spacing:.2em;font-weight:500;font-size:11.5px}
 .linkbtn{color:var(--ink);font-weight:500;text-decoration-color:rgba(38,34,28,.3)}
 
 nav.tabs{gap:4px;padding-block:0 14px}
-nav.tabs button{--tc:var(--muted);border:1px solid transparent;background:transparent;color:var(--ink-2);padding:9px 16px;border-radius:999px;font-family:var(--f-body);font-weight:500;font-size:12px;letter-spacing:.16em;text-transform:uppercase;box-shadow:none}
+nav.tabs button{--tc:var(--muted);border:1px solid transparent;background:transparent;color:var(--ink-2);padding:9px 16px;border-radius:999px;font-family:var(--f-body);font-weight:500;font-size:13px;letter-spacing:.16em;text-transform:uppercase;box-shadow:none}
 nav.tabs button::before{width:6px;height:6px;background:var(--tc);box-shadow:none;opacity:.85}
 nav.tabs button:hover{background:rgba(38,34,28,.05);color:var(--ink)}
 nav.tabs button[aria-selected="true"]{background:var(--ink);color:#fbf8f2;border-color:var(--ink);box-shadow:0 6px 16px -8px rgba(38,34,28,.55);text-shadow:none}
@@ -220,7 +220,7 @@ nav.tabs button[aria-selected="true"]::before{background:var(--tc);opacity:1;box
 .stats{gap:14px}
 .stat{padding:20px 22px;position:relative;overflow:hidden;border-top:1px solid var(--line)}
 .stat::after{content:none}
-.stat .k{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.stat .k{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:500}
 .stat .v{font-family:var(--f-display);font-size:42px;font-weight:500;color:var(--ink);margin-top:8px;line-height:1}
 .stat .s{color:var(--muted);margin-top:6px;font-size:13px}
 .stat.hk-st{border-left:1px solid var(--line)} .stat.hk-st::before{content:"";position:absolute;left:22px;top:22px;width:7px;height:7px;border-radius:50%;background:var(--line-2)}
@@ -236,12 +236,12 @@ nav.tabs button[aria-selected="true"]::before{background:var(--tc);opacity:1;box
 .toolbar input[type=date],.toolbar input[type=month],.toolbar input[type=search],.toolbar select,.form input,.form select,.form textarea,.login input,.chips .range input,select{
   background:var(--surface);border:1px solid var(--line-2);color:var(--ink);border-radius:10px;color-scheme:light;font-family:var(--f-body)}
 .form input:focus,.form select:focus,.form textarea:focus,.login input:focus,.toolbar input:focus,.toolbar select:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(38,34,28,.08)}
-.form label{color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-size:10px;font-weight:500}
+.form label{color:var(--muted);letter-spacing:.16em;text-transform:uppercase;font-size:11.5px;font-weight:500}
 .chip{background:var(--surface);border:1px solid var(--line-2);color:var(--ink-2);border-radius:999px;font-weight:500;letter-spacing:.02em}
 .chip:hover{border-color:var(--ink)} .chip.on{background:var(--ink);color:#fbf8f2;border-color:var(--ink)}
 .hkb{background:var(--surface)} .hkb.clean{background:var(--in);color:#fff;border-color:var(--in)}
 
-.data th{background:transparent;color:var(--muted);border-bottom:1px solid var(--line-2);font-size:10px;letter-spacing:.22em;font-weight:500;padding-block:12px}
+.data th{background:transparent;color:var(--muted);border-bottom:1px solid var(--line-2);font-size:11.5px;letter-spacing:.22em;font-weight:500;padding-block:12px}
 .data td{border-bottom:1px solid var(--line);padding-block:12px}
 .data tbody tr:nth-child(even) td{background:transparent}
 .data tbody tr:hover td{background:rgba(38,34,28,.025)}
@@ -254,17 +254,17 @@ nav.tabs button[aria-selected="true"]::before{background:var(--tc);opacity:1;box
 .type-tag.t0::before{background:var(--booked)}.type-tag.t1::before{background:var(--in)}.type-tag.t2::before{background:var(--warn)}.type-tag.t3::before{background:var(--insp)}.type-tag.t4::before{background:var(--bronze)}
 .type-tag.t0,.type-tag.t1,.type-tag.t2,.type-tag.t3,.type-tag.t4{background:transparent;border:0;color:var(--ink-2)}
 .price{font-family:var(--f-display);font-size:20px;font-weight:600;color:var(--ink)}
-.pill{border-radius:999px;font-weight:500;letter-spacing:.04em;border:1px solid transparent;font-size:12px}
+.pill{border-radius:999px;font-weight:500;letter-spacing:.04em;border:1px solid transparent;font-size:13px}
 .hk-btn{background:var(--surface);border:1px solid var(--line-2);color:var(--ink-2);font-weight:500}
 
 .grid-frame{padding:0;overflow-x:auto}
 .grid th,.grid td{border-bottom:1px solid var(--line);border-right:1px solid rgba(38,34,28,.05);height:50px}
-.grid thead th{background:rgba(255,253,249,.97);color:var(--muted);font-size:10px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid var(--line-2);font-weight:500}
+.grid thead th{background:rgba(255,253,249,.97);color:var(--muted);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid var(--line-2);font-weight:500}
 .grid thead th b{font-family:var(--f-display);font-size:24px;font-weight:500;color:var(--ink);letter-spacing:0;margin:2px 0}
 .grid thead th.td{background:var(--ink);color:rgba(251,248,242,.7)} .grid thead th.td b{color:#fbf8f2}
 .grid .rm{background:var(--surface)} .grid thead .rm{background:rgba(255,253,249,.97)}
 .rm .no{font-family:var(--f-display);font-size:22px;font-weight:600;color:var(--ink)}
-.rm .ty{color:var(--muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:400}
+.rm .ty{color:var(--muted);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:400}
 .grid .we{background:var(--weekend)} .grid .td{background:var(--today)}
 .cell-empty:hover{background:rgba(38,34,28,.05)!important;box-shadow:inset 0 0 0 1px rgba(38,34,28,.25)}
 .grid tr.floor td{background:var(--floor-bg);color:var(--ink);border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:.3em;height:42px}
@@ -286,7 +286,7 @@ nav.tabs button[aria-selected="true"]::before{background:var(--tc);opacity:1;box
 .hk-card{background:var(--surface);border:1px solid var(--line);border-left-width:3px;border-radius:12px;padding:10px 12px;transition:transform .12s,box-shadow .12s}
 .hk-card:hover{transform:translateY(-1px);box-shadow:0 12px 22px -16px rgba(38,34,28,.5)}
 .hk-card .n{font-family:var(--f-display);font-size:26px;font-weight:600;color:var(--ink)}
-.hk-card .s{letter-spacing:.12em;text-transform:uppercase;font-size:10px;font-weight:500}
+.hk-card .s{letter-spacing:.12em;text-transform:uppercase;font-size:11.5px;font-weight:500}
 .hk-card.dirty,.hk-card.cleaning,.hk-card.inspect,.hk-card.repair{background:var(--surface)}
 .hk-card.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
 .hk-card.sel .n::after{color:var(--ink)}
@@ -320,30 +320,30 @@ nav.tabs button[aria-selected="true"]::before{background:var(--tc);opacity:1;box
 .linkbtn{background:none;border:0;color:var(--accent);font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
 .who{display:flex;align-items:center;gap:10px}
 .who b{color:var(--ink);font-weight:600}
-.role{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.role{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
 .log-row{display:grid;grid-template-columns:110px 1fr;gap:4px 14px;padding:10px 0;border-top:1px solid var(--line)}
 .log-row:first-child{border-top:0}
-.log-row .t{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.log-row .t{font-family:var(--f-mono);font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .log-row .w{font-weight:700;color:var(--tc)}
 .log-row ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
 .log-row ul b{color:var(--ink);font-weight:500}
 .online{display:inline-flex;align-items:center;gap:6px;color:var(--in);font-weight:600}.online i{width:9px;height:9px;border-radius:50%;background:var(--in);box-shadow:0 0 0 3px var(--in-bg)}
 .data tr.hl td{background:var(--accent-soft)}
-.meta{font-size:12px;color:var(--muted);margin-top:10px}
+.meta{font-size:13px;color:var(--muted);margin-top:10px}
 @media (max-width:560px){.log-row{grid-template-columns:1fr}}
 main .login h2{font-size:30px;font-weight:600}
 main .login input{background:var(--surface)}
 /* floor separators: minimal, neutral */
-.grid tr.floor td,.grid tr.floor td.rm{background:#efece6;color:var(--ink);font-family:var(--f-body);font-size:12px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;height:36px;font-variant-numeric:lining-nums;border-top:1px solid rgba(38,34,28,.22);border-bottom:1px solid rgba(38,34,28,.12);box-shadow:none}
+.grid tr.floor td,.grid tr.floor td.rm{background:#efece6;color:var(--ink);font-family:var(--f-body);font-size:13px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;height:36px;font-variant-numeric:lining-nums;border-top:1px solid rgba(38,34,28,.22);border-bottom:1px solid rgba(38,34,28,.12);box-shadow:none}
 .grid tr.floor td.rm{box-shadow:inset 3px 0 0 var(--ink);padding-left:14px}
-.hk-floor{background:#efece6;color:var(--ink);border-left:3px solid var(--ink);font-family:var(--f-body);font-size:12px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;font-variant-numeric:lining-nums}
+.hk-floor{background:#efece6;color:var(--ink);border-left:3px solid var(--ink);font-family:var(--f-body);font-size:13px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;font-variant-numeric:lining-nums}
 /* signed-out screen: desert at dawn */
 body.auth{background:radial-gradient(260px 260px at 73% 64%,#fff4dc 0%,#f7dcb2 45%,rgba(247,220,178,0) 72%),linear-gradient(180deg,#f6efe4 0%,#f3dcc4 58%,#efcfb0 100%);background-attachment:fixed;min-height:100vh}
 body.auth::after{content:"";position:fixed;left:0;right:0;bottom:0;height:34vh;min-height:220px;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201280%20300%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%2040%20C220%20-10%20380%2010%20560%2050%20C760%2095%20960%200%201280%2020%20V300%20H0Z%22%20fill%3D%22%23e9c9a6%22/%3E%3Cpath%20d%3D%22M0%20120%20C260%2080%20470%20100%20650%20140%20C850%20185%201050%20100%201280%20115%20V300%20H0Z%22%20fill%3D%22%23dfb791%22/%3E%3Cpath%20d%3D%22M0%20210%20C300%20170%20520%20200%20760%20230%20C980%20257%201120%20205%201280%20200%20V300%20H0Z%22%20fill%3D%22%23d3a67d%22/%3E%3C/svg%3E") center bottom/100% 100% no-repeat;pointer-events:none;z-index:0}
 body.auth header.top{background:transparent;border-bottom-color:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 body.auth main,body.auth header{position:relative;z-index:1}
 body.auth .login{background:rgba(255,253,249,.93);box-shadow:0 30px 60px -30px rgba(90,60,30,.45);border-color:rgba(38,34,28,.08);backdrop-filter:blur(10px)}
-body.auth main::after{content:"© Jana Jybek Joly · Semey";display:block;position:relative;z-index:1;text-align:center;margin-top:22px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#7a5a3a}
+body.auth main::after{content:"© Jana Jybek Joly · Semey";display:block;position:relative;z-index:1;text-align:center;margin-top:22px;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#7a5a3a}
 /* logo without frame */
 .brandmark .mark{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 .brandmark .mark img{height:58px;width:auto;border-radius:0}
@@ -414,6 +414,159 @@ html[lang="zh-Hans"] h1:not(.logo),html[lang="zh-Hans"] h2,html[lang="zh-Hans"] 
 .grid thead th.nav{background:#f3efe7!important}
 .grid thead th.nav:last-child,.grid tr>td.navpad:last-child{box-shadow:-1px 0 0 rgba(38,34,28,.18)}
 .grid thead th.nav:nth-child(2),.grid tr>td.navpad:nth-child(2){box-shadow:1px 0 0 rgba(38,34,28,.18)}
+
+/* ---- readability: darker secondary text on champagne ---- */
+:root{--muted:#5b5347;--out:#6c6559;--ink-2:#2f2922}
+.grid thead th{color:#4d463b}
+.grid thead th.td{color:rgba(251,248,242,.88)}
+.rm .ty{color:#5b5347}
+.legend{color:#3d362c}
+nav.tabs button{color:#2f2922}
+.muted{color:#5b5347}
+/* ---- 中文: larger type, no wide tracking ---- */
+html[lang="zh-Hans"] body{font-size:16px}
+html[lang="zh-Hans"] nav.tabs button{letter-spacing:.06em;font-size:15px}
+html[lang="zh-Hans"] .grid thead th{letter-spacing:0}
+
+/* ---- grid zoom ---- */
+.zoom{display:inline-flex;align-items:center;border:1px solid rgba(38,34,28,.25);border-radius:999px;background:var(--surface);overflow:hidden}
+.zoom button{all:unset;cursor:pointer;width:38px;height:36px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;color:var(--ink)}
+.zoom button:hover{background:var(--ink);color:#fbf8f2}
+.zoom button:disabled{opacity:.3;cursor:default;background:none;color:var(--ink)}
+.zoom span{min-width:74px;text-align:center;font-size:13px;font-weight:500;color:var(--ink);border-left:1px solid rgba(38,34,28,.15);border-right:1px solid rgba(38,34,28,.15);padding:0 6px;line-height:36px;white-space:nowrap}
+table.grid.fx{table-layout:fixed;min-width:0}
+.grid.fx th,.grid.fx td{box-sizing:border-box}
+.grid.fx thead th:not(.rm):not(.nav){width:var(--dw);min-width:0;padding:6px 0;overflow:hidden}
+.grid.fx .rm{width:104px;min-width:104px;max-width:104px;overflow:hidden}
+.grid.fx thead th.nav,.grid.fx td.navpad{width:34px;min-width:34px}
+.grid thead th i{font-style:normal;display:block;white-space:nowrap}
+.grid.z-m thead th b{font-size:19px}
+.grid.z-m .bar{font-size:12px;padding:0 6px;margin:5px 2px;width:calc(100% - 4px)}
+.grid.z-s thead th{letter-spacing:0;font-size:11px}
+.grid.z-s thead th b{font-size:15px;margin:1px 0}
+.grid.z-s thead th .mo{visibility:hidden}
+.grid.z-s thead th.m1 .mo{visibility:visible;overflow:visible}
+.grid.z-s th,.grid.z-s td{height:40px}
+.grid.z-s .bar{font-size:11px;height:28px;padding:0 4px;margin:6px 1px;width:calc(100% - 2px);border-radius:5px;letter-spacing:0}
+.grid.z-s td.g-free{font-size:0}
+.grid.z-s td.cell-empty:hover::after{font-size:14px}
+html[lang="zh-Hans"] .grid.z-s thead th{font-size:12px}
+/* ---- housekeeping: one-tap tiles ---- */
+.hk-help{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:4px 0 12px;font-size:14px;color:var(--ink-2)}
+.hk-help b{font-weight:600}
+.hk-q .hk-cards{grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:10px}
+.hk-q .hk-card{min-height:118px;border-width:2px;border-left-width:2px;border-radius:14px;padding:10px 12px 0;gap:2px;position:relative;overflow:hidden}
+.hk-q .hk-card .s{font-size:12.5px;letter-spacing:.06em;font-weight:600}
+.hk-q .hk-card .go{margin:auto -12px 0;padding:9px 12px;font-size:13.5px;font-weight:600;text-align:center;border-top:1px solid rgba(38,34,28,.12)}
+.hk-q .hk-card.clean{background:#eef5ef;border-color:#9cc3a8} .hk-q .hk-card.clean .go{background:#fff;color:#8a4b12}
+.hk-q .hk-card.dirty{background:#fbe9d5;border-color:#d9963f} .hk-q .hk-card.dirty .go{background:#3f6f55;color:#fff}
+.hk-q .hk-card.cleaning{background:#e3ebf6;border-color:#7d9cc7} .hk-q .hk-card.cleaning .go{background:#3f6f55;color:#fff}
+.hk-q .hk-card.inspect{background:#ece6f4;border-color:#9b88bd} .hk-q .hk-card.inspect .go{background:#3f6f55;color:#fff}
+.hk-q .hk-card.repair{background:#f6e3e0;border-color:#c98a83} .hk-q .hk-card.repair .go{background:#fff;color:var(--bad)}
+.hk-q .hk-card.busy{opacity:.55;pointer-events:none}
+.hk-q .hk-card .w{color:var(--ink-2)}
+.hk-filter{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+details.hk-adv{margin-top:18px}
+details.hk-adv>summary{cursor:pointer;font-weight:600;padding:10px 0;color:var(--ink)}
+
+/* ---- 中文 type scale (generated: every font-size rule mirrored so the cascade order is kept) ---- */
+html[lang="zh-Hans"] body{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .who{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] nav.tabs button{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .btn{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .btn.small{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .legend{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid thead th{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid thead th b{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .rm .no{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .rm .ty{font-size:14px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .chip{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .chips .range{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-card .n{font-size:18px;}
+html[lang="zh-Hans"] .hk-card .s{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-card .w,html[lang="zh-Hans"] .hk-card .t{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid tr.floor td{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid thead th.nav button{font-size:20px;}
+html[lang="zh-Hans"] .grid td.g-free{font-size:14px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .bar{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .panel h2{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .stat .k{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .stat .v{font-size:24px;}
+html[lang="zh-Hans"] .stat .s{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .row .sub{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .room-tag{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .pill{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .data th,html[lang="zh-Hans"] .data td{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .data th{font-size:14.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .room-tag.big{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .floor-tag{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .type-tag{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-btn{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .modal h3{font-size:18px;}
+html[lang="zh-Hans"] .modal .ref{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .form label{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .form input,html[lang="zh-Hans"] .form select,html[lang="zh-Hans"] .form textarea{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .sum{font-size:15.5px;letter-spacing:.03em;}
+@media (max-width:560px){html[lang="zh-Hans"] .stat .v{font-size:20px;}}
+html[lang="zh-Hans"] body{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .who{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .role{font-size:13.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] nav.tabs button{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .panel h2{font-size:24px;}
+html[lang="zh-Hans"] .panel h2 b{font-size:24px;}
+html[lang="zh-Hans"] .stat .k{font-size:14px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .stat .v{font-size:42px;}
+html[lang="zh-Hans"] .stat .s{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .btn{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .btn.small{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .form label{font-size:13.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .data th{font-size:13.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .room-tag{font-size:21px;}
+html[lang="zh-Hans"] .room-tag.big{font-size:24px;}
+html[lang="zh-Hans"] .type-tag{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .price{font-size:20px;}
+html[lang="zh-Hans"] .pill{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid thead th{font-size:13.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid thead th b{font-size:24px;}
+html[lang="zh-Hans"] .rm .no{font-size:22px;}
+html[lang="zh-Hans"] .rm .ty{font-size:13.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid tr.floor td{font-size:18px;}
+html[lang="zh-Hans"] .grid thead th.nav button{font-size:24px;}
+html[lang="zh-Hans"] .bar{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .legend{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-floor{font-size:19px;}
+html[lang="zh-Hans"] .hk-card .n{font-size:26px;}
+html[lang="zh-Hans"] .hk-card .s{font-size:13.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .modal h3{font-size:32px;}
+html[lang="zh-Hans"] .sum b{font-size:20px;}
+html[lang="zh-Hans"] .login h2,html[lang="zh-Hans"] form.login h2,html[lang="zh-Hans"] div.login h2{font-size:30px;}
+html[lang="zh-Hans"] .login h2{font-size:20px;}
+html[lang="zh-Hans"] .login p{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .login input{font-size:17.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .login .btn{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .login .or{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .login .links{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .role{font-size:14px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .log-row .t{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .log-row ul{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .meta{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] main .login h2{font-size:30px;}
+html[lang="zh-Hans"] .grid tr.floor td,html[lang="zh-Hans"] .grid tr.floor td.rm{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-floor{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .zoom button{font-size:22px;}
+html[lang="zh-Hans"] .zoom span{font-size:15px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid.z-m thead th b{font-size:19px;}
+html[lang="zh-Hans"] .grid.z-m .bar{font-size:14px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid.z-s thead th{font-size:13px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid.z-s thead th b{font-size:16.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid.z-s .bar{font-size:13px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid.z-s td.g-free{font-size:0;}
+html[lang="zh-Hans"] .hk-help{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-q .hk-card .s{font-size:14.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .hk-q .hk-card .go{font-size:15.5px;letter-spacing:.03em;}
+html[lang="zh-Hans"] .grid.z-s thead th{font-size:12.5px;letter-spacing:0}
+html[lang="zh-Hans"] .grid thead th{letter-spacing:0}
+html[lang="zh-Hans"] nav.tabs button{letter-spacing:.06em;font-size:15px}
 </style>
 
 </head><body>
@@ -453,7 +606,7 @@ let WD=LANG==='zh'?WD_ZH:WD_RU,MON=LANG==='zh'?MON_ZH:MON_RU;
 const TABS=[['grid','Шахматка','see'],['today','Сегодня','read'],['list','Брони','read'],['rooms','Номера','read'],['hk','Уборка','book'],['report','Отчёт','manage'],['log','Журнал','owner'],['staff','Сотрудники','owner']];
 
 /* ---------- i18n: RU / 中文 ---------- */
-const ZH={"язык":"语言","если выбрать горничную и нажать «нужна уборка» на номерах, которые уже ждут уборки, — задание просто переназначится на неё.": "如果选择保洁员后对已在等待清扫的房间点击「需要清扫」，任务会直接改派给她。", "придумайте логин и пароль. сразу после регистрации откроется просмотр занятости номеров, остальной доступ выдаёт владелец.": "请设置登录名和密码。注册后即可查看房间占用情况，其他权限由业主授予。", "только занятость номеров, без данных гостей. даётся автоматически при самостоятельной регистрации.": "仅可查看房间占用情况，不显示客人信息。自行注册时自动获得。", "нажмите на пустую клетку, чтобы создать бронь с этой даты. нажмите на бронь, чтобы открыть её.": "点击空白格即可从该日期新建预订；点击预订可打开详情。", "удалить» навсегда закрывает доступ этому логину. его действия в журнале сохраняются.": "删除」将永久关闭该账号的访问权限，其在日志中的操作记录会保留。", "не удалось проверить занятость номера. проверьте интернет и попробуйте ещё раз.": "无法核实房间占用情况，请检查网络后重试。", "гость видит только занятость номеров. выберите роль, чтобы расширить доступ.": "访客只能查看房间占用情况。选择角色可扩大权限。", "откройте его и перейдите по ссылке. если письма нет — проверьте папку «спам».": "请打开邮件并点击链接。如未收到，请检查垃圾邮件文件夹。", "откройте его и перейдите по ссылке. если письма нет — проверьте папку «спам": "请打开邮件并点击链接。如未收到，请检查垃圾邮件文件夹", "владельцем? он(а) получит все права: журнал, сотрудники, пароли, удаление.": "设为业主？对方将获得全部权限：日志、员工、密码、删除。", "и ваш пароль. после этого заходите с любого устройства по логину и паролю.": "和您的密码。之后可在任何设备上用登录名和密码登录。", "полная копия базы» — все номера, брони, сотрудники и журнал за всё время.": "完整数据库备份」包含全部房间、预订、员工和全部日志。", "по этому номеру есть брони. сделайте его «не продаётся» вместо удаления.": "该房间存在预订。请将其设为「停售」，而不是删除。", "не удалось загрузить систему. проверьте интернет и обновите страницу.": "系统加载失败，请检查网络并刷新页面。", "отправлена владельцу. когда он её одобрит, нажмите «проверить снова».": "已发送给业主。批准后请点击「重新检查」。", "отправлена владельцу. когда он её одобрит, нажмите «проверить снова": "已发送给业主。批准后请点击「重新检查", "бронь не сохранена — нажмите «подобрать» и выберите другой номер.": "预订未保存——请点击「选房」并选择其他房间。", "зелёным отмечены свободные даты. расширить доступ может владелец.": "绿色表示空闲日期。如需更多权限，请联系业主。", "отменить эту бронь? она останется в истории со статусом «отменена».": "取消此预订？它将以「已取消」状态保留在记录中。", "отменить эту бронь? она останется в истории со статусом «отменена": "取消此预订？它将以「已取消」状态保留在记录中", "создать сотрудника с ролью «владелец»? он(а) получит все права.": "创建「业主」角色的员工？对方将获得全部权限。", "удалить бронь навсегда? запись об удалении останется в журнале.": "永久删除该预订？删除记录将保留在日志中。", "нет доступа к данным. попросите владельца проверить вашу роль.": "无权访问数据，请让业主检查您的角色。", "точка — состояние номера. уборкой управляют во вкладке «уборка».": "圆点表示房态。清扫在「清扫」标签页中管理。", "точка — состояние номера. уборкой управляют во вкладке «уборка": "圆点表示房态。清扫在「清扫」标签页中管理", "всё, кроме журнала и сотрудников: брони, номера, цены, отчёты.": "除日志和员工外的全部功能：预订、房间、价格、报表。", "на выбранные даты свободных номеров с такой вместимостью нет.": "所选日期没有满足入住人数的空房。", "попробуйте другие даты, меньше гостей или другой тип номера.": "请尝试其他日期、减少人数或更换房型。", "всё то же, что у вас: журнал, сотрудники, пароли, удаление.": "与您相同的全部权限：日志、员工、密码、删除。", "не загрузился. проверьте интернет и обновите страницу.": "未加载，请检查网络并刷新页面。", "выручка считается по ночам, прожитым в этом периоде.": "营收按本期间内实际入住的晚数计算。", "нажмите на день, чтобы открыть отчёт только за него.": "点击某一天可查看当天报表。", "шахматка с гостями, состояние номеров (для горничных).": "带客人信息的房态表、房间状态（适用于保洁）。", "шахматка с гостями, состояние номеров (для горничных": "带客人信息的房态表、房间状态（适用于保洁", "слишком много попыток. подождите несколько минут.": "尝试次数过多，请稍等几分钟。", "не добавлен в сотрудники. обратитесь к владельцу.": "未被添加为员工，请联系业主。", "нажмите «подобрать», чтобы найти номер побольше.": "请点击「选房」查找更大的房间。", "брони, заселение, оплаты, отмена броней, уборка.": "预订、入住、收款、取消预订、清扫。", "листы: сводка, брони, оплаты, по номерам, долги": "工作表：汇总、预订、收款、按房间、欠款", "нажмите на номер, чтобы открыть раздел «уборка».": "点击房间打开「清扫」页面。", "нажмите на номер, чтобы открыть раздел «уборка": "点击房间打开「清扫」页面", "для выбранных номеров это действие не подходит": "该操作不适用于所选房间", "и своим паролем — с полными правами владельца.": "和您的密码登录，拥有完整的业主权限。", "удалять брони и номера может только владелец.": "只有业主可以删除预订和房间。", "латинских букв или цифр, можно точку, дефис и": "位拉丁字母或数字，可含点、连字符和", "этот адрес сайта не разрешён для входа через": "该网址不允许通过以下方式登录：", "войти под этим логином больше не получится.": "此后将无法再用该账号登录。", "оплачено — по броням с заездом в этот день.": "已付——按当天入住的预订统计。", "дата выезда должна быть позже даты заезда.": "退房日期必须晚于入住日期。", "связь с базой прервана — обновите страницу": "与数据库的连接已中断——请刷新页面", "такой логин уже занят. придумайте другой.": "该登录名已被占用，请换一个。", "дата «по» должна быть не раньше даты «с».": "结束日期不能早于开始日期。", "дата «по» должна быть не раньше даты «с": "结束日期不能早于开始日期", "нет интернета. проверьте подключение.": "没有网络，请检查连接。", "поздний заезд, доп. кровать, завтрак…": "晚到、加床、早餐……", "передайте сотруднику логин и пароль.": "请将登录名和密码交给员工。", "уже зарегистрирован другим способом.": "已通过其他方式注册。", "выберите период и нажмите «показать».": "选择期间后点击「显示」。", "выберите период и нажмите «показать": "选择期间后点击「显示", "готово! теперь можно входить: логин": "完成！现在可以登录：登录名", "готово: вы можете входить с логином": "完成：您可以使用以下登录名登录", "добавьте горничных внизу страницы.": "请在页面底部添加保洁员。", "не удалось загрузить архив броней:": "无法加载历史预订：", "создал(а) вход владельца по логину": "创建了业主登录账号", "без горничной — выберите горничную": "未指定保洁员——请选择保洁员", "на ремонте. выберите другой номер.": "正在维修，请选择其他房间。", "пароль слишком короткий — минимум": "密码太短——至少", "тогда пароль не нужен, вход через": "则无需密码，可通过以下方式登录", "за выбранный период записей нет.": "所选期间没有记录。", "ещё не готовы — сначала «готово»": "尚未完成——请先点「完成」", "ещё не готовы — сначала «готово": "尚未完成——请先点「完成", "за этот период уборок не было.": "此期间没有清扫记录。", "имя, телефон, номер, компания…": "姓名、电话、房号、公司……", "укажите даты заезда и выезда.": "请填写入住和退房日期。", "уже занят. придумайте другой.": "已被占用，请换一个。", "зарегистрировался(ась) сам(а):": "自行注册：", "зарегистрировался(ась) сам(а": "自行注册", "не удалось загрузить журнал:": "无法加载日志：", "вместо логина можно вписать": "也可以用以下方式代替登录名：", "не удалось загрузить отчёт:": "无法加载报表：", "оплачено по заездам периода": "本期入住已付", "придумайте логин (латиницей)": "设置登录名（拉丁字母）", "придумайте логин (латиницей": "设置登录名（拉丁字母", "удалил(а) доступ сотрудника": "删除了员工权限", "выручка (по прожитым ночам)": "营收（按入住晚数）", "выручка (по прожитым ночам": "营收（按入住晚数", "неверный логин или пароль.": "登录名或密码错误。", "сменил(а) состояние номера": "更改了房态", "укажите номера, например с": "请输入房号，例如从", "уже кем-то занят. напишите": "已被他人占用。请联系", "загружаем номера и брони…": "正在加载房间和预订……", "нет прав на это действие.": "您无权执行此操作。", "письмо отправлено ещё раз": "邮件已重新发送", "подобрать свободный номер": "查找空房", "такой сотрудник уже есть.": "该员工已存在。", "номера ещё не добавлены.": "尚未添加房间。", "отправить письмо ещё раз": "重新发送邮件", "долг по заездам периода": "本期入住欠款", "загружаем архив броней…": "正在加载历史预订……", "проверьте даты периода.": "请检查期间日期。", "свободно на весь период": "整个期间均空闲", "сначала выберите номера": "请先选择房间", "мы отправили письмо на": "我们已发送邮件至", "нет (скрыт из шахматки)": "否（在房态表中隐藏）", "нет (скрыт из шахматки": "否（在房态表中隐藏", "создайте себе вход без": "为自己创建登录方式，无需", "укажите номер комнаты.": "请填写房号。", "добавил(а) сотрудника": "添加了员工", "изменил(а) сотрудника": "修改了员工", "не удалось выгрузить:": "导出失败：", "не удалось сохранить:": "保存失败：", "придумайте пароль (от 6 символов)": "设置密码（至少6位）", "придумайте пароль (от": "设置密码（至少", "восстановил(а) бронь": "恢复了预订", "горничная добавлена:": "已添加保洁员：", "готово — на проверку": "完成——待检查", "готово → на проверку": "完成 → 待检查", "пароли не совпадают.": "两次密码不一致。", "последнее изменение:": "最后修改：", "отключён владельцем.": "已被业主停用。", "вернуть на доуборку": "退回重扫", "вид во двор, ванна…": "朝向院子、浴缸……", "компания (для юрлиц)": "公司（企业客户）", "компания (для юрлиц": "公司（企业客户", "назначена горничная": "已指派保洁员", "не удалось удалить:": "删除失败：", "окно входа закрыто.": "登录窗口已关闭。", "сообщите владельцу.": "请告知业主。", "броней не найдено.": "未找到预订。", "добавить горничную": "添加保洁员", "задание поставлено": "任务下达时间", "зарегистрироваться": "注册", "мой вход по логину": "我的账号登录", "нажмите «подобрать».": "请点击「选房」。", "нажмите «подобрать": "请点击「选房", "ничего не изменено": "未做任何更改", "оплаты по способам": "按付款方式", "оплачено полностью": "已全额付款", "сделать владельцем": "设为业主", "создать сотрудника": "创建员工", "сотрудник добавлен": "员工已添加", "среднее время, мин": "平均用时（分钟）", "удалить доступ для": "删除以下人员的权限：", "укажите фио гостя.": "请填写客人姓名。", "неизвестная ошибка": "未知错误", "по заездам периода": "按本期入住", "подставлен в бронь": "已填入预订", "все «нужна уборка»": "全部「需要清扫」", "все «нужна уборка": "全部「需要清扫", "все номера чистые": "所有房间均已清洁", "загружаем журнал…": "正在加载日志……", "заявка отправлена": "申请已发送", "новые регистрации": "新注册", "номеров в продаже": "在售房间数", "номеров пока нет.": "暂无房间。", "отмены и удаления": "取消与删除", "полная копия базы": "完整数据库备份", "создать владельца": "创建业主", "средняя цена ночи": "平均房价", "текущие и будущие": "当前及未来", "комнаты или гость": "房号或客人", "№ комнаты или гость": "房号或客人", "ожидаются сегодня": "今日预计", "все «на проверке»": "全部「待检查」", "все «на проверке": "全部「待检查", "главный владелец": "主业主", "добавил(а) номер": "添加了房间", "загрузка сегодня": "今日入住率", "изменил(а) бронь": "修改了预订", "изменил(а) номер": "修改了房间", "отменил(а) бронь": "取消了预订", "отметить ремонт:": "标记维修：", "пароль — минимум": "密码至少", "по типам номеров": "按房型", "повторите пароль": "再次输入密码", "проверьте логин.": "请检查登录名。", "свободные номера": "空闲房间", "сейчас на сайте:": "当前在线：", "сейчас проживают": "在住客人", "скачать отчёт за": "下载报表：", "создать мой вход": "创建我的登录", "требуется уборка": "需要清扫", "убрать из списка": "从列表移除", "из них не готовы": "其中未就绪", "подберём другой.": "我们会换一个。", "выберите номера": "选择房间", "доступ отключён": "已停用访问", "заезды / выезды": "入住 / 退房", "изменения оплат": "付款变更", "оплачено / долг": "已付 / 欠款", "отменено броней": "已取消预订", "отчёт по уборке": "清扫报表", "подобрать номер": "选房", "проверить снова": "重新检查", "проданных ночей": "已售间夜", "создал(а) бронь": "创建了预订", "удалил(а) бронь": "删除了预订", "удалил(а) номер": "删除了房间", "ещё не входил(а)": "尚未登录", "ещё не входил(а": "尚未登录", "безнал (юрлицо)": "对公转账（企业）", "безнал (юрлицо": "对公转账（企业", "бронь отменена": "预订已取消", "все сотрудники": "全部员工", "готовим копию…": "正在生成备份……", "доступ включён": "已启用访问", "заезды сегодня": "今日入住", "занято номеров": "已占用房间", "на день вперёд": "后一天", "номер сохранён": "房间已保存", "номера созданы": "房间已创建", "отменить бронь": "取消预订", "по дням заезда": "按入住日期", "роль изменена:": "角色已更改：", "я подтвердил(а)": "我已确认", "я подтвердил(а": "我已确认", "мест, а гостей": "个床位，但客人有", "документ (№ уд. / паспорта)": "证件（身份证/护照号）", "уд. / паспорта)": "身份证/护照号）", "уд. / паспорта": "身份证/护照号", "администратор": "前台", "бронь удалена": "预订已删除", "гость выселен": "客人已退房", "гость заселён": "客人已入住", "готовим файл…": "正在生成文件……", "дата выгрузки": "导出日期", "доступ удалён": "访问已删除", "забронировать": "预订", "копия скачана": "备份已下载", "на день назад": "前一天", "начала уборку": "开始清扫", "номер комнаты": "房号", "ночей продано": "已售晚数", "ошибка входа:": "登录错误：", "по источникам": "按来源", "прошлый месяц": "上月", "способ оплаты": "付款方式", "удалить номер": "删除房间", "все действия": "全部操作", "номер удалён": "房间已删除", "нужна уборка": "需要清扫", "пока никого.": "暂无人员。", "создан логин": "已创建登录名", "укажите имя.": "请填写姓名。", "цена за ночь": "每晚价格", "цена за ночь, ₸": "每晚价格，₸", "оплачено, ₸": "已付，₸", "и ваш пароль": "和您的密码", "не назначена": "未指派", "не продаётся)": "停售）", "не продаётся": "停售", "войти через google": "使用 Google 登录", "войти через": "登录方式：", "выездов нет": "无退房", "двухместный": "双床房", "заездов нет": "无入住", "комментарий": "备注", "на проверке": "待检查", "не удалось:": "操作失败：", "нет доступа": "无访问权限", "новая бронь": "新预订", "новый номер": "新房间", "подтвердите email": "请验证邮箱", "подтвердите": "请确认", "регистрация": "注册", "снять выбор": "取消选择", "управляющий": "经理", "файл скачан": "文件已下载", "на проверку": "待检查", "на ремонте.": "正在维修。", "всё занято": "已满房", "выгрузил(а)": "导出人", "выгрузил(а": "导出人", "выгрузка в excel": "导出到 Excel", "выгрузка в": "导出到", "доступ для": "以下人员的权限：", "загружаем…": "加载中……", "копия базы": "数据库备份", "не заехали": "未到店", "нет данных": "暂无数据", "отменённые": "已取消", "по номерам": "按房间", "показатель": "指标", "поставил(а)": "下达人", "поставил(а": "下达人", "сотрудники": "员工", "тип номера": "房型", "этот месяц": "本月", "владельца.": "业主。", "уже занят:": "已被占用：", "без имени": "未命名", "возвратов": "退回次数", "выселил(а)": "办理退房", "выселил(а": "办理退房", "горничная": "保洁员", "горничные": "保洁员", "горничным": "保洁", "есть долг": "有欠款", "загрузка…": "加载中……", "заселил(а)": "办理入住", "заселил(а": "办理入住", "заявка от": "申请人：", "изменения": "变更", "изменил(а)": "修改人", "изменил(а": "修改人", "к оплате:": "待付：", "логин: от": "登录名：", "отключить": "停用", "подобрать": "选房", "позавчера": "前天", "проверьте": "请检查", "продаётся": "在售", "состояние": "状态", "сотрудник": "员工", "сохранено": "已保存", "сохранить": "保存", "ср. время": "平均用时", "убирается": "清扫中", "фио гостя": "客人姓名", "цена/ночь": "每晚价格", "за период": "本期间", "назначена": "已指派", "символов.": "个字符。", "символов)": "个字符）", "уже есть.": "已存在。", "в номере": "房间", "ваше имя": "您的姓名", "включить": "启用", "владелец": "业主", "выселить": "退房", "действие": "操作", "документ": "证件", "загрузка": "入住率", "заселить": "入住", "значение": "数值", "изменено": "修改时间", "изменить": "编辑", "источник": "来源", "ко входу": "返回登录", "компания": "公司", "наличные": "现金", "обновить": "刷新", "оплачено": "已付", "отключён": "已停用", "отменена": "已取消", "отменено": "已取消", "показать": "显示", "полулюкс": "小套房", "принял(а)": "验收人", "принял(а": "验收人", "просмотр": "只读", "с долгом": "有欠款", "свободно": "空闲", "семейный": "家庭房", "создал(а):": "创建人：", "создал(а)": "创建人", "создал(а": "创建人", "стандарт": "标准间", "шахматка": "房态表", "символов": "个字符", "аккаунт": "账号", "активен": "已启用", "вернуть": "恢复", "выбрать": "选择", "выездов": "退房", "выручка": "营收", "за ночь": "每晚", "задание": "任务", "заданий": "任务数", "заездов": "入住", "закрыть": "关闭", "заметка": "备注", "записей": "记录", "заселён": "已入住", "история": "历史", "пароль:": "密码：", "перевод": "转账", "период:": "期间：", "по дням": "按天", "понятно": "知道了", "принято": "已验收", "принять": "验收", "с улицы": "上门散客", "сделать": "设为", "сегодня": "今天", "скачать": "下载", "создано": "创建时间", "создать": "创建", "телефон": "电话", "удалить": "删除", "фамилия": "姓", "возврат": "退回", "номеров": "间房", "в сети": "在线", "возвр.": "退回", "выезды": "退房", "выехал": "已退房", "гостей": "人数", "готово": "完成", "доступ": "权限", "другое": "其他", "журнал": "日志", "заезды": "入住", "занято": "已占用", "звонок / whatsapp": "电话 / WhatsApp", "звонок": "电话", "итого:": "合计：", "логин:": "登录名：", "модуль": "模块", "начала": "开始", "никого": "无人", "номера": "房间", "ночей:": "晚数：", "оплаты": "收款", "пароль": "密码", "период": "期间", "ремонт": "维修", "с даты": "起始日期", "сводка": "汇总", "статус": "状态", "уборка": "清扫", "чистые": "已清洁", "чистый": "已清洁", "юрлицо": "企业客户", "занят:": "被占用：", "онлайн": "在线", "только": "仅", "брони": "预订", "бронь": "预订", "войти": "登录", "время": "时间", "вчера": "昨天", "выезд": "退房", "выйти": "退出", "гость": "客人", "долги": "欠款", "заезд": "入住", "итого": "合计", "карта": "银行卡", "логин": "登录名", "любой": "不限", "минут": "分钟", "номер": "房间", "ночей": "晚数", "отчёт": "报表", "сумма": "金额", "был(а)": "上次在线", "был(а": "上次在线", "день": "天", "долг": "欠款", "ждёт": "等待中", "люкс": "套房", "мест": "个床位", "роли": "角色", "роль": "角色", "этаж": "层", "этот": "本", "дней": "天", "ном.?": "间房？", "ном.": "间房", "ноч.):": "晚）：", "ноч.": "晚", "все": "全部", "гис": "GIS", "имя": "名", "мин": "分钟", "нет": "否", "тип": "房型", "это": "这是", "дн.": "天", "или": "或", "сам)": "自行注册）", "сам": "自行", "да": "是", "за": "按", "дн": "天", "до": "至", "из": "/", "н.": "晚", "на": "至", "от": "自", "по": "至", "с": "自", "instagram / 2гис": "Instagram / 2GIS", "сейчас на сайте": "当前在线", "вход для сотрудников": "员工登录", "ночь": "晚", "ночи": "晚"};
+const ZH={"язык": "语言", "если выбрать горничную и нажать «нужна уборка» на номерах, которые уже ждут уборки, — задание просто переназначится на неё.": "如果选择保洁员后对已在等待清扫的房间点击「需要清扫」，任务会直接改派给她。", "придумайте логин и пароль. сразу после регистрации откроется просмотр занятости номеров, остальной доступ выдаёт владелец.": "请设置登录名和密码。注册后即可查看房间占用情况，其他权限由业主授予。", "только занятость номеров, без данных гостей. даётся автоматически при самостоятельной регистрации.": "仅可查看房间占用情况，不显示客人信息。自行注册时自动获得。", "нажмите на пустую клетку, чтобы создать бронь с этой даты. нажмите на бронь, чтобы открыть её.": "点击空白格即可从该日期新建预订；点击预订可打开详情。", "удалить» навсегда закрывает доступ этому логину. его действия в журнале сохраняются.": "删除」将永久关闭该账号的访问权限，其在日志中的操作记录会保留。", "не удалось проверить занятость номера. проверьте интернет и попробуйте ещё раз.": "无法核实房间占用情况，请检查网络后重试。", "гость видит только занятость номеров. выберите роль, чтобы расширить доступ.": "访客只能查看房间占用情况。选择角色可扩大权限。", "откройте его и перейдите по ссылке. если письма нет — проверьте папку «спам».": "请打开邮件并点击链接。如未收到，请检查垃圾邮件文件夹。", "откройте его и перейдите по ссылке. если письма нет — проверьте папку «спам": "请打开邮件并点击链接。如未收到，请检查垃圾邮件文件夹", "владельцем? он(а) получит все права: журнал, сотрудники, пароли, удаление.": "设为业主？对方将获得全部权限：日志、员工、密码、删除。", "и ваш пароль. после этого заходите с любого устройства по логину и паролю.": "和您的密码。之后可在任何设备上用登录名和密码登录。", "полная копия базы» — все номера, брони, сотрудники и журнал за всё время.": "完整数据库备份」包含全部房间、预订、员工和全部日志。", "по этому номеру есть брони. сделайте его «не продаётся» вместо удаления.": "该房间存在预订。请将其设为「停售」，而不是删除。", "не удалось загрузить систему. проверьте интернет и обновите страницу.": "系统加载失败，请检查网络并刷新页面。", "отправлена владельцу. когда он её одобрит, нажмите «проверить снова».": "已发送给业主。批准后请点击「重新检查」。", "отправлена владельцу. когда он её одобрит, нажмите «проверить снова": "已发送给业主。批准后请点击「重新检查", "бронь не сохранена — нажмите «подобрать» и выберите другой номер.": "预订未保存——请点击「选房」并选择其他房间。", "зелёным отмечены свободные даты. расширить доступ может владелец.": "绿色表示空闲日期。如需更多权限，请联系业主。", "отменить эту бронь? она останется в истории со статусом «отменена».": "取消此预订？它将以「已取消」状态保留在记录中。", "отменить эту бронь? она останется в истории со статусом «отменена": "取消此预订？它将以「已取消」状态保留在记录中", "создать сотрудника с ролью «владелец»? он(а) получит все права.": "创建「业主」角色的员工？对方将获得全部权限。", "удалить бронь навсегда? запись об удалении останется в журнале.": "永久删除该预订？删除记录将保留在日志中。", "нет доступа к данным. попросите владельца проверить вашу роль.": "无权访问数据，请让业主检查您的角色。", "точка — состояние номера. уборкой управляют во вкладке «уборка».": "圆点表示房态。清扫在「清扫」标签页中管理。", "точка — состояние номера. уборкой управляют во вкладке «уборка": "圆点表示房态。清扫在「清扫」标签页中管理", "всё, кроме журнала и сотрудников: брони, номера, цены, отчёты.": "除日志和员工外的全部功能：预订、房间、价格、报表。", "на выбранные даты свободных номеров с такой вместимостью нет.": "所选日期没有满足入住人数的空房。", "попробуйте другие даты, меньше гостей или другой тип номера.": "请尝试其他日期、减少人数或更换房型。", "всё то же, что у вас: журнал, сотрудники, пароли, удаление.": "与您相同的全部权限：日志、员工、密码、删除。", "не загрузился. проверьте интернет и обновите страницу.": "未加载，请检查网络并刷新页面。", "выручка считается по ночам, прожитым в этом периоде.": "营收按本期间内实际入住的晚数计算。", "нажмите на день, чтобы открыть отчёт только за него.": "点击某一天可查看当天报表。", "шахматка с гостями, состояние номеров (для горничных).": "带客人信息的房态表、房间状态（适用于保洁）。", "шахматка с гостями, состояние номеров (для горничных": "带客人信息的房态表、房间状态（适用于保洁", "слишком много попыток. подождите несколько минут.": "尝试次数过多，请稍等几分钟。", "не добавлен в сотрудники. обратитесь к владельцу.": "未被添加为员工，请联系业主。", "нажмите «подобрать», чтобы найти номер побольше.": "请点击「选房」查找更大的房间。", "брони, заселение, оплаты, отмена броней, уборка.": "预订、入住、收款、取消预订、清扫。", "листы: сводка, брони, оплаты, по номерам, долги": "工作表：汇总、预订、收款、按房间、欠款", "нажмите на номер, чтобы открыть раздел «уборка».": "点击房间打开「清扫」页面。", "нажмите на номер, чтобы открыть раздел «уборка": "点击房间打开「清扫」页面", "для выбранных номеров это действие не подходит": "该操作不适用于所选房间", "и своим паролем — с полными правами владельца.": "和您的密码登录，拥有完整的业主权限。", "удалять брони и номера может только владелец.": "只有业主可以删除预订和房间。", "латинских букв или цифр, можно точку, дефис и": "位拉丁字母或数字，可含点、连字符和", "этот адрес сайта не разрешён для входа через": "该网址不允许通过以下方式登录：", "войти под этим логином больше не получится.": "此后将无法再用该账号登录。", "оплачено — по броням с заездом в этот день.": "已付——按当天入住的预订统计。", "дата выезда должна быть позже даты заезда.": "退房日期必须晚于入住日期。", "связь с базой прервана — обновите страницу": "与数据库的连接已中断——请刷新页面", "такой логин уже занят. придумайте другой.": "该登录名已被占用，请换一个。", "дата «по» должна быть не раньше даты «с».": "结束日期不能早于开始日期。", "дата «по» должна быть не раньше даты «с": "结束日期不能早于开始日期", "нет интернета. проверьте подключение.": "没有网络，请检查连接。", "поздний заезд, доп. кровать, завтрак…": "晚到、加床、早餐……", "передайте сотруднику логин и пароль.": "请将登录名和密码交给员工。", "уже зарегистрирован другим способом.": "已通过其他方式注册。", "выберите период и нажмите «показать».": "选择期间后点击「显示」。", "выберите период и нажмите «показать": "选择期间后点击「显示", "готово! теперь можно входить: логин": "完成！现在可以登录：登录名", "готово: вы можете входить с логином": "完成：您可以使用以下登录名登录", "добавьте горничных внизу страницы.": "请在页面底部添加保洁员。", "не удалось загрузить архив броней:": "无法加载历史预订：", "создал(а) вход владельца по логину": "创建了业主登录账号", "без горничной — выберите горничную": "未指定保洁员——请选择保洁员", "на ремонте. выберите другой номер.": "正在维修，请选择其他房间。", "пароль слишком короткий — минимум": "密码太短——至少", "тогда пароль не нужен, вход через": "则无需密码，可通过以下方式登录", "за выбранный период записей нет.": "所选期间没有记录。", "ещё не готовы — сначала «готово»": "尚未完成——请先点「完成」", "ещё не готовы — сначала «готово": "尚未完成——请先点「完成", "за этот период уборок не было.": "此期间没有清扫记录。", "имя, телефон, номер, компания…": "姓名、电话、房号、公司……", "укажите даты заезда и выезда.": "请填写入住和退房日期。", "уже занят. придумайте другой.": "已被占用，请换一个。", "зарегистрировался(ась) сам(а):": "自行注册：", "зарегистрировался(ась) сам(а": "自行注册", "не удалось загрузить журнал:": "无法加载日志：", "вместо логина можно вписать": "也可以用以下方式代替登录名：", "не удалось загрузить отчёт:": "无法加载报表：", "оплачено по заездам периода": "本期入住已付", "придумайте логин (латиницей)": "设置登录名（拉丁字母）", "придумайте логин (латиницей": "设置登录名（拉丁字母", "удалил(а) доступ сотрудника": "删除了员工权限", "выручка (по прожитым ночам)": "营收（按入住晚数）", "выручка (по прожитым ночам": "营收（按入住晚数", "неверный логин или пароль.": "登录名或密码错误。", "сменил(а) состояние номера": "更改了房态", "укажите номера, например с": "请输入房号，例如从", "уже кем-то занят. напишите": "已被他人占用。请联系", "загружаем номера и брони…": "正在加载房间和预订……", "нет прав на это действие.": "您无权执行此操作。", "письмо отправлено ещё раз": "邮件已重新发送", "подобрать свободный номер": "查找空房", "такой сотрудник уже есть.": "该员工已存在。", "номера ещё не добавлены.": "尚未添加房间。", "отправить письмо ещё раз": "重新发送邮件", "долг по заездам периода": "本期入住欠款", "загружаем архив броней…": "正在加载历史预订……", "проверьте даты периода.": "请检查期间日期。", "свободно на весь период": "整个期间均空闲", "сначала выберите номера": "请先选择房间", "мы отправили письмо на": "我们已发送邮件至", "нет (скрыт из шахматки)": "否（在房态表中隐藏）", "нет (скрыт из шахматки": "否（在房态表中隐藏", "создайте себе вход без": "为自己创建登录方式，无需", "укажите номер комнаты.": "请填写房号。", "добавил(а) сотрудника": "添加了员工", "изменил(а) сотрудника": "修改了员工", "не удалось выгрузить:": "导出失败：", "не удалось сохранить:": "保存失败：", "придумайте пароль (от 6 символов)": "设置密码（至少6位）", "придумайте пароль (от": "设置密码（至少", "восстановил(а) бронь": "恢复了预订", "горничная добавлена:": "已添加保洁员：", "готово — на проверку": "完成——待检查", "готово → на проверку": "完成 → 待检查", "пароли не совпадают.": "两次密码不一致。", "последнее изменение:": "最后修改：", "отключён владельцем.": "已被业主停用。", "вернуть на доуборку": "退回重扫", "вид во двор, ванна…": "朝向院子、浴缸……", "компания (для юрлиц)": "公司（企业客户）", "компания (для юрлиц": "公司（企业客户", "назначена горничная": "已指派保洁员", "не удалось удалить:": "删除失败：", "окно входа закрыто.": "登录窗口已关闭。", "сообщите владельцу.": "请告知业主。", "броней не найдено.": "未找到预订。", "добавить горничную": "添加保洁员", "задание поставлено": "任务下达时间", "зарегистрироваться": "注册", "мой вход по логину": "我的账号登录", "нажмите «подобрать».": "请点击「选房」。", "нажмите «подобрать": "请点击「选房", "ничего не изменено": "未做任何更改", "оплаты по способам": "按付款方式", "оплачено полностью": "已全额付款", "сделать владельцем": "设为业主", "создать сотрудника": "创建员工", "сотрудник добавлен": "员工已添加", "среднее время, мин": "平均用时（分钟）", "удалить доступ для": "删除以下人员的权限：", "укажите фио гостя.": "请填写客人姓名。", "неизвестная ошибка": "未知错误", "по заездам периода": "按本期入住", "подставлен в бронь": "已填入预订", "все «нужна уборка»": "全部「需要清扫」", "все «нужна уборка": "全部「需要清扫", "все номера чистые": "所有房间均已清洁", "загружаем журнал…": "正在加载日志……", "заявка отправлена": "申请已发送", "новые регистрации": "新注册", "номеров в продаже": "在售房间数", "номеров пока нет.": "暂无房间。", "отмены и удаления": "取消与删除", "полная копия базы": "完整数据库备份", "создать владельца": "创建业主", "средняя цена ночи": "平均房价", "текущие и будущие": "当前及未来", "комнаты или гость": "房号或客人", "№ комнаты или гость": "房号或客人", "ожидаются сегодня": "今日预计", "все «на проверке»": "全部「待检查」", "все «на проверке": "全部「待检查", "главный владелец": "主业主", "добавил(а) номер": "添加了房间", "загрузка сегодня": "今日入住率", "изменил(а) бронь": "修改了预订", "изменил(а) номер": "修改了房间", "отменил(а) бронь": "取消了预订", "отметить ремонт:": "标记维修：", "пароль — минимум": "密码至少", "по типам номеров": "按房型", "повторите пароль": "再次输入密码", "проверьте логин.": "请检查登录名。", "свободные номера": "空闲房间", "сейчас на сайте:": "当前在线：", "сейчас проживают": "在住客人", "скачать отчёт за": "下载报表：", "создать мой вход": "创建我的登录", "требуется уборка": "需要清扫", "убрать из списка": "从列表移除", "из них не готовы": "其中未就绪", "подберём другой.": "我们会换一个。", "выберите номера": "选择房间", "доступ отключён": "已停用访问", "заезды / выезды": "入住 / 退房", "изменения оплат": "付款变更", "оплачено / долг": "已付 / 欠款", "отменено броней": "已取消预订", "отчёт по уборке": "清扫报表", "подобрать номер": "选房", "проверить снова": "重新检查", "проданных ночей": "已售间夜", "создал(а) бронь": "创建了预订", "удалил(а) бронь": "删除了预订", "удалил(а) номер": "删除了房间", "ещё не входил(а)": "尚未登录", "ещё не входил(а": "尚未登录", "безнал (юрлицо)": "对公转账（企业）", "безнал (юрлицо": "对公转账（企业", "бронь отменена": "预订已取消", "все сотрудники": "全部员工", "готовим копию…": "正在生成备份……", "доступ включён": "已启用访问", "заезды сегодня": "今日入住", "занято номеров": "已占用房间", "на день вперёд": "后一天", "номер сохранён": "房间已保存", "номера созданы": "房间已创建", "отменить бронь": "取消预订", "по дням заезда": "按入住日期", "роль изменена:": "角色已更改：", "я подтвердил(а)": "我已确认", "я подтвердил(а": "我已确认", "мест, а гостей": "个床位，但客人有", "документ (№ уд. / паспорта)": "证件（身份证/护照号）", "уд. / паспорта)": "身份证/护照号）", "уд. / паспорта": "身份证/护照号", "администратор": "前台", "бронь удалена": "预订已删除", "гость выселен": "客人已退房", "гость заселён": "客人已入住", "готовим файл…": "正在生成文件……", "дата выгрузки": "导出日期", "доступ удалён": "访问已删除", "забронировать": "预订", "копия скачана": "备份已下载", "на день назад": "前一天", "начала уборку": "开始清扫", "номер комнаты": "房号", "ночей продано": "已售晚数", "ошибка входа:": "登录错误：", "по источникам": "按来源", "прошлый месяц": "上月", "способ оплаты": "付款方式", "удалить номер": "删除房间", "все действия": "全部操作", "номер удалён": "房间已删除", "нужна уборка": "需要清扫", "пока никого.": "暂无人员。", "создан логин": "已创建登录名", "укажите имя.": "请填写姓名。", "цена за ночь": "每晚价格", "цена за ночь, ₸": "每晚价格，₸", "оплачено, ₸": "已付，₸", "и ваш пароль": "和您的密码", "не назначена": "未指派", "не продаётся)": "停售）", "не продаётся": "停售", "войти через google": "使用 Google 登录", "войти через": "登录方式：", "выездов нет": "无退房", "двухместный": "双床房", "заездов нет": "无入住", "комментарий": "备注", "на проверке": "待检查", "не удалось:": "操作失败：", "нет доступа": "无访问权限", "новая бронь": "新预订", "новый номер": "新房间", "подтвердите email": "请验证邮箱", "подтвердите": "请确认", "регистрация": "注册", "снять выбор": "取消选择", "управляющий": "经理", "файл скачан": "文件已下载", "на проверку": "待检查", "на ремонте.": "正在维修。", "всё занято": "已满房", "выгрузил(а)": "导出人", "выгрузил(а": "导出人", "выгрузка в excel": "导出到 Excel", "выгрузка в": "导出到", "доступ для": "以下人员的权限：", "загружаем…": "加载中……", "копия базы": "数据库备份", "не заехали": "未到店", "нет данных": "暂无数据", "отменённые": "已取消", "по номерам": "按房间", "показатель": "指标", "поставил(а)": "下达人", "поставил(а": "下达人", "сотрудники": "员工", "тип номера": "房型", "этот месяц": "本月", "владельца.": "业主。", "уже занят:": "已被占用：", "без имени": "未命名", "возвратов": "退回次数", "выселил(а)": "办理退房", "выселил(а": "办理退房", "горничная": "保洁员", "горничные": "保洁员", "горничным": "保洁", "есть долг": "有欠款", "загрузка…": "加载中……", "заселил(а)": "办理入住", "заселил(а": "办理入住", "заявка от": "申请人：", "изменения": "变更", "изменил(а)": "修改人", "изменил(а": "修改人", "к оплате:": "待付：", "логин: от": "登录名：", "отключить": "停用", "подобрать": "选房", "позавчера": "前天", "проверьте": "请检查", "продаётся": "在售", "состояние": "状态", "сотрудник": "员工", "сохранено": "已保存", "сохранить": "保存", "ср. время": "平均用时", "убирается": "清扫中", "фио гостя": "客人姓名", "цена/ночь": "每晚价格", "за период": "本期间", "назначена": "已指派", "символов.": "个字符。", "символов)": "个字符）", "уже есть.": "已存在。", "в номере": "房间", "ваше имя": "您的姓名", "включить": "启用", "владелец": "业主", "выселить": "退房", "действие": "操作", "документ": "证件", "загрузка": "入住率", "заселить": "入住", "значение": "数值", "изменено": "修改时间", "изменить": "编辑", "источник": "来源", "ко входу": "返回登录", "компания": "公司", "наличные": "现金", "обновить": "刷新", "оплачено": "已付", "отключён": "已停用", "отменена": "已取消", "отменено": "已取消", "показать": "显示", "полулюкс": "小套房", "принял(а)": "验收人", "принял(а": "验收人", "просмотр": "只读", "с долгом": "有欠款", "свободно": "空闲", "семейный": "家庭房", "создал(а):": "创建人：", "создал(а)": "创建人", "создал(а": "创建人", "стандарт": "标准间", "шахматка": "房态表", "символов": "个字符", "аккаунт": "账号", "активен": "已启用", "вернуть": "恢复", "выбрать": "选择", "выездов": "退房", "выручка": "营收", "за ночь": "每晚", "задание": "任务", "заданий": "任务数", "заездов": "入住", "закрыть": "关闭", "заметка": "备注", "записей": "记录", "заселён": "已入住", "история": "历史", "пароль:": "密码：", "перевод": "转账", "период:": "期间：", "по дням": "按天", "понятно": "知道了", "принято": "已验收", "принять": "验收", "с улицы": "上门散客", "сделать": "设为", "сегодня": "今天", "скачать": "下载", "создано": "创建时间", "создать": "创建", "телефон": "电话", "удалить": "删除", "фамилия": "姓", "возврат": "退回", "номеров": "间房", "в сети": "在线", "возвр.": "退回", "выезды": "退房", "выехал": "已退房", "гостей": "人数", "готово": "完成", "доступ": "权限", "другое": "其他", "журнал": "日志", "заезды": "入住", "занято": "已占用", "звонок / whatsapp": "电话 / WhatsApp", "звонок": "电话", "итого:": "合计：", "логин:": "登录名：", "модуль": "模块", "начала": "开始", "никого": "无人", "номера": "房间", "ночей:": "晚数：", "оплаты": "收款", "пароль": "密码", "период": "期间", "ремонт": "维修", "с даты": "起始日期", "сводка": "汇总", "статус": "状态", "уборка": "清扫", "чистые": "已清洁", "чистый": "已清洁", "юрлицо": "企业客户", "занят:": "被占用：", "онлайн": "在线", "только": "仅", "брони": "预订", "бронь": "预订", "войти": "登录", "время": "时间", "вчера": "昨天", "выезд": "退房", "выйти": "退出", "гость": "客人", "долги": "欠款", "заезд": "入住", "итого": "合计", "карта": "银行卡", "логин": "登录名", "любой": "不限", "минут": "分钟", "номер": "房间", "ночей": "晚数", "отчёт": "报表", "сумма": "金额", "был(а)": "上次在线", "был(а": "上次在线", "день": "天", "долг": "欠款", "ждёт": "等待中", "люкс": "套房", "мест": "个床位", "роли": "角色", "роль": "角色", "этаж": "层", "этот": "本", "дней": "天", "ном.?": "间房？", "ном.": "间房", "ноч.):": "晚）：", "ноч.": "晚", "все": "全部", "гис": "GIS", "имя": "名", "мин": "分钟", "нет": "否", "тип": "房型", "это": "这是", "дн.": "天", "или": "或", "сам)": "自行注册）", "сам": "自行", "да": "是", "за": "按", "дн": "天", "до": "至", "из": "/", "н.": "晚", "на": "至", "от": "自", "по": "至", "с": "自", "instagram / 2гис": "Instagram / 2GIS", "сейчас на сайте": "当前在线", "вход для сотрудников": "员工登录", "ночь": "晚", "ночи": "晚", "весь месяц": "整月", "месяц": "一个月", "масштаб": "缩放", "уменьшить": "缩小", "увеличить": "放大", "всё видно": "全部可见", "готовы": "可入住", "готов": "可入住", "готовые": "可入住", "только готовые": "仅可入住", "нажмите на номер:": "点击房间：", "чистый → «нужна уборка»": "已清洁 → 「需要清扫」", "грязный → «готов»": "待清扫 → 「可入住」", ". повторное нажатие возвращает обратно.": "。再次点击即可撤销。", "повторное нажатие возвращает обратно.": "再次点击即可撤销。", "убирает:": "清扫员：", "не указано": "未指定", "снять ремонт": "结束维修", "горничные, массовые действия и отчёт": "保洁员、批量操作和报表", "открыть расширенный режим (этажи, проверка, ремонт)": "打开高级模式（楼层、检查、维修）", "← простой режим": "← 简单模式", "простой режим": "简单模式", "таких номеров сейчас нет.": "目前没有此类房间。", "снять ремонт с": "结束维修：", "номер станет чистым.": "房间将变为已清洁。", "номер готов": "房间可入住", "только «нужна уборка»": "仅「需要清扫」"};
 const RUN_RE=/[А-Яа-яЁё]+(?:[ \-–—,.:;!?«»()\/]+[А-Яа-яЁё]+)*[.:!?…)»]*/g;
 const ZHK=Object.keys(ZH);const ZHMAXW=ZHK.reduce((m,k)=>Math.max(m,k.split(/\s+/).length),1);
 function trRun(run){const lo=run.toLowerCase();if(ZH[lo]!=null)return ZH[lo];
@@ -506,8 +659,8 @@ const stamp=t=>{const d=toDate(t);if(!d||isNaN(d))return'';return String(d.getDa
 const liveFrom=()=>add(today(),-45);
 
 let st={tab:'grid',start:add(today(),-1),span:14,month:today().slice(0,7),q:'',filter:'active',exFrom:today().slice(0,7)+'-01',exTo:today(),rp:'m',dayPick:'',lgFrom:add(today(),-7),lgTo:today(),lgWho:'',lgType:'',lgRoom:'',authMode:'login'};
-try{const s=JSON.parse(localStorage.getItem('hotel-ui')||'{}');if(s.span)st.span=s.span;if(s.tab)st.tab=s.tab}catch(e){}
-const saveUi=()=>{try{localStorage.setItem('hotel-ui',JSON.stringify({span:st.span,tab:st.tab}))}catch(e){}};
+st.dw=68;try{const s=JSON.parse(localStorage.getItem('hotel-ui')||'{}');if(s.span)st.span=s.span;if(s.tab)st.tab=s.tab;if(s.dw!=null)st.dw=s.dw;if(s.start&&s.span>=28)st.start=s.start}catch(e){}
+const saveUi=()=>{try{localStorage.setItem('hotel-ui',JSON.stringify({span:st.span,tab:st.tab,dw:st.dw,start:st.start}))}catch(e){}};
 
 const app=document.getElementById('app'),mroot=document.getElementById('modal-root'),tabsEl=document.getElementById('tabs'),whoEl=document.getElementById('who');
 const roomById=id=>rooms.find(r=>r.id===id);
@@ -589,7 +742,8 @@ function renderTabs(){
   tabsEl.innerHTML=vis.map(([k,l])=>`<button data-tab="${k}" aria-selected="${k===st.tab}">${l}${k==='staff'&&newRegs().length?` <span class="pill debt">${newRegs().length}</span>`:''}</button>`).join('');
 }
 function fixRmw(){const r0=app.querySelector('.grid th.rm'),g=app.querySelector('.grid');if(r0&&g)g.style.setProperty('--rmw',r0.getBoundingClientRect().width+'px')}
-window.addEventListener('resize',()=>{try{fixRmw()}catch(e){}});
+let rzT=null;window.addEventListener('resize',()=>{try{fixRmw()}catch(e){}clearTimeout(rzT);rzT=setTimeout(()=>{if(me&&st.tab==='grid'&&!mroot.firstChild&&!document.activeElement.matches('input,select,textarea'))render()},250)});
+let wzT=0;document.addEventListener('wheel',e=>{if(!e.ctrlKey||!me||st.tab!=='grid'||!e.target.closest('.grid-frame'))return;e.preventDefault();const n=Date.now();if(n-wzT<180)return;wzT=n;gridZoom(e.deltaY<0?1:-1)},{passive:false});
 function render(){
   renderTabs();
   if(!me)return;
@@ -599,21 +753,35 @@ function render(){
   fixRmw();
 }
 
+
+const ZL=[34,44,56,68,84,104,130];
+const gridFit=()=>{const cs=getComputedStyle(app);const w=Math.max(320,(app.clientWidth||1000)-parseFloat(cs.paddingLeft||0)-parseFloat(cs.paddingRight||0)-4);return Math.max(18,Math.floor((w-172)/st.span))};
+const gridDw=()=>{const f=gridFit();return st.dw?Math.max(st.dw,f):f};
+const dim=m0=>{const[y,m]=m0.split('-').map(Number);return new Date(Date.UTC(y,m,0)).getUTCDate()};
+const monthOf=s=>s.slice(0,7)+'-01';
+const nextMonth=(m0,n)=>{const[y,m]=m0.split('-').map(Number);return F(Date.UTC(y,m-1+n,1))};
+const isMonthView=()=>st.start.slice(8)==='01'&&st.span===dim(st.start);
+function gridZoom(n){const f=gridFit(),cur=gridDw();
+  if(n>0){const nx=ZL.find(x=>x>cur+1);st.dw=nx||ZL[ZL.length-1]}
+  else{const lo=ZL.filter(x=>x<cur-1&&x>f);st.dw=lo.length?lo[lo.length-1]:0}
+  saveUi();render()}
 function vGrid(){
   const rs=sortedRooms(),N_=me.role==='novice';
   if(!rs.length)return `<div class="empty" style="margin-top:16px"><p>Номера ещё не добавлены.</p>${can.manage()?'<button class="btn primary" data-act="seed">Создать 25 номеров (201–212, 301–313)</button>':''}</div>`;
   if(!N_&&st.start<liveFrom()&&!hist)loadHist();
-  const N=me.role==='novice',list=N?occ.map(o=>Object.assign({},o,{guest:'Занято'})):allB(),days=[...Array(st.span)].map((_,i)=>add(st.start,i)),t=today(),B=can.book();
+  const dw=gridDw(),N=me.role==='novice',list=N?occ.map(o=>Object.assign({},o,{guest:'Занято'})):allB(),days=[...Array(st.span)].map((_,i)=>add(st.start,i)),t=today(),B=can.book();
   let h=`<div class="toolbar">
-    <button class="btn small" data-act="shift" data-n="-7">← 7 дн</button>
+    ${isMonthView()?'<button class="btn small" data-act="mshift" data-n="-1">← Месяц</button>':'<button class="btn small" data-act="shift" data-n="-7">← 7 дн</button>'}
     <button class="btn small" data-act="gotoday">Сегодня</button>
-    <button class="btn small" data-act="shift" data-n="7">7 дн →</button>
+    ${isMonthView()?'<button class="btn small" data-act="mshift" data-n="1">Месяц →</button>':'<button class="btn small" data-act="shift" data-n="7">7 дн →</button>'}
     <input type="date" id="g-start" value="${st.start}" aria-label="С даты">
-    <select id="g-span" aria-label="Период">${[7,14,21,31].map(n=>`<option value="${n}"${n==st.span?' selected':''}>${n} дней</option>`).join('')}</select>
+    <select id="g-span" aria-label="Период">${[...new Set([7,14,21,28,31,st.span])].sort((a,b)=>a-b).map(n=>`<option value="${n}"${n==st.span?' selected':''}>${n} дней</option>`).join('')}</select>
+    <button class="btn small${isMonthView()?' primary':''}" data-act="month">Весь месяц</button>
+    <span class="zoom" role="group" aria-label="Масштаб"><button type="button" data-act="zoom" data-n="-1" aria-label="Уменьшить" title="Уменьшить"${gridDw()<=gridFit()?' disabled':''}>−</button><span>${gridDw()<=gridFit()?'Всё видно':Math.round(gridDw()/68*100)+'%'}</span><button type="button" data-act="zoom" data-n="1" aria-label="Увеличить" title="Увеличить"${gridDw()>=ZL[ZL.length-1]?' disabled':''}>+</button></span>
     <span class="grow"></span>${B?'<button class="btn" data-act="finder">Подобрать номер</button><button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>
   ${N?'<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--in-bg);border:1px solid var(--in)"></i>Свободно</span></div>':`<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i class="hk dirty"></i>Нужна уборка</span><span><i class="hk cleaning"></i>Убирается</span><span><i class="hk inspect"></i>На проверке</span></div>`}
-  <div class="grid-frame"><table class="grid"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
-  days.forEach(d=>{const w=wd(d);h+=`<th data-d="${d}" class="${d===t?'td':(w===0||w===6?'we':'')}">${WD[w]}<b>${+d.slice(8)}</b>${MON[+d.slice(5,7)-1]}</th>`});
+  <div class="grid-frame"><table class="grid fx ${dw<40?'z-s':dw<56?'z-m':''}" style="--dw:${dw}px;width:${172+st.span*dw}px"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
+  days.forEach(d=>{const w=wd(d);h+=`<th data-d="${d}" class="${d===t?'td':(w===0||w===6?'we':'')}${d.slice(8)==='01'||d===st.start?' m1':''}"><i class="wd">${WD[w]}</i><b>${+d.slice(8)}</b><i class="mo">${MON[+d.slice(5,7)-1]}</i></th>`});
   h+='<th class="nav"><button data-act="shift" data-n="1" aria-label="На день вперёд" title="На день вперёд">›</button></th></tr></thead><tbody>';let floor=null;
   rs.forEach(r=>{
     if(String(r.floor)!==floor){floor=String(r.floor);h+=`<tr class="floor"><td class="rm">${esc(floor)} этаж</td><td colspan="${st.span+2}"></td></tr>`}
@@ -945,8 +1113,11 @@ async function doBackup(btn){
 tabsEl.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.tab=b.dataset.tab;saveUi();render()});
 app.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');if(!el||!me)return;const a=el.dataset.act;
-  if(a==='shift'){st.start=add(st.start,+el.dataset.n);render()}
-  if(a==='gotoday'){st.start=add(today(),-1);render()}
+  if(a==='shift'){st.start=add(st.start,+el.dataset.n);saveUi();render()}
+  if(a==='mshift'){st.start=nextMonth(monthOf(st.start),+el.dataset.n);st.span=dim(st.start);saveUi();render()}
+  if(a==='month'){const m0=monthOf(isMonthView()?st.start:add(st.start,Math.floor(st.span/2)));st.start=m0;st.span=dim(m0);st.dw=0;saveUi();render()}
+  if(a==='zoom'){gridZoom(+el.dataset.n)}
+  if(a==='gotoday'){if(isMonthView()){st.start=monthOf(today());st.span=dim(st.start)}else st.start=add(today(),-1);saveUi();render()}
   if(a==='preset'){const[f,t]=presetRange(el.dataset.v);st.exFrom=f;st.exTo=t;st.rp=el.dataset.v;render()}
   if(a==='pickday'){st.exFrom=st.exTo=el.dataset.v;st.rp='';render();window.scrollTo(0,0)}
   if(a==='finder'&&can.book()){openFinder({},v=>openBooking(v))}
@@ -979,7 +1150,7 @@ app.addEventListener('mouseover',e=>{const td=e.target.closest('.grid td.cell-em
 app.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.cell-empty[data-act]')){e.preventDefault();e.target.click()}});
 app.addEventListener('change',async e=>{const id=e.target.id;
   if(id==='g-start'&&e.target.value){st.start=e.target.value;render()}
-  if(id==='g-span'){st.span=+e.target.value;saveUi();render()}
+  if(id==='g-span'){st.span=+e.target.value;if(st.start.slice(8)==='01'&&st.span<28)st.start=add(today(),-1);saveUi();render()}
   if(id==='l-f'){st.filter=e.target.value;render()}
   if(id==='r-m'&&e.target.value){st.month=e.target.value;render()}
   if(id==='ex-from'&&e.target.value){st.exFrom=e.target.value;st.rp='';st.dayPick='';if(st.exTo<st.exFrom)st.exTo=st.exFrom;render()}
@@ -1073,7 +1244,7 @@ const taskById=id=>openTasks.find(t=>t.id===id);
 const hhmm=ms=>{if(!ms)return'';const d=new Date(ms);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const dmyhm=ms=>{if(!ms)return'';const d=new Date(ms);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+' '+hhmm(ms)};
 const mins=(a,b)=>a&&b?Math.max(0,Math.round((b-a)/60000)):null;
-const HKACT={dirty:'Нужна уборка',start:'Начала уборку',ready:'Готово — на проверку',accept:'Принято',ret:'Вернуть на доуборку',repair:'Ремонт',assign:'Назначена горничная'};
+const HKACT={done:'Номер готов',dirty:'Нужна уборка',start:'Начала уборку',ready:'Готово — на проверку',accept:'Принято',ret:'Вернуть на доуборку',repair:'Ремонт',assign:'Назначена горничная'};
 
 async function hkOne(r,action,maidId){
   const now=Date.now(),cur=r.hk||'clean',tk=r.hkTask?taskById(r.hkTask):null;
@@ -1095,9 +1266,9 @@ async function hkOne(r,action,maidId){
     if(!tk||!['dirty','cleaning'].includes(cur))return 'skip';
     const mid=m?m.id:tk.maidId;if(!mid)return 'nomaid';const mm=maidById(mid);
     task={status:'inspect',readyAt:now,startedAt:tk.startedAt||tk.assignedAt||tk.t0,maidId:mid,maidName:mm?maidName(mm):tk.maidName,events:evs(ev('ready'))};room={hk:'inspect'};text=HKACT.ready;
-  }else if(action==='accept'){
+  }else if(action==='accept'||action==='done'){
     if(cur==='clean')return 'skip';
-    if(tk&&OPEN_HK.includes(cur)){if(cur!=='inspect'&&!can.manage())return 'notready';task={status:'done',doneAt:now,doneBy:me.email,doneByName:me.name,readyAt:tk.readyAt||now,events:evs(ev('accept'))}}
+    if(tk&&OPEN_HK.includes(cur)){if(action==='accept'&&cur!=='inspect'&&!can.manage())return 'notready';task={status:'done',doneAt:now,doneBy:me.email,doneByName:me.name,readyAt:tk.readyAt||now,events:evs(ev('accept'))}}
     room={hk:'clean',hkTask:null,hkMaid:'',hkMaidName:''};text=HKACT.accept;
   }else if(action==='ret'){
     if(!tk||cur!=='inspect')return 'skip';
@@ -1131,7 +1302,8 @@ function vHk(){
   const rs=sortedRooms(),M=can.manage(),act=maids.filter(m=>m.active!==false);
   if(!st.hkMaid||!maidById(st.hkMaid)||maidById(st.hkMaid).active===false)st.hkMaid='';
   const cnt=k=>rs.filter(r=>(r.hk||'clean')===k).length;
-  let h=`<div class="stats">
+  if(!st.hkAdv)return vHkQuick(rs,act,cnt,M);
+  let h=`<p style="margin:0 0 12px"><button class="btn small" data-hk="mode" data-v="0">← Простой режим</button></p><div class="stats">
     <div class="stat hk-st dirty"><div class="k">Нужна уборка</div><div class="v">${cnt('dirty')}</div></div>
     <div class="stat hk-st cleaning"><div class="k">Убирается</div><div class="v">${cnt('cleaning')}</div></div>
     <div class="stat hk-st inspect"><div class="k">На проверке</div><div class="v">${cnt('inspect')}</div></div>
@@ -1168,6 +1340,52 @@ function vHk(){
   if(M)h+=vHkReport();
   return h+'</div>';
 }
+
+const hkBusyIds=new Set();
+function vHkQuick(rs,act,cnt,M){
+  const f=st.hkF||'all';
+  const shown=rs.filter(r=>{const s=r.hk||'clean';return f==='all'||(f==='need'?OPEN_HK.includes(s):s===f)});
+  let h=`<div class="stats">
+    <div class="stat hk-st dirty"><div class="k">Нужна уборка</div><div class="v">${cnt('dirty')+cnt('cleaning')+cnt('inspect')}</div></div>
+    <div class="stat hk-st clean"><div class="k">Готовы</div><div class="v">${cnt('clean')}</div></div>
+    <div class="stat hk-st repair"><div class="k">Ремонт</div><div class="v">${cnt('repair')}</div></div></div>
+  <div class="hk-help"><span>Нажмите на номер: <b>чистый → «Нужна уборка»</b>, <b>грязный → «Готов»</b>. Повторное нажатие возвращает обратно.</span></div>
+  <div class="hk-filter">
+    <button class="chip${f==='all'?' on':''}" data-hk="filter" data-v="all">Все номера</button>
+    <button class="chip${f==='need'?' on':''}" data-hk="filter" data-v="need">Только «Нужна уборка»</button>
+    <button class="chip${f==='clean'?' on':''}" data-hk="filter" data-v="clean">Только готовые</button>
+    ${act.length?`<span class="muted" style="align-self:center;margin-left:6px">Убирает:</span><button class="chip${!st.hkMaid?' on':''}" data-hk="maid" data-v="">не указано</button>${act.map(m=>`<button class="chip maid${st.hkMaid===m.id?' on':''}" data-hk="maid" data-v="${esc(m.id)}">${U(maidName(m))}</button>`).join('')}`:''}
+  </div><div class="hk-grid hk-q">`;
+  let floor=null;
+  shown.forEach(r=>{
+    if(String(r.floor)!==floor){if(floor!==null)h+='</div>';floor=String(r.floor);h+=`<div class="hk-floor">${esc(floor)} этаж</div><div class="hk-cards">`}
+    const s=r.hk||'clean',tk=r.hkTask?taskById(r.hkTask):null,who=tk&&tk.maidName?tk.maidName:(r.hkMaidName||'');
+    const go=s==='clean'?'Нужна уборка':s==='repair'?'Снять ремонт':'✓ Готов';
+    h+=`<button class="hk-card ${s}${hkBusyIds.has(r.id)?' busy':''}" data-hk="quick" data-v="${r.id}"><span class="n">${esc(r.number)}</span><span class="s">${HK[s]||s}</span>
+      <span class="w">${who?U(who):(s!=='clean'&&r.hkAt?'с '+hhmm(r.hkAt):'&nbsp;')}</span><span class="go">${go}</span></button>`;
+  });
+  if(floor!==null)h+='</div>';
+  if(!shown.length)h+='<div class="empty">Таких номеров сейчас нет.</div>';
+  h+='</div>';
+  h+=`<details class="hk-adv"><summary>Горничные, массовые действия и отчёт</summary>
+    <p style="margin:6px 0 12px"><button class="btn small" data-hk="mode" data-v="1">Открыть расширенный режим (этажи, проверка, ремонт)</button></p>
+    <div class="cols"><section class="panel"><h2>Горничные <b>${act.length}</b></h2>
+    <form id="maid-form" class="form" style="margin-top:0" autocomplete="off"><label>Имя<input id="m-first" required></label><label>Фамилия<input id="m-last"></label>
+    <div class="full"><button class="btn primary">Добавить горничную</button></div></form>
+    <div class="list" style="margin-top:10px">${maids.slice().sort((a,b)=>maidName(a).localeCompare(maidName(b),'ru')).map(m=>`<div class="row"><div class="main" style="cursor:default${m.active===false?';opacity:.5':''}"><b>${U(maidName(m))}</b></div><button class="btn small" data-hk="maidtoggle" data-v="${esc(m.id)}">${m.active===false?'Вернуть':'Убрать из списка'}</button></div>`).join('')}</div></section>
+    ${M?vHkReport():''}</div></details>`;
+  return h;
+}
+async function hkQuick(id){
+  const r=roomById(id);if(!r||hkBusyIds.has(id))return;const s=r.hk||'clean';
+  const run=async action=>{hkBusyIds.add(id);render();
+    try{const res=await hkOne(r,action,action==='dirty'?st.hkMaid:'');if(res==='ok')toast(`№${r.number}: ${action==='dirty'?'нужна уборка':'готов'}`)}
+    catch(e){toast('Не удалось: '+errText(e))}
+    hkBusyIds.delete(id);render()};
+  if(s==='clean')return run('dirty');
+  if(s==='repair')return ask(`Снять ремонт с №${r.number}? Номер станет чистым.`,'Снять ремонт',()=>run('done'));
+  return run('done');
+}
 function vHkReport(){
   if(!st.hkFrom)st.hkFrom=add(today(),-6);if(!st.hkTo)st.hkTo=today();
   let h=`<section class="panel"><h2>Отчёт по уборке</h2><div class="toolbar" style="margin:0 0 10px"><label class="muted">С <input type="date" id="hk-rf" value="${st.hkFrom}"></label><label class="muted">по <input type="date" id="hk-rt" value="${st.hkTo}"></label>
@@ -1194,6 +1412,9 @@ function hkXls(){
 }
 app.addEventListener('click',async e=>{
   const el=e.target.closest('[data-hk]');if(!el||!me||!can.book())return;const a=el.dataset.hk,v=el.dataset.v;
+  if(a==='quick'){hkQuick(v);return}
+  if(a==='mode'){st.hkAdv=v==='1';hkSel.clear();render();window.scrollTo(0,0);return}
+  if(a==='filter'){st.hkF=v;render();return}
   if(a==='toggle'){hkSel.has(v)?hkSel.delete(v):hkSel.add(v);render();return}
   if(a==='selfloor'){sortedRooms().filter(r=>String(r.floor)===v).forEach(r=>hkSel.add(r.id));render();return}
   if(a==='selst'){sortedRooms().filter(r=>(r.hk||'clean')===v).forEach(r=>hkSel.add(r.id));render();return}
