@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-09.3">
+<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-09.4">
 <title>Jana Jybek Joly</title>
 <link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -669,6 +669,12 @@ nav.tabs button{font-size:14px;letter-spacing:.1em}
   .grid.z-s .bar{font-size:12px;height:30px}
   .legend{font-size:13px}
 }
+
+/* connection / update badge */
+.net{position:fixed;left:50%;transform:translateX(-50%);top:10px;z-index:90;background:#9e3f37;color:#fff;border:0;border-radius:999px;padding:9px 16px;font:500 13.5px/1.2 var(--f-body);box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+.net.ok{background:#3f6f55}
+.net.upd{cursor:pointer;background:var(--ink)}
+@media (max-width:760px){.net{top:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px))}}
 </style>
 
 </head><body>
@@ -853,10 +859,14 @@ function render(){
   renderTabs();
   if(!me)return;
   if(!loaded.r||(!loaded.b&&me.role!=='novice')){app.innerHTML='<div class="empty" style="margin-top:16px">Загружаем номера и брони…</div>';return}
+  const keep={};const fr=app.querySelector('.grid-frame');if(fr&&app.dataset.tab===st.tab){keep.l=fr.scrollLeft;keep.t=fr.scrollTop}
+  const ae=document.activeElement;if(ae&&app.contains(ae)&&ae.id){keep.id=ae.id;try{keep.ss=ae.selectionStart;keep.se=ae.selectionEnd}catch(e){}}
   app.dataset.tab=st.tab;
   document.body.classList.toggle('has-fab',['grid','today','list'].includes(st.tab)&&can.book());
   app.innerHTML=({grid:vGrid,today:vToday,list:vList,rooms:vRooms,hk:vHk,report:vReport,log:vLog,staff:vStaff}[st.tab]||vGrid)();
   fixRmw();tabIntoView();
+  if(keep.l!=null){const f2=app.querySelector('.grid-frame');if(f2){f2.scrollLeft=keep.l;f2.scrollTop=keep.t}}
+  if(keep.id){const e2=document.getElementById(keep.id);if(e2&&app.contains(e2)){e2.focus({preventScroll:true});try{if(keep.ss!=null)e2.setSelectionRange(keep.ss,keep.se)}catch(e){}}}
 }
 
 
@@ -1605,7 +1615,7 @@ function showNoAccess(em,kind){document.body.classList.add('auth');whoEl.innerHT
   const txt=kind==='off'?`Доступ для <b>${id}</b> отключён владельцем.`:kind==='pending'?`Заявка от <b>${id}</b> отправлена владельцу. Когда он её одобрит, нажмите «Проверить снова».`:`Аккаунт <b>${id}</b> не добавлен в сотрудники. Обратитесь к владельцу.`;
   app.innerHTML=`<div class="login"><h2>${kind==='pending'?'Заявка отправлена':'Нет доступа'}</h2><p>${txt}</p>
   <button class="btn primary" data-auth="verified">Проверить снова</button><button class="btn" data-auth="logout">Выйти</button></div>`}
-let hbTimer=null,refreshTimer=null;
+let hbTimer=null,refreshTimer=null,selfWatch='';
 function stopSubs(){document.body.classList.remove('has-fab');clearInterval(hbTimer);hbTimer=null;subs.forEach(f=>{try{f()}catch(e){}});subs=[];rooms=[];bookings=[];hist=null;staffList=[];occ=[];creds={};maids=[];openTasks=[];hkSel=new Set();hkRep=null;logs=null;loaded={r:false,b:false}}
 async function handleUser(u){
   stopSubs();me=null;close();
@@ -1626,7 +1636,8 @@ async function handleUser(u){
         await b.commit();s=await fdb.collection('staff').doc(em).get()}
       if(s.exists){const d=s.data();if(d.name)name=d.name;if(d.active===false||d.deleted){showNoAccess(em,'off');return}role=d.role;
         const beat=()=>{if(document.visibilityState==='visible')fdb.collection('staff').doc(em).update({lastSeen:TS()}).catch(()=>{})};beat();
-        hbTimer=setInterval(beat,90*1000);document.addEventListener('visibilitychange',beat)}
+        hbTimer=setInterval(beat,90*1000);document.addEventListener('visibilitychange',beat);
+        selfWatch=em}
     }catch(e){console.error(e)}
   }
   if(!role){showNoAccess(em);return}
@@ -1634,21 +1645,51 @@ async function handleUser(u){
   me={email:em,name,role};
   whoEl.innerHTML=`<span><b>${esc(name)}</b></span><span class="role">${ROLES[role]}</span><button class="linkbtn" data-auth="logout">Выйти</button>`;
   render();
-  const onErr=e=>{if(e.code==='permission-denied')app.innerHTML='<div class="notice">Нет доступа к данным. Попросите владельца проверить вашу роль.</div>';else toast('Связь с базой прервана — обновите страницу')};
-  subs.push(fdb.collection('rooms').onSnapshot(s=>{rooms=s.docs.map(x=>({id:x.id,...x.data()}));loaded.r=true;render()},onErr));
-  if(['owner','manager','admin'].includes(role)){subs.push(fdb.collection('maids').onSnapshot(s=>{maids=s.docs.map(x=>({id:x.id,...x.data()}));if(st.tab==='hk')render()},()=>{}));
-    subs.push(fdb.collection('cleanings').where('status','in',['dirty','cleaning','inspect']).onSnapshot(s=>{openTasks=s.docs.map(x=>({id:x.id,...x.data()}));if(st.tab==='hk')render()},()=>{}))}
-  if(role==='novice'){subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(s=>{occ=s.docs.map(x=>({id:x.id,...x.data()}));render()},onErr));return}
-  subs.push(fdb.collection('bookings').where('checkOut','>=',liveFrom()).onSnapshot(s=>{bookings=s.docs.map(x=>({id:x.id,...x.data()}));if(hist){const ids=new Set(bookings.map(b=>b.id));s.docChanges().forEach(c=>{if(c.type==='removed'&&!ids.has(c.doc.id))hist=hist.filter(h=>h.id!==c.doc.id)})}loaded.b=true;render()},onErr));
-  if(can.manage())subs.push(fdb.collection('staff').onSnapshot(s=>{staffList=s.docs.map(x=>({id:x.id,...x.data()}));renderTabs();if(st.tab==='staff'||st.tab==='log')render()},()=>{}));
-  clearInterval(refreshTimer);if(can.owner())refreshTimer=setInterval(()=>{if(st.tab==='staff'&&!mroot.innerHTML&&!document.activeElement.closest('form'))render()},30000);
-  if(em===OWNER)subs.push(fdb.collection('config').doc('owners').onSnapshot(d=>{ownerCfg=d.exists?d.data():null;if(st.tab==='staff')render()},()=>{}));
-  if(can.owner()){subs.push(fdb.collection('creds').onSnapshot(s=>{creds={};s.docs.forEach(x=>creds[x.id]=x.data());if(st.tab==='staff')render()},()=>{}));
-    let synced=false;subs.push(fdb.collection('occ').where('checkOut','>=',liveFrom()).onSnapshot(async s=>{if(synced||!loaded.b)return;synced=true;
+  if(selfWatch===em&&!isMain)subs.push(liveSub(()=>fdb.collection('staff').doc(em),d=>{const x=d.exists?d.data():null;
+    if(!x||x.active===false||x.deleted||x.role!==me.role){stopSubs();handleUser(auth.currentUser)}
+    else if(x.name&&x.name!==me.name){me.name=x.name;whoEl.querySelector('b').textContent=x.name}},()=>{}));
+  const onErr=()=>{app.innerHTML='<div class="notice">Нет доступа к данным. Попросите владельца проверить вашу роль.</div>'};
+  subs.push(liveSub(()=>fdb.collection('rooms'),s=>{rooms=s.docs.map(x=>({id:x.id,...x.data()}));loaded.r=true;render()},onErr));
+  if(['owner','manager','admin'].includes(role)){subs.push(liveSub(()=>fdb.collection('maids'),s=>{maids=s.docs.map(x=>({id:x.id,...x.data()}));if(st.tab==='hk')render()},()=>{}));
+    subs.push(liveSub(()=>fdb.collection('cleanings').where('status','in',['dirty','cleaning','inspect']),s=>{openTasks=s.docs.map(x=>({id:x.id,...x.data()}));if(st.tab==='hk')render()},()=>{}))}
+  if(role==='novice'){subs.push(liveSub(()=>fdb.collection('occ').where('checkOut','>=',liveFrom()),s=>{occ=s.docs.map(x=>({id:x.id,...x.data()}));render()},onErr));return}
+  subs.push(liveSub(()=>fdb.collection('bookings').where('checkOut','>=',liveFrom()),s=>{bookings=s.docs.map(x=>({id:x.id,...x.data()}));if(hist){const ids=new Set(bookings.map(b=>b.id));s.docChanges().forEach(c=>{if(c.type==='removed'&&!ids.has(c.doc.id))hist=hist.filter(h=>h.id!==c.doc.id)})}loaded.b=true;render()},onErr));
+  if(can.manage())subs.push(liveSub(()=>fdb.collection('staff'),s=>{staffList=s.docs.map(x=>({id:x.id,...x.data()}));renderTabs();if(st.tab==='staff'||st.tab==='log')render()},()=>{}));
+  clearInterval(refreshTimer);refreshTimer=setInterval(()=>{if(document.visibilityState==='visible'&&['staff','today','grid','hk'].includes(st.tab)&&!mroot.innerHTML&&!document.activeElement.closest('form,input,select,textarea'))render()},60000);
+  if(em===OWNER)subs.push(liveSub(()=>fdb.collection('config').doc('owners'),d=>{ownerCfg=d.exists?d.data():null;if(st.tab==='staff')render()},()=>{}));
+  if(can.owner()){let first=true;subs.push(liveSub(()=>fdb.collection('log').orderBy('at','desc').limit(1),()=>{if(first){first=false;return}
+      if(st.tab==='log'&&logs&&!logLoading&&st.lgTo>=today()){fetchLog(st.lgFrom,add(st.lgTo,1)).then(x=>{logs=x;if(st.tab==='log')render()}).catch(()=>{})}else if(st.tab!=='log')logs=null},()=>{}));
+    subs.push(liveSub(()=>fdb.collection('creds'),s=>{creds={};s.docs.forEach(x=>creds[x.id]=x.data());if(st.tab==='staff')render()},()=>{}));
+    let synced=false;subs.push(liveSub(()=>fdb.collection('occ').where('checkOut','>=',liveFrom()),async s=>{if(synced||!loaded.b)return;synced=true;
       const have=new Map(s.docs.map(x=>[x.id,x.data()]));const b=fdb.batch();let n=0;
       bookings.forEach(bk=>{const o=have.get(bk.id);if(!o||o.status!==bk.status||o.checkIn!==bk.checkIn||o.checkOut!==bk.checkOut||o.roomId!==bk.roomId){b.set(fdb.collection('occ').doc(bk.id),{roomId:bk.roomId,checkIn:bk.checkIn,checkOut:bk.checkOut,status:bk.status});n++}});
       if(n)try{await b.commit()}catch(e){console.error(e)}},()=>{}))}
 }
+
+
+/* ---------- live data: listeners that heal themselves ---------- */
+let netOk=true;
+function setNet(ok){if(ok===netOk)return;netOk=ok;let el=document.getElementById('net');
+  if(!ok){if(!el){el=document.createElement('div');el.id='net';el.className='net';el.setAttribute('role','status');document.body.appendChild(el)}el.textContent='Нет связи с базой — переподключаюсь…'}
+  else if(el){el.textContent='Связь восстановлена';el.classList.add('ok');setTimeout(()=>el.remove(),1800)}}
+function liveSub(makeQuery,onNext,onDenied){let unsub=null,tries=0,stopped=false,timer=null;
+  const start=()=>{if(stopped)return;try{unsub=makeQuery().onSnapshot(s=>{tries=0;setNet(true);onNext(s)},e=>{
+      if(e&&e.code==='permission-denied'){onDenied&&onDenied(e);return}
+      setNet(false);tries++;try{unsub&&unsub()}catch(_){}timer=setTimeout(start,Math.min(30000,1500*tries))})}
+    catch(e){tries++;timer=setTimeout(start,Math.min(30000,1500*tries))}};
+  start();return()=>{stopped=true;clearTimeout(timer);try{unsub&&unsub()}catch(_){}}}
+window.addEventListener('online',()=>setNet(true));
+window.addEventListener('offline',()=>setNet(false));
+
+
+/* ---------- new version of the site: apply without asking to refresh ---------- */
+const MYVER=(document.querySelector('meta[name="app-version"]')||{}).content||'';let newVer=false;
+async function checkVer(){if(location.protocol==='file:')return;try{const r=await fetch('./?vcheck='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/name="app-version" content="([^"]+)"/);
+  if(m&&m[1]!==MYVER){newVer=true;tryReload()}}catch(e){}}
+function tryReload(){if(!newVer)return;const busy=mroot.innerHTML||document.activeElement&&document.activeElement.closest('form,input,select,textarea');
+  if(!busy)location.reload();else if(!document.getElementById('upd')){const b=document.createElement('button');b.id='upd';b.className='net ok upd';b.textContent='Сайт обновлён — нажмите, чтобы применить';b.onclick=()=>location.reload();document.body.appendChild(b)}}
+setInterval(checkVer,5*60*1000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){checkVer();if(me&&!mroot.innerHTML&&!document.activeElement.closest('form,input,select,textarea'))render()}});
 
 /* ---------- boot ---------- */
 if(!window.firebase){app.innerHTML='<div class="notice">Не удалось загрузить систему. Проверьте интернет и обновите страницу.</div>';return}
