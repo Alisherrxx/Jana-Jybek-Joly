@@ -79,6 +79,18 @@ service cloud.firestore {
       allow delete: if isOwner();
     }
 
+    // warehouse: items (balances move only together with an operation record) and immutable operations
+    match /stock/{id} {
+      allow read, create, update: if canBook();
+      allow delete: if isOwner();
+    }
+    match /stockMoves/{id} {
+      allow read: if canBook();
+      allow create: if canBook() && request.resource.data.by == em();
+      allow update: if isOwner() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cancelled', 'cancelledBy', 'cancelledAt']);
+      allow delete: if false;
+    }
+
     match /bookings/{id} {
       allow read: if canRead();
       allow create, update: if canBook() && logged(id) && request.resource.data.updatedBy == em();
