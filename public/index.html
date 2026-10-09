@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-09.2">
+<meta name="theme-color" content="#f4f0e8"><meta name="robots" content="noindex"><meta name="app-version" content="2026-10-09.3">
 <title>Jana Jybek Joly</title>
 <link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -567,6 +567,84 @@ html[lang="zh-Hans"] .hk-q .hk-card .go{font-size:15.5px;letter-spacing:.03em;}
 html[lang="zh-Hans"] .grid.z-s thead th{font-size:12.5px;letter-spacing:0}
 html[lang="zh-Hans"] .grid thead th{letter-spacing:0}
 html[lang="zh-Hans"] nav.tabs button{letter-spacing:.06em;font-size:15px}
+
+/* ================= phones & tablets ================= */
+nav.tabs .ti{display:none}
+.fab{display:none}
+input,select,textarea{font-size:16px}
+@media (max-width:1100px){
+  .wrap{padding-inline:14px}
+  .stat .v{font-size:32px}
+}
+@media (max-width:760px){
+  /* header scrolls away; tabs become an app-style bottom bar */
+  header.top{position:static;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+  .top-in{padding-block:10px 8px;gap:8px}
+  .brand{flex-wrap:wrap;gap:8px}
+  .brandmark .mark img{height:34px;width:auto}
+  .brandmark{gap:10px;min-width:0}
+  .brand h1.logo{font-size:15px;letter-spacing:.16em}
+  .brand h1.logo::after{font-size:8.5px;letter-spacing:.3em;margin-top:5px}
+  .brand-r{gap:8px;flex-wrap:nowrap;width:100%;justify-content:space-between}
+  body.auth .brand-r{width:auto}
+  .who{font-size:13px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .lang button{padding:6px 9px}
+  body:not(.auth) nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));gap:0;
+    background:rgba(255,253,249,.97);border-top:1px solid rgba(38,34,28,.16);box-shadow:0 -8px 24px -18px rgba(38,34,28,.5);overflow-x:auto;justify-content:space-around}
+  body:not(.auth) nav.tabs button{flex:1 0 58px;max-width:96px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border:0;border-radius:12px;background:transparent;
+    font-size:11px;letter-spacing:.02em;text-transform:none;color:#4d463b;position:relative;box-shadow:none}
+  body:not(.auth) nav.tabs button::before{display:none}
+  body:not(.auth) nav.tabs .ti{display:block;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  body:not(.auth) nav.tabs .tl{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  body:not(.auth) nav.tabs button[aria-selected="true"]{background:var(--ink);color:#fbf8f2}
+  body:not(.auth) nav.tabs .pill{position:absolute;top:2px;right:8px;min-width:18px;height:18px;padding:0 4px;font-size:11px;line-height:18px}
+  html[lang="zh-Hans"] body:not(.auth) nav.tabs button{font-size:12.5px;letter-spacing:0}
+  body:not(.auth) .wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  /* floating "new booking" */
+  body.has-fab:not(.auth) .fab{display:flex;position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:41;width:56px;height:56px;border-radius:50%;border:0;
+    background:var(--ink);color:#fbf8f2;font-size:30px;font-weight:300;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(38,34,28,.6);cursor:pointer}
+  body.has-fab .toolbar [data-act="newb"],body.has-fab .stats~.toolbar [data-act="newb"]{display:none}
+  /* toolbar: compact, thumb-friendly */
+  .toolbar{gap:6px;margin-block:12px}
+  .toolbar .btn,.toolbar select,.toolbar input{min-height:40px}
+  .toolbar .grow{display:none}
+  .toolbar input[type=date]{flex:1 1 140px;min-width:0}
+  .legend{font-size:12px;gap:6px 12px}
+  /* grid: narrower room column */
+  .grid.fx .rm{width:72px;min-width:72px;max-width:72px;padding:4px 6px}
+  .grid.fx thead th.nav,.grid.fx td.navpad{width:28px;min-width:28px}
+  .grid .rm .no{font-size:18px;gap:4px}
+  .grid .rm .ty{font-size:9.5px;letter-spacing:.06em;max-width:60px}
+  .grid tr.floor td.rm{font-size:11px;letter-spacing:.14em;padding-left:8px}
+  .grid thead th.nav button{font-size:20px}
+  .grid th,.grid td{height:46px}
+  .grid-frame{margin-inline:-6px;border-radius:12px}
+  /* tables scroll sideways instead of being cut */
+  table.data{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;max-width:100%}
+  /* stats */
+  .stats{gap:10px}
+  .stat{padding:14px}
+  .stat .v{font-size:28px!important}
+  /* forms & modals: full screen sheet */
+  .scrim{padding:0;display:block}
+  .scrim>.modal{margin:0}
+  .modal{max-width:none!important;min-height:100%;border-radius:0;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px));border:0}
+  .modal h3{font-size:26px}
+  .modal .actions{position:sticky;bottom:calc(-24px - env(safe-area-inset-bottom,0px));background:var(--surface);margin-inline:-16px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);z-index:2}
+  .form{grid-template-columns:1fr;gap:10px}
+  .btn{min-height:42px}
+  .btn.small{min-height:38px}
+  .chip{min-height:38px}
+  .hk-q .hk-cards{grid-template-columns:repeat(2,1fr)}
+  .hk-q .hk-card{min-height:112px}
+  .hk-q .hk-card .go{padding:11px 8px;font-size:14px}
+  .cols{grid-template-columns:1fr!important}
+}
+@media (min-width:761px) and (max-width:1100px){
+  nav.tabs{flex-wrap:wrap;row-gap:6px}
+  nav.tabs button{padding:9px 12px;letter-spacing:.08em}
+  .hk-q .hk-cards{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+}
 </style>
 
 </head><body>
@@ -576,6 +654,7 @@ html[lang="zh-Hans"] nav.tabs button{letter-spacing:.06em;font-size:15px}
 </div></header>
 <main class="wrap" id="app"><div class="empty" style="margin-top:16px">Загрузка…</div></main>
 <div id="modal-root"></div>
+<button type="button" class="fab" id="fab" aria-label="Новая бронь" title="Новая бронь">+</button>
 <div class="cn-side" aria-hidden="true" lang="zh-Hans">新丝路驿站</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -659,7 +738,7 @@ const stamp=t=>{const d=toDate(t);if(!d||isNaN(d))return'';return String(d.getDa
 const liveFrom=()=>add(today(),-45);
 
 let st={tab:'grid',start:add(today(),-1),span:14,month:today().slice(0,7),q:'',filter:'active',exFrom:today().slice(0,7)+'-01',exTo:today(),rp:'m',dayPick:'',lgFrom:add(today(),-7),lgTo:today(),lgWho:'',lgType:'',lgRoom:'',authMode:'login'};
-st.dw=68;try{const s=JSON.parse(localStorage.getItem('hotel-ui')||'{}');if(s.span)st.span=s.span;if(s.tab)st.tab=s.tab;if(s.dw!=null)st.dw=s.dw;if(s.start&&s.span>=28)st.start=s.start}catch(e){}
+st.dw=68;try{const s=JSON.parse(localStorage.getItem('hotel-ui')||'{}');if(s.span)st.span=s.span;if(s.tab)st.tab=s.tab;if(s.dw!=null)st.dw=s.dw;else if(window.matchMedia('(max-width:760px)').matches)st.dw=44;if(s.start&&s.span>=28)st.start=s.start}catch(e){}
 const saveUi=()=>{try{localStorage.setItem('hotel-ui',JSON.stringify({span:st.span,tab:st.tab,dw:st.dw,start:st.start}))}catch(e){}};
 
 const app=document.getElementById('app'),mroot=document.getElementById('modal-root'),tabsEl=document.getElementById('tabs'),whoEl=document.getElementById('who');
@@ -735,27 +814,32 @@ const newRegs=()=>staffList.filter(s=>s.self&&!s.ack&&!s.deleted);
 const errText=e=>e&&e.code==='permission-denied'?'Нет прав на это действие.':(e&&(e.message||e.code))||'неизвестная ошибка';
 
 /* ---------- render ---------- */
+const TICON={grid:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/>',today:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2"/>',list:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',rooms:'<path d="M3 20V8l9-5 9 5v12"/><path d="M9 20v-6h6v6"/>',hk:'<path d="M6 21l3-9h6l3 9"/><path d="M12 12V3"/><path d="M9 21v-3M15 21v-3"/>',report:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',log:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 7h4"/>',staff:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5c2.3.2 4 1.8 4.5 4.5"/>'};
 function renderTabs(){
   if(!me){tabsEl.innerHTML='';return}
   const vis=TABS.filter(t=>can[t[2]]());
   if(!vis.some(t=>t[0]===st.tab))st.tab='grid';
-  tabsEl.innerHTML=vis.map(([k,l])=>`<button data-tab="${k}" aria-selected="${k===st.tab}">${l}${k==='staff'&&newRegs().length?` <span class="pill debt">${newRegs().length}</span>`:''}</button>`).join('');
+  tabsEl.innerHTML=vis.map(([k,l])=>`<button data-tab="${k}" aria-selected="${k===st.tab}"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true">${TICON[k]||''}</svg><span class="tl">${l}</span>${k==='staff'&&newRegs().length?` <span class="pill debt">${newRegs().length}</span>`:''}</button>`).join('');
 }
+function tabIntoView(){const b=tabsEl.querySelector('[aria-selected="true"]');if(b&&tabsEl.scrollWidth>tabsEl.clientWidth){const l=b.offsetLeft-tabsEl.clientWidth/2+b.offsetWidth/2;tabsEl.scrollLeft=Math.max(0,l)}}
 function fixRmw(){const r0=app.querySelector('.grid th.rm'),g=app.querySelector('.grid');if(r0&&g)g.style.setProperty('--rmw',r0.getBoundingClientRect().width+'px')}
-let rzT=null;window.addEventListener('resize',()=>{try{fixRmw()}catch(e){}clearTimeout(rzT);rzT=setTimeout(()=>{if(me&&st.tab==='grid'&&!mroot.firstChild&&!document.activeElement.matches('input,select,textarea'))render()},250)});
+let rzT=null,lastW=window.innerWidth;window.addEventListener('resize',()=>{try{fixRmw()}catch(e){}if(window.innerWidth===lastW)return;lastW=window.innerWidth;clearTimeout(rzT);rzT=setTimeout(()=>{if(me&&st.tab==='grid'&&!mroot.firstChild&&!document.activeElement.matches('input,select,textarea'))render()},250)});
 let wzT=0;document.addEventListener('wheel',e=>{if(!e.ctrlKey||!me||st.tab!=='grid'||!e.target.closest('.grid-frame'))return;e.preventDefault();const n=Date.now();if(n-wzT<180)return;wzT=n;gridZoom(e.deltaY<0?1:-1)},{passive:false});
 function render(){
   renderTabs();
   if(!me)return;
   if(!loaded.r||(!loaded.b&&me.role!=='novice')){app.innerHTML='<div class="empty" style="margin-top:16px">Загружаем номера и брони…</div>';return}
   app.dataset.tab=st.tab;
+  document.body.classList.toggle('has-fab',['grid','today','list'].includes(st.tab)&&can.book());
   app.innerHTML=({grid:vGrid,today:vToday,list:vList,rooms:vRooms,hk:vHk,report:vReport,log:vLog,staff:vStaff}[st.tab]||vGrid)();
-  fixRmw();
+  fixRmw();tabIntoView();
 }
 
 
 const ZL=[34,44,56,68,84,104,130];
-const gridFit=()=>{const cs=getComputedStyle(app);const w=Math.max(320,(app.clientWidth||1000)-parseFloat(cs.paddingLeft||0)-parseFloat(cs.paddingRight||0)-4);return Math.max(18,Math.floor((w-172)/st.span))};
+const isPhone=()=>window.matchMedia('(max-width:760px)').matches;
+const GW=()=>isPhone()?{rm:72,nav:28}:{rm:104,nav:34};
+const gridFit=()=>{const cs=getComputedStyle(app);const w=Math.max(320,(app.clientWidth||1000)-parseFloat(cs.paddingLeft||0)-parseFloat(cs.paddingRight||0)-4);const g=GW();return Math.max(18,Math.floor((w-g.rm-2*g.nav)/st.span))};
 const gridDw=()=>{const f=gridFit();return st.dw?Math.max(st.dw,f):f};
 const dim=m0=>{const[y,m]=m0.split('-').map(Number);return new Date(Date.UTC(y,m,0)).getUTCDate()};
 const monthOf=s=>s.slice(0,7)+'-01';
@@ -780,7 +864,7 @@ function vGrid(){
     <span class="zoom" role="group" aria-label="Масштаб"><button type="button" data-act="zoom" data-n="-1" aria-label="Уменьшить" title="Уменьшить"${gridDw()<=gridFit()?' disabled':''}>−</button><span>${gridDw()<=gridFit()?'Всё видно':Math.round(gridDw()/68*100)+'%'}</span><button type="button" data-act="zoom" data-n="1" aria-label="Увеличить" title="Увеличить"${gridDw()>=ZL[ZL.length-1]?' disabled':''}>+</button></span>
     <span class="grow"></span>${B?'<button class="btn" data-act="finder">Подобрать номер</button><button class="btn primary" data-act="newb">+ Бронь</button>':''}</div>
   ${N?'<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--in-bg);border:1px solid var(--in)"></i>Свободно</span></div>':`<div class="legend" style="margin-bottom:10px"><span><i style="background:var(--booked)"></i>Бронь</span><span><i style="background:var(--in)"></i>Заселён</span><span><i style="background:var(--out)"></i>Выехал</span>${N?'':'<span><i style="background:var(--bad);border-radius:50%"></i>Есть долг</span>'}<span><i class="hk dirty"></i>Нужна уборка</span><span><i class="hk cleaning"></i>Убирается</span><span><i class="hk inspect"></i>На проверке</span></div>`}
-  <div class="grid-frame"><table class="grid fx ${dw<40?'z-s':dw<56?'z-m':''}" style="--dw:${dw}px;width:${172+st.span*dw}px"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
+  <div class="grid-frame"><table class="grid fx ${dw<40?'z-s':dw<56?'z-m':''}" style="--dw:${dw}px;width:${GW().rm+2*GW().nav+st.span*dw}px"><thead><tr><th class="rm">Номер</th><th class="nav"><button data-act="shift" data-n="-1" aria-label="На день назад" title="На день назад">‹</button></th>`;
   days.forEach(d=>{const w=wd(d);h+=`<th data-d="${d}" class="${d===t?'td':(w===0||w===6?'we':'')}${d.slice(8)==='01'||d===st.start?' m1':''}"><i class="wd">${WD[w]}</i><b>${+d.slice(8)}</b><i class="mo">${MON[+d.slice(5,7)-1]}</i></th>`});
   h+='<th class="nav"><button data-act="shift" data-n="1" aria-label="На день вперёд" title="На день вперёд">›</button></th></tr></thead><tbody>';let floor=null;
   rs.forEach(r=>{
@@ -1110,7 +1194,8 @@ async function doBackup(btn){
 }
 
 /* ---------- events ---------- */
-tabsEl.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.tab=b.dataset.tab;saveUi();render()});
+document.getElementById('fab').addEventListener('click',()=>{if(me&&can.book()){const t=today();openBooking({checkIn:t,checkOut:add(t,1)})}});
+tabsEl.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;st.tab=b.dataset.tab;saveUi();render();window.scrollTo(0,0)});
 app.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');if(!el||!me)return;const a=el.dataset.act;
   if(a==='shift'){st.start=add(st.start,+el.dataset.n);saveUi();render()}
@@ -1497,7 +1582,7 @@ function showNoAccess(em,kind){document.body.classList.add('auth');whoEl.innerHT
   app.innerHTML=`<div class="login"><h2>${kind==='pending'?'Заявка отправлена':'Нет доступа'}</h2><p>${txt}</p>
   <button class="btn primary" data-auth="verified">Проверить снова</button><button class="btn" data-auth="logout">Выйти</button></div>`}
 let hbTimer=null,refreshTimer=null;
-function stopSubs(){clearInterval(hbTimer);hbTimer=null;subs.forEach(f=>{try{f()}catch(e){}});subs=[];rooms=[];bookings=[];hist=null;staffList=[];occ=[];creds={};maids=[];openTasks=[];hkSel=new Set();hkRep=null;logs=null;loaded={r:false,b:false}}
+function stopSubs(){document.body.classList.remove('has-fab');clearInterval(hbTimer);hbTimer=null;subs.forEach(f=>{try{f()}catch(e){}});subs=[];rooms=[];bookings=[];hist=null;staffList=[];occ=[];creds={};maids=[];openTasks=[];hkSel=new Set();hkRep=null;logs=null;loaded={r:false,b:false}}
 async function handleUser(u){
   stopSubs();me=null;close();
   if(!u){showLogin();return}
