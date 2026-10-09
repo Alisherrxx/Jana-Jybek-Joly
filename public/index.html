@@ -669,6 +669,37 @@ nav.tabs button{font-size:14px;letter-spacing:.1em}
   .grid.z-s .bar{font-size:12px;height:30px}
   .legend{font-size:13px}
 }
+
+/* ---- visible readability fix: applied after all theme and responsive rules ---- */
+:root{--muted:#393126;--out:#484033;--ink-2:#30291f}
+#app{font-size:16px;line-height:1.5}
+#app .muted,#app .meta,#app .row .sub,#app .log-row .t,
+#app .who,#app .legend,#app .stat .k,#app .stat .s,
+#app .role,#app .grid thead th,#app .grid .rm .ty,
+#app .data th,#app .hk-card .s,#app .hk-card .w,#app .hk-card .t{font-size:15px;color:var(--muted);line-height:1.45}
+#app .grid thead th{color:#30291f;font-weight:600}
+#app .grid thead th b{font-size:18px;color:#26221c}
+#app .grid .rm .ty{color:#393126}
+#app .stat .k{font-size:14px;letter-spacing:.09em;color:#30291f;font-weight:600}
+#app .stat .s{font-size:15px;color:#393126}
+#app .role{font-size:13px;color:#604414;border-color:#8a6d3b}
+#app nav.tabs button{font-family:var(--f-body);font-size:15px;letter-spacing:.02em;font-weight:600}
+#app .grid .bar{font-size:15px;font-weight:600}
+#app .pill{font-size:15px;font-weight:700}
+#app .data th{font-size:14px;color:#30291f;font-weight:700}
+#app .data td{font-size:15px}
+#app .hk-card .s{font-size:15px;font-weight:700}
+#app .hk-card .w,#app .hk-card .t{font-size:15px;color:#393126}
+#app .btn.small{font-size:14px}
+#app input,#app select,#app textarea{font-size:16px}
+@media(max-width:760px){
+  #app nav.tabs button{font-size:14px}
+  #app .grid .bar{font-size:14px}
+  #app .grid .rm .ty{font-size:14px}
+  #app .grid.z-s thead th{font-size:14px}
+  #app .grid.z-s thead th b{font-size:17px}
+  #app .legend{font-size:14px}
+}
 </style>
 
 </head><body>
